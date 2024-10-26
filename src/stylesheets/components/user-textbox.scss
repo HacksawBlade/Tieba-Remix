@@ -1,0 +1,26 @@
+@use "@/stylesheets/main/animations" as *;
+
+%user-textbox {
+    box-sizing: border-box;
+    padding: 4px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--default-background);
+    outline: none;
+    transition: $default-animation-duration;
+
+    &:hover {
+        border-color: var(--light-background);
+    }
+
+    &:focus {
+        border-color: var(--tieba-theme-color);
+    }
+
+    &.lodash-style {
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        border-bottom: 2px solid var(--border-color);
+    }
+}
