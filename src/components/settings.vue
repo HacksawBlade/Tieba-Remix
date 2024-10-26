@@ -285,8 +285,10 @@ $wrapper-padding: 16px;
 
             .title {
                 margin-top: 8px;
+                color: var(--default-fore) !important;
                 font-size: 20px;
                 font-weight: bold;
+                line-height: normal;
             }
 
             .search-box {

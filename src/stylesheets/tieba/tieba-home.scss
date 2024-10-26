@@ -80,39 +80,34 @@ body {
     color: var(--default-background);
 }
 
-.search_bright .search_btn:hover {
-    /* 搜索相关 hover */
-    border-color: var(--trans-tieba-theme-color);
-    background-color: var(--tieba-theme-background);
-    box-shadow: 0 0 0 2px var(--trans-tieba-theme-color);
-}
-
 .search_bright .search_btn_enter_ba:hover {
     background-color: var(--tieba-theme-color);
     color: var(--default-background);
 }
 
+// *搜索推荐
+
 .suggestion {
-    /* 搜索推荐 */
-    border-color: var(--border-color);
-    border-radius: 0 0 16px 16px;
-    background-color: var(--elem-color);
-    box-shadow: 0 10px 20px rgb(0 0 0 / 30%);
-    color: var(--default-fore);
+    border-color: var(--border-color) !important;
+    border-radius: 6px !important;
+    background-color: var(--elem-color) !important;
+    box-shadow: none !important;
+    color: var(--default-fore) !important;
+    transform: translateY(4px);
 }
 
 .suggestion .break_tip {
-    background-color: var(--default-background);
+    background-color: var(--default-background) !important;
 }
 
 .suggestion .highlight {
     /* 高亮文本 */
-    color: var(--tieba-theme-color);
+    color: var(--tieba-theme-color) !important;
 }
 
 .suggestion .operation_title {
     /* 热议文字 */
-    color: var(--default-fore);
+    color: var(--default-fore) !important;
 }
 
 .suggestion .forum_image {
@@ -122,13 +117,15 @@ body {
 
 .suggestion .forum_name {
     /* 推荐标题 */
-    color: var(--highlight-fore);
+    color: var(--default-fore) !important;
 }
 
 .suggestion .on {
     /* 搜索推荐：选中 */
-    background-color: var(--light-background);
+    background-color: var(--light-background) !important;
 }
+
+// *
 
 /* 首页横幅 */
 .page-container .top-sec {

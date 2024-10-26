@@ -1,4 +1,15 @@
 @use "@/stylesheets/main/remixed-main" as *;
+@use "@/stylesheets/main/animations" as *;
+@use "@/stylesheets/components/user-button" as *;
+
+#head {
+    background: unset !important;
+    background-color: var(--page-background) !important;
+
+    .head_inner {
+        background-color: var(--page-background);
+    }
+}
 
 .threadlist_title a,
 .threadlist_title a:hover,
@@ -28,20 +39,91 @@
 
 .search_bright .search_logo_fixed {
     /* 固定搜索栏 icon */
-    width: 36px;
-    height: 36px;
-    margin-left: 56px;
-    background-color: rgb(0 0 0 / 0%);
-    background-image: var(--img-tieba-icon);
-    background-repeat: no-repeat;
+    width: 36px !important;
+    height: 36px !important;
+    margin-left: 56px !important;
+    background-color: rgb(0 0 0 / 0%) !important;
+    background-image: var(--img-tieba-icon) !important;
+    background-repeat: no-repeat !important;
 }
 
+// *2024/10 贴吧更新
+
+// 搜索栏 icon 隐藏
+.head_inner .search_logo {
+    display: none !important;
+}
+
+// 搜索组件居中
+.search_form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    form {
+        margin-left: 0 !important;
+    }
+}
+
+// 搜索框
+.search_bright .search_inp_border,
+.search_bright .search_ipt {
+    height: 40px !important;
+    box-sizing: border-box;
+    border: 2px solid var(--border-color) !important;
+    background-color: var(--default-background) !important;
+    color: var(--default-fore) !important;
+    transition: $default-animation-duration;
+
+    &:hover {
+        border-color: var(--light-background) !important;
+    }
+
+    &:focus {
+        border-color: var(--tieba-theme-color) !important;
+    }
+}
+
+// 搜索按钮
+.search_bright .search_btn {
+    height: 40px !important;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color) !important;
+    background-color: var(--default-background) !important;
+    box-shadow: none !important;
+    color: var(--default-fore) !important;
+    line-height: 40px !important;
+    transition: $default-animation-duration;
+
+    &:hover {
+        filter: brightness(1.1);
+    }
+
+    &:active {
+        filter: brightness(1.2);
+    }
+}
+
+// 搜索按钮 “进入贴吧”
+.search_bright .search_btn_enter_ba {
+    @extend %user-button;
+    border: none !important;
+    background-color: var(--tieba-theme-color) !important;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    color: var(--default-background) !important;
+}
+
+// !暂时隐藏固定导航栏
 .search_main_fixed {
+    display: none !important;
     border-color: var(--border-color);
     backdrop-filter: blur(24px);
     background-color: var(--trans-default-background);
     box-shadow: 0 0 20px rgb(0 0 0 / 10%);
 }
+
+// *
 
 .card_top_theme {
     border: none !important;
