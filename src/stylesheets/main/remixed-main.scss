@@ -120,7 +120,7 @@ a {
 @mixin raster-effect($back-color: var(--trans-page-background),
     $base-color: var(--page-background), $size: 4px, $radius: 4px) {
     html:not([perf-saver]) & {
-        backdrop-filter: saturate(0.5) blur($radius);
+        backdrop-filter: saturate(0.8) blur($radius);
         background-color: $back-color;
         background-image: radial-gradient(transparent 1px, $base-color 1px);
         background-size: $size $size;

@@ -2,7 +2,7 @@ import { GM_deleteValue, GM_listValues } from "$";
 import { NavBarHideMode } from "@/components/nav-bar.vue";
 import { MainSettingKey, SettingContent, SubSettingKey, UserSettings } from "@/components/settings.vue";
 import { backupUserConfigs, restoreUserConfigs } from "@/lib/api/remixed";
-import { PerfType, UpdateConfig, compactLayout, disabledModules, monospaceFonts, navBarHideMode, pageExtension, perfProfile, themeType, updateConfig, userFonts, wideScreen } from "@/lib/user-values";
+import { PerfType, UpdateConfig, compactLayout, disabledModules, experimental, monospaceFonts, navBarHideMode, pageExtension, perfProfile, themeType, updateConfig, userFonts, wideScreen } from "@/lib/user-values";
 import { AllModules } from "@/lib/utils";
 import { forEach, includes, join, once, split } from "lodash-es";
 import { markRaw } from "vue";
@@ -346,7 +346,38 @@ export const getUserSettings = once((): UserSettings => ({
                             content: "lab_research",
                         }],
                     },
-                } /* as KeyMapped<ReturnType<typeof experimental.get>, SettingContent> */,
+
+                    "moreBlurEffect": {
+                        title: "更多模糊效果",
+                        description:
+                            `优先考虑提供更多的模糊效果。
+                            仅当性能预设为“高性能”时，才会生效。`,
+                        widgets: [{
+                            type: "toggle",
+                            init() {
+                                return experimental.get().moreBlurEffect;
+                            },
+                            event() {
+                                experimental.merge({ moreBlurEffect: !experimental.get().moreBlurEffect });
+                            },
+                        }],
+                    },
+
+                    "rasterEffect": {
+                        title: "栅格特效",
+                        description: `将部分场景的模糊效果替换为栅格特效。
+                        可能会使文字可见度降低。存在性能问题。`,
+                        widgets: [{
+                            type: "toggle",
+                            init() {
+                                return experimental.get().rasterEffect;
+                            },
+                            event() {
+                                experimental.merge({ rasterEffect: !experimental.get().rasterEffect });
+                            },
+                        }],
+                    },
+                } as Record<keyof ReturnType<typeof experimental.get>, SettingContent>,
             },
 
             "backup-recover": {

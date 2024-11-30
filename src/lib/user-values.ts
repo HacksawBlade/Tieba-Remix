@@ -152,7 +152,10 @@ export const disabledModules = new UserKey<string[]>("disabledModules", []);
 /** 未读推送 */
 export const unreadFeeds = new UserKeyTS<TiebaPost[]>("unreadFeeds", []);
 /** 实验性功能配置 */
-export const experimental = new UserKey("experimental", {});
+export const experimental = new UserKey("experimental", {
+    moreBlurEffect: false,
+    rasterEffect: false,
+});
 /** 最新发行版相关信息 */
 export const latestRelease = new UserKeyTS<GiteeRelease | null>("latestRelease", null);
 /** 更新配置 */

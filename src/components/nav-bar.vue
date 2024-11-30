@@ -1,5 +1,6 @@
 <template>
-    <nav ref="navBar" id="nav-bar" class="nav-bar remove-default" :class="{ 'fold': hideMode === 'alwaysFold' }">
+    <nav ref="navBar" id="nav-bar" class="nav-bar remove-default"
+        :class="{ 'fold': hideMode === 'alwaysFold', 'blur-effect': !experimental.get().rasterEffect, 'raster-effect': experimental.get().rasterEffect }">
         <div v-show="teiggerHide" id="fold-bar"></div>
 
         <div id="nav-container">
@@ -43,7 +44,7 @@ import { renderDialog } from "@/lib/render";
 import { getFloatCoord } from "@/lib/render/layout/float";
 import { messageBox } from "@/lib/render/message-box";
 import { toast } from "@/lib/render/toast";
-import { GiteeRepo, GithubRepo, navBarHideMode } from "@/lib/user-values";
+import { experimental, GiteeRepo, GithubRepo, navBarHideMode } from "@/lib/user-values";
 import { waitUntil } from "@/lib/utils";
 import { forEach, throttle } from "lodash-es";
 import { onMounted, ref } from "vue";
@@ -299,8 +300,15 @@ $fold-bar-height: 3px;
     background-color: var(--trans-page-background);
     transition: $default-animation-duration;
 
-    @include blur-effect;
     @include main-box-shadow(0, 10px);
+
+    &.blur-effect {
+        @include blur-effect;
+    }
+
+    &.raster-effect {
+        @include raster-effect;
+    }
 
     &.fold {
         // height: $nav-fold-height;
