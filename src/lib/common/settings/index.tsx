@@ -1,7 +1,8 @@
 import { GM_deleteValue, GM_listValues } from "$";
+import { NavBarHideMode } from "@/components/nav-bar.vue";
 import { MainSettingKey, SettingContent, SubSettingKey, UserSettings } from "@/components/settings.vue";
 import { backupUserConfigs, restoreUserConfigs } from "@/lib/api/remixed";
-import { PerfType, UpdateConfig, compactLayout, disabledModules, monospaceFonts, pageExtension, perfProfile, themeType, updateConfig, userFonts, wideScreen } from "@/lib/user-values";
+import { PerfType, UpdateConfig, compactLayout, disabledModules, monospaceFonts, navBarHideMode, pageExtension, perfProfile, themeType, updateConfig, userFonts, wideScreen } from "@/lib/user-values";
 import { AllModules } from "@/lib/utils";
 import { forEach, includes, join, once, split } from "lodash-es";
 import { markRaw } from "vue";
@@ -209,6 +210,33 @@ export const getUserSettings = once((): UserSettings => ({
                             event(e) {
                                 monospaceFonts.set(split((e.target as HTMLInputElement).value, "\n"));
                                 return join(monospaceFonts.get(), "\n");
+                            },
+                        }],
+                    },
+                },
+            },
+
+            "nav-bar": {
+                name: "导航栏",
+                content: {
+                    "nav-bar-mode": {
+                        title: "导航栏隐藏模式",
+                        description:
+                            `设置导航栏的隐藏模式。`,
+                        widgets: [{
+                            type: "select",
+                            content: {
+                                "滚动折叠": "fold",
+                                "始终折叠": "alwaysFold",
+                                "滚动隐藏": "hideWhenScroll",
+                                "始终显示": "never",
+                            } as Record<string, NavBarHideMode>,
+                            init() {
+                                return navBarHideMode.get();
+                            },
+                            event(e) {
+                                const newValue = (e.target as HTMLSelectElement).value as NavBarHideMode;
+                                navBarHideMode.set(newValue);
                             },
                         }],
                     },

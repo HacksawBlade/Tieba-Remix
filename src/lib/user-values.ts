@@ -1,4 +1,5 @@
 import { GM_deleteValue, GM_getValue, GM_setValue } from "$";
+import { NavBarHideMode } from "@/components/nav-bar.vue";
 import { forEach, keys, merge } from "lodash-es";
 import { setTheme } from "./api/remixed";
 import { setPerfAttr } from "./perf";
@@ -205,6 +206,8 @@ export const userFonts = new UserKey<string[]>("userFonts", []);
 export const monospaceFonts = new UserKey<string[]>("monospaceFonts", [
     "Consolas", "JetBrains Mono", "Fira Code", "Menlo", "monospace",
 ]);
+/** 导航栏模式 */
+export const navBarHideMode = new UserKey<NavBarHideMode>("navBarHideMode", "fold");
 
 export const SymbolFont = "Material Symbols";
 

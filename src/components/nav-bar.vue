@@ -1,5 +1,7 @@
 <template>
-    <div id="nav-bar" class="nav-bar remove-default">
+    <nav ref="navBar" id="nav-bar" class="nav-bar remove-default" :class="{ 'fold': hideMode === 'alwaysFold' }">
+        <div v-show="teiggerHide" id="fold-bar"></div>
+
         <div id="nav-container">
             <div class="left-container">
                 <UserButton class="nav-button nav-title-container" is-anchor href="/" no-border="all">
@@ -30,7 +32,7 @@
                 </UserButton>
             </div>
         </div>
-    </div>
+    </nav>
 </template>
 
 <script lang="ts" setup>
@@ -41,13 +43,26 @@ import { renderDialog } from "@/lib/render";
 import { getFloatCoord } from "@/lib/render/layout/float";
 import { messageBox } from "@/lib/render/message-box";
 import { toast } from "@/lib/render/toast";
-import { GiteeRepo, GithubRepo } from "@/lib/user-values";
+import { GiteeRepo, GithubRepo, navBarHideMode } from "@/lib/user-values";
 import { waitUntil } from "@/lib/utils";
-import { forEach } from "lodash-es";
+import { forEach, throttle } from "lodash-es";
 import { onMounted, ref } from "vue";
 import Settings from "./settings.vue";
 import DropdownMenu from "./utils/dropdown-menu.vue";
 import UserButton from "./utils/user-button.vue";
+
+export type NavBarHideMode = "fold" | "alwaysFold" | "hideWhenScroll" | "never";
+
+interface Props {
+    hideMode?: NavBarHideMode
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    hideMode: navBarHideMode.get(),
+});
+
+const navBar = ref<HTMLDivElement>();
+const teiggerHide = ref(false);
 
 const navAvatar = ref<HTMLImageElement>();
 const userPortrait = ref<string>("");
@@ -83,6 +98,40 @@ async function init() {
             menu.style.top = "48px";
         });
     });
+
+    switch (props.hideMode) {
+        case "alwaysFold":
+            teiggerHide.value = true;
+            break;
+
+        case "fold":
+        case "hideWhenScroll": {
+            const modeClass = props.hideMode === "fold" ? "fold" : "hide";
+            const threshold = 50, timeout = 1000;
+            let lastScrollY = window.scrollY;
+            let timer = -1;
+            const handle = throttle(function () {
+                if (window.scrollY > lastScrollY + threshold) {
+                    navBar.value?.classList.add(modeClass);
+                    teiggerHide.value = true;
+                    clearTimeout(timer);
+                } else if (window.scrollY < lastScrollY - threshold) {
+                    navBar.value?.classList.remove(modeClass);
+                    teiggerHide.value = false;
+                    clearTimeout(timer);
+                } else {
+                    clearTimeout(timer);
+                    timer = setTimeout(handle, timeout);
+                }
+                lastScrollY = window.scrollY;
+            });
+            window.addEventListener("scroll", handle);
+            break;
+        }
+
+        case "never":
+            break;
+    }
 }
 
 async function login() {
@@ -233,6 +282,8 @@ function loadNavMenuContent() {
 @use "@/stylesheets/main/remixed-main" as *;
 
 $nav-height: 48px;
+$nav-fold-height: 16px;
+$fold-bar-height: 3px;
 
 #nav-bar {
     position: fixed;
@@ -246,9 +297,48 @@ $nav-height: 48px;
     justify-content: center;
     border-bottom: 1px solid var(--border-color);
     background-color: var(--trans-page-background);
+    transition: $default-animation-duration;
 
     @include blur-effect;
     @include main-box-shadow(0, 10px);
+
+    &.fold {
+        // height: $nav-fold-height;
+        transform: translateY(calc(-1 * $nav-height + $nav-fold-height));
+
+        #fold-bar {
+            position: absolute;
+            bottom: calc(($nav-fold-height - $fold-bar-height) / 2);
+            width: 60px;
+            height: $fold-bar-height;
+            border-radius: 3px;
+            margin: 0 auto;
+            background-color: var(--border-color);
+        }
+
+        #nav-container {
+            display: none;
+        }
+
+        &:hover {
+            // height: $nav-height;
+            transform: translateY(0);
+
+            #nav-container {
+                display: flex;
+            }
+
+            #fold-bar {
+                display: none;
+            }
+        }
+    }
+
+    &.hide {
+        // height: 0;
+        box-shadow: none !important;
+        transform: translateY(-100%);
+    }
 
     #nav-container {
         display: flex;
