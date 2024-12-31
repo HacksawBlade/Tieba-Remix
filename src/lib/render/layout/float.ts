@@ -48,7 +48,6 @@ function getFloatCoord2(
         window.innerWidth - scrollbarWidth()
         - Math.ceil(width) // 修正误差
     );
-    console.log(coord.y, height);
     const y =
         Math.ceil(coord.y + height) > window.innerHeight
             ? coord.y - height
