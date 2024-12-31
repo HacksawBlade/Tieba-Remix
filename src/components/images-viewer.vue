@@ -5,7 +5,8 @@
         </div>
 
         <div class="control-panel head-controls" :class="{ 'hide': !showControls }">
-            <ToggleButton class="vli-mode head-btn icon" title="长图模式" v-model="vliMode">book</ToggleButton>
+            <ToggleButton class="vli-mode head-btn icon" title="长图模式" v-model="vliMode">chrome_reader_mode
+            </ToggleButton>
             <span>|</span>
             <UserButton class="zoom-in head-btn icon" title="缩小" @click="zoomImage(0.5)">
                 zoom_in
@@ -84,7 +85,6 @@ const imageLeft = ref<Maybe<number>>(undefined);
 const imageTop = ref<Maybe<number>>(undefined);
 const showControls = ref(true);
 const vliMode = ref(false);
-const vliZeroTop = ref<Maybe<number>>(undefined);
 
 const imageStyle = computed<CSSRule>(() => {
     return {
@@ -145,7 +145,6 @@ onMounted(() => {
             if (currImage.value.naturalHeight / currImage.value.naturalWidth >= VLI_THRESHOLD) {
                 vliMode.value = true;
                 scale.value = window.innerWidth / VLI_WIDTH_SCALE / currImage.value.naturalWidth;
-                imageTop.value = vliZeroTop.value = -(currImage.value.naturalHeight * (1 - scale.value) / 2);
                 imageLeft.value = undefined;
                 return;
             }
@@ -198,6 +197,15 @@ watch(imageTop, function (newTop) {
         if (newTop < imageProps.vliMinTop) {
             imageTop.value = imageProps.vliMinTop;
         }
+    }
+});
+
+watch(vliMode, function (newMode) {
+    if (newMode && currImage.value && !imageTop.value) {
+        imageTop.value = Math.max(
+            imageProps.vliMinTop,
+            -(currImage.value.naturalHeight * (1 - scale.value) / 2),
+        );
     }
 });
 
@@ -275,7 +283,7 @@ $panel-radius: 12px;
         align-items: center;
         padding: 10px;
         border: 1px solid var(--light-border-color);
-        border-radius: $panel-radius;
+        border-radius: $panel-radius + 6;
         background-color: var(--trans-default-background);
         box-shadow: 0 0 32px rgb(0 0 0 / 40%);
 
@@ -403,7 +411,7 @@ $panel-radius: 12px;
             height: 75px;
             padding: 0;
             border: none;
-            border-radius: $panel-radius - 6;
+            border-radius: $panel-radius - 2;
             background-color: var(--trans-default-background);
 
             @include transition-prototype(all linear, 0.1s);
