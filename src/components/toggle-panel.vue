@@ -7,7 +7,7 @@
 
         <div class="toggle-wrapper">
             <div v-for="toggle in props.toggles" class="toggle-container">
-                <ToggleButton class="panel-button" :default-value="toggle.defaultValue" icon-type shadow-border
+                <ToggleButton class="panel-button" :model-value="toggle.defaultValue ?? false" icon-type shadow-border
                     @click="toggle.event">{{ toggle.icon }}
                 </ToggleButton>
                 <div class="toggle-name">{{ toggle.name }}</div>
@@ -72,11 +72,16 @@ const props = defineProps<TogglePanelProps>();
                 font-size: 24px;
 
                 &.toggle-off {
+                    @extend %icon;
                     color: var(--minimal-fore);
                 }
 
-                &.toggle-on:focus {
-                    box-shadow: 0 0 0 1px var(--tieba-theme-color);
+                &.toggle-on {
+                    @extend %filled-icon;
+
+                    &:focus {
+                        box-shadow: 0 0 0 1px var(--tieba-theme-color);
+                    }
                 }
             }
 

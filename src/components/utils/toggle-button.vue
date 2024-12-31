@@ -1,29 +1,29 @@
 <template>
-    <UserButton ref="toggleButton" class="toggle-button"
-        :class="{ 'toggle-on': currentValue, 'toggle-off': !currentValue, 'filled-icon': iconType && currentValue, 'outline-icon': iconType && !currentValue }"
-        @click="toggleValue" :value="currentValue">
+    <UserButton class="toggle-button" :class="toggleClass" @click="toggle">
         <slot></slot>
     </UserButton>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { computed } from "vue";
 import UserButton from "./user-button.vue";
 
-interface Props {
-    defaultValue?: boolean;
-    iconType?: boolean;
-    event?: ((now: boolean) => void);
-}
 
-const props = defineProps<Props>();
 
-const toggleButton = ref<HTMLButtonElement>();
-const currentValue = ref(props.defaultValue);
+const TOGGLE_ON_CLASS = "toggle-on" as const;
+const TOGGLE_OFF_CLASS = "toggle-off" as const;
 
-function toggleValue() {
-    currentValue.value = !currentValue.value;
-    props.event && props.event(currentValue.value);
+const model = defineModel<boolean>({
+    required: true,
+    default: false,
+});
+
+const toggleClass = computed(() => {
+    return model.value ? TOGGLE_ON_CLASS : TOGGLE_OFF_CLASS;
+});
+
+function toggle() {
+    model.value = !model.value;
 }
 </script>
 

@@ -43,7 +43,7 @@
                 <div v-if="content?.widgets" v-for="widget in content.widgets" class="setting-control">
                     <!-- Toggle -->
                     <ToggleButton v-if="widget.type === 'toggle'" class="settings-toggle-button icon"
-                        :default-value="widget.init ? widget.init() : undefined" @click="widget.event" icon-type
+                        :model-value="widget.init ? widget.init() : undefined" @click="widget.event" icon-type
                         no-border="all">
                     </ToggleButton>
 
