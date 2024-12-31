@@ -1,10 +1,12 @@
 <template>
     <div ref="imageViewer" class="images-viewer dialog-toggle" @wheel="imageWheel">
         <div class="image-container dialog-toggle">
-            <img ref="currImage" class="curr-image" :src="imageArray[curr]" alt="">
+            <img ref="currImage" class="curr-image changing" :src="imageArray[curr]" :style="parseCSSRule(imageStyle)">
         </div>
 
         <div class="control-panel head-controls" :class="{ 'hide': !showControls }">
+            <ToggleButton class="vli-mode head-btn icon" title="长图模式" v-model="vliMode">book</ToggleButton>
+            <span>|</span>
             <UserButton class="zoom-in head-btn icon" title="缩小" @click="zoomImage(0.5)">
                 zoom_in
             </UserButton>
@@ -37,16 +39,18 @@
         <div class="control-panel bottom-controls" :class="{ 'hide': !showControls }">
             <UserButton v-for="image, index in imageArray" class="bottom-btn" :class="{ 'selected': index === curr }"
                 no-border="all">
-                <img class="image-list" :src="image" alt="" @click="changeCurr(index)">
+                <img class="image-list" :src="image" alt="" @click="curr = index">
             </UserButton>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import { unloadDialog } from "@/lib/render";
 import { map, round } from "lodash-es";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
+import ToggleButton from "./utils/toggle-button.vue";
 import UserButton from "./utils/user-button.vue";
 
 export interface ImageViewerProps {
@@ -76,11 +80,39 @@ const currImage = ref<HTMLImageElement>();
 const curr = ref(props.defaultIndex);
 const scale = ref(1.0);
 const deg = ref(0);
+const imageLeft = ref<number | null>(null);
+const imageTop = ref<number | null>(null);
 const showControls = ref(true);
+const vliMode = ref(false);
+const vliZeroTop = ref<number | null>(null);
+
+const imageStyle = computed<CSSRule>(() => {
+    return {
+        transform: `scale(${scale.value}) rotate(${deg.value}deg)`,
+        left: `${imageLeft.value}px`,
+        top: `${imageTop.value}px`,
+    };
+});
+
+const imageTransition = computed(function () {
+    return vliMode.value
+        ? "all 0.4s ease, left 0s, top 0.1s ease-out"
+        : "all 0.4s ease, left 0s, top 0s";
+});
 
 // 状态
-const minSize = 0.2;
-const maxSize = 4.0;
+const MIN_SIZE = 0.1 as const;
+const MAX_SIZE = 8.0 as const;
+// VLI = very long image
+const VLI_THRESHOLD = 5 as const;
+const VLI_WIDTH_SCALE = 2 as const;
+
+const imageProps = {
+    naturalHeight: 0,
+    scaledHeight: 0,
+    vliMaxTop: 0,
+    vliMinTop: 0,
+};
 
 onMounted(() => {
     let offsetX = 0, offsetY = 0;
@@ -88,10 +120,10 @@ onMounted(() => {
     currImage.value?.addEventListener("mousedown", (e: MouseEvent) => {
         if (!currImage.value) return;
         e.preventDefault();
+        if (vliMode.value) return;
 
         offsetX = e.clientX - currImage.value.offsetLeft;
         offsetY = e.clientY - currImage.value.offsetTop;
-
         document.addEventListener("mousemove", moveHandler);
     });
 
@@ -100,10 +132,72 @@ onMounted(() => {
         document.removeEventListener("mousemove", moveHandler);
     });
 
+    currImage.value?.addEventListener("load", function () {
+        if (!currImage.value) return;
+
+        (() => {
+            if (currImage.value.naturalHeight < window.innerHeight &&
+                currImage.value.naturalWidth < window.innerWidth) {
+                scale.value = 1;
+                return;
+            }
+
+            if (currImage.value.naturalHeight / currImage.value.naturalWidth >= VLI_THRESHOLD) {
+                vliMode.value = true;
+                scale.value = window.innerWidth / VLI_WIDTH_SCALE / currImage.value.naturalWidth;
+                imageTop.value = vliZeroTop.value = -(currImage.value.naturalHeight * (1 - scale.value) / 2);
+                imageLeft.value = null;
+                return;
+            }
+
+            vliMode.value = false;
+            scale.value = Math.min(
+                window.innerWidth / currImage.value.naturalWidth,
+                window.innerHeight / currImage.value.naturalHeight,
+            );
+        })();
+
+        imageProps.naturalHeight = currImage.value.naturalHeight;
+        imageProps.scaledHeight = imageProps.naturalHeight * scale.value;
+        imageProps.vliMaxTop = -(imageProps.naturalHeight * (1 - scale.value) / 2) + window.innerHeight / 2;
+        imageProps.vliMinTop = -imageProps.scaledHeight - (imageProps.naturalHeight * (1 - scale.value) / 2) + window.innerHeight / 2;
+
+        currImage.value.classList.remove("changing");
+    });
+
+    currImage.value?.addEventListener("transitionend", function () {
+        if (Math.abs(deg.value) >= 360) {
+            currImage.value?.classList.add("changing");
+            deg.value = Math.abs(deg.value) % 360;
+            currImage.value?.offsetHeight;  // 强制重绘
+            currImage.value?.classList.remove("changing");
+        }
+    });
+
     function moveHandler(e: MouseEvent) {
         if (!currImage.value) return;
-        currImage.value.style.left = `${(e.clientX - offsetX)}px`;
-        currImage.value.style.top = `${(e.clientY - offsetY)}px`;
+        imageLeft.value = e.clientX - offsetX;
+        imageTop.value = e.clientY - offsetY;
+    }
+});
+
+watch(curr, function () {
+    currImage.value?.classList.add("changing");
+    deg.value = 0;
+    imageLeft.value = null;
+    imageTop.value = null;
+});
+
+watch(imageTop, function (newTop) {
+    if (vliMode.value) {
+        if (!currImage.value || !imageTop.value || !newTop) return;
+
+        if (newTop > imageProps.vliMaxTop) {
+            imageTop.value = imageProps.vliMaxTop;
+        }
+        if (newTop < imageProps.vliMinTop) {
+            imageTop.value = imageProps.vliMinTop;
+        }
     }
 });
 
@@ -113,61 +207,45 @@ function unload() {
     unloadDialog();
 }
 
-/** 切换当前显示的图片 */
-function changeCurr(newIndex: number) {
-    curr.value = newIndex;
-    transformDefault();
-}
-
 /** 上一张照片 */
 function listBack() {
-    if (curr.value > 0) changeCurr(--curr.value);
+    if (curr.value > 0) curr.value--;
 }
 
 /** 下一张照片 */
 function listForward() {
-    if (curr.value < imageArray.length - 1) changeCurr(++curr.value);
-}
-
-/** 更新照片的变形状态 */
-function transformImage() {
-    if (currImage.value) {
-        currImage.value.style.transform = `scale(${scale.value}) rotate(${deg.value}deg)`;
-    }
-}
-
-/** 将照片的变形状态重置 */
-function transformDefault() {
-    scale.value = 1.0;
-    deg.value = 0;
-    transformImage();
+    if (curr.value < imageArray.length - 1) curr.value++;
 }
 
 /** 缩放图片 */
 function zoomImage(delta: number) {
     scale.value += delta;
-    scale.value < minSize
-        ? scale.value = minSize
-        : scale.value > maxSize
-            ? scale.value = maxSize
-            : true;
-    transformImage();
+    if (scale.value < MIN_SIZE) {
+        scale.value = MIN_SIZE;
+    }
+    if (scale.value > MAX_SIZE) {
+        scale.value = MAX_SIZE;
+    }
 }
 
 /** 旋转图片 */
 function rotateImage(delta: number) {
     deg.value += delta;
-    deg.value % 360
-        ? true
-        : deg.value = 0;
-    transformImage();
 }
 
 /** 鼠标滚轮事件 */
 function imageWheel(event: WheelEvent) {
     event.preventDefault();
-    zoomImage(-event.deltaY / 1000);
-    showControls.value = event.deltaY > 0;
+    if (!currImage.value) return;
+
+    if (!vliMode.value) {
+        zoomImage(-event.deltaY / 1000);
+        showControls.value = event.deltaY > 0;
+    } else {
+        if (!imageTop.value) imageTop.value = 0;
+        imageTop.value += -event.deltaY / 1000 * window.innerHeight;
+        showControls.value = event.deltaY < 0;
+    }
 }
 </script>
 
@@ -200,7 +278,6 @@ $panel-radius: 12px;
         border-radius: $panel-radius;
         background-color: var(--trans-default-background);
         box-shadow: 0 0 32px rgb(0 0 0 / 40%);
-        gap: 2px;
 
         @include blur-effect;
     }
@@ -218,14 +295,26 @@ $panel-radius: 12px;
         .head-btn {
             width: 36px;
             height: 36px;
+            padding: 0;
             border-radius: $panel-radius;
             background-color: unset;
             box-shadow: none;
-        }
+            font-size: 16px;
 
-        .head-btn:hover {
-            background-color: var(--default-background);
-            color: var(--tieba-theme-color);
+            &:hover {
+                background-color: var(--default-background);
+                color: var(--tieba-theme-color);
+            }
+
+            &.toggle-on {
+                @extend %filled-icon;
+                background-color: var(--tieba-theme-color);
+                color: var(--default-background);
+
+                &:hover {
+                    filter: brightness(1.2);
+                }
+            }
         }
 
         .close:hover {
@@ -279,15 +368,20 @@ $panel-radius: 12px;
 
     .image-container {
         display: flex;
-        width: auto;
+        width: 100%;
+        height: 100%;
         align-items: center;
         justify-content: center;
-        margin: auto;
 
         .curr-image {
             position: absolute;
             object-fit: contain;
-            transition: all 0.4s ease, left 0s, top 0s;
+            transition: v-bind("imageTransition");
+
+            &.changing {
+                display: none;
+                transition: none;
+            }
         }
     }
 
