@@ -302,14 +302,6 @@ $fold-bar-height: 3px;
 
     @include main-box-shadow(0, 10px);
 
-    &.blur-effect {
-        @include blur-effect;
-    }
-
-    &.raster-effect {
-        @include raster-effect;
-    }
-
     &.fold {
         // height: $nav-fold-height;
         transform: translateY(calc(-1 * $nav-height + $nav-fold-height));
