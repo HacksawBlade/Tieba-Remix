@@ -80,11 +80,11 @@ const currImage = ref<HTMLImageElement>();
 const curr = ref(props.defaultIndex);
 const scale = ref(1.0);
 const deg = ref(0);
-const imageLeft = ref<number | null>(null);
-const imageTop = ref<number | null>(null);
+const imageLeft = ref<Maybe<number>>(undefined);
+const imageTop = ref<Maybe<number>>(undefined);
 const showControls = ref(true);
 const vliMode = ref(false);
-const vliZeroTop = ref<number | null>(null);
+const vliZeroTop = ref<Maybe<number>>(undefined);
 
 const imageStyle = computed<CSSRule>(() => {
     return {
@@ -146,7 +146,7 @@ onMounted(() => {
                 vliMode.value = true;
                 scale.value = window.innerWidth / VLI_WIDTH_SCALE / currImage.value.naturalWidth;
                 imageTop.value = vliZeroTop.value = -(currImage.value.naturalHeight * (1 - scale.value) / 2);
-                imageLeft.value = null;
+                imageLeft.value = undefined;
                 return;
             }
 
@@ -184,8 +184,8 @@ onMounted(() => {
 watch(curr, function () {
     currImage.value?.classList.add("changing");
     deg.value = 0;
-    imageLeft.value = null;
-    imageTop.value = null;
+    imageLeft.value = undefined;
+    imageTop.value = undefined;
 });
 
 watch(imageTop, function (newTop) {

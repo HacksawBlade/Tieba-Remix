@@ -193,17 +193,17 @@ export function templateCreate<T extends keyof HTMLElementTagNameMap>(
 }
 
 /**
- * 根据特征查找父元素，若找不到则返回 `null`
+ * 根据特征查找父元素
  * @param el 子元素
  * @param trait 父元素特征
  * @param mode 查找模式。默认按类名查找
- * @returns 符合条件的父元素 | `null`
+ * @returns 符合条件的父元素 | `undefined`
  */
 export function findParent<T extends keyof HTMLElementTagNameMap>(
     el: Element,
     trait: string,
     mode: "selector" | "className" | "id" | "tagName" = "className",
-): HTMLElementTagNameMap[T] | null {
+): Maybe<HTMLElementTagNameMap[T]> {
     const verifier = ((): (parent: HTMLElement) => boolean => {
         switch (mode) {
             case "selector": {

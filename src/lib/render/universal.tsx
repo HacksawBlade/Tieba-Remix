@@ -12,7 +12,7 @@ export function imagesViewer(props: ImageViewerProps) {
 
 export function headerProgress(props: HeaderProgressProps, delay = 2000, timeout = 10000) {
     const progressBar = <HeaderProgress calc={props.calc}></HeaderProgress>;
-    const rendered = insertJSX<HTMLDivElement>(progressBar, document.body, document.body.firstChild);
+    const rendered = insertJSX<HTMLDivElement>(progressBar, document.body, document.body.firstChild ?? undefined);
     const timeoutTimer = setTimeout(() => {
         rendered.el.remove();
     }, timeout);

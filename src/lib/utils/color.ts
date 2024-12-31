@@ -14,7 +14,7 @@ export interface HSLA {
     a: number;
 }
 
-export function colorToRGBA(color: string): RGBA | null {
+export function colorToRGBA(color: string): Maybe<RGBA> {
     const elem = document.createElement("div");
     elem.style.color = color;
     document.body.appendChild(elem);
@@ -29,7 +29,6 @@ export function colorToRGBA(color: string): RGBA | null {
             a: parseFloat(rgbaMatch[4] ?? "1"),
         };
     }
-    return null;
 }
 
 export function hexToRGBA(hex: string): RGBA {

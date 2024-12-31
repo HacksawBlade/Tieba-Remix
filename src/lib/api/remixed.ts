@@ -45,7 +45,7 @@ export function currentPageType(): PageType {
     return "unhandled";
 }
 
-export async function getLatestReleaseFromGitee(forceUpdate = false): Promise<GiteeRelease | null> {
+export async function getLatestReleaseFromGitee(forceUpdate = false): Promise<Maybe<GiteeRelease>> {
     if (latestRelease.get() && !forceUpdate) {
         return latestRelease.get();
     } else {
@@ -58,7 +58,7 @@ export async function getLatestReleaseFromGitee(forceUpdate = false): Promise<Gi
             }
         })();
 
-        if (TTL < 0) return null;
+        if (TTL < 0) return;
 
         const updateUrl = `https://gitee.com/api/v5/repos/${Owner}/${RepoName}/releases/latest/`;
 
@@ -66,12 +66,12 @@ export async function getLatestReleaseFromGitee(forceUpdate = false): Promise<Gi
 
         if (response.ok) {
             const result = await response.json();
-            if ((result as GiteeReleaseNotFound).message) return null;
+            if ((result as GiteeReleaseNotFound).message) return;
 
             latestRelease.set(result, spawnOffsetTS(0, 0, 0, TTL));
             return result;
         } else {
-            return null;
+            return;
         }
     }
 }

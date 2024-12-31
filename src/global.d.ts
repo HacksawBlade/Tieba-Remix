@@ -1,6 +1,8 @@
 declare module "*.json";
 
-interface LiteralObject<T = any> {
+type Maybe<T> = T | undefined;
+
+interface LiteralObject {
     [prop: string]: T
 }
 
@@ -101,4 +103,12 @@ interface Meta {
 interface Coord {
     x: number;
     y: number;
+}
+
+declare global {
+    interface Global {
+        none: undefined;
+    }
+
+    const globalThis: Global;
 }

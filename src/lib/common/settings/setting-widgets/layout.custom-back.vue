@@ -24,7 +24,7 @@ import { customBackground } from "@/lib/user-values";
 import { selectLocalFile } from "@/lib/utils";
 import { onMounted, ref, watch } from "vue";
 
-const imageData = ref<string | null>(customBackground.get());
+const imageData = ref<Maybe<string>>(customBackground.get());
 const alphaValue = ref("100");
 const imageAlphaInput = ref<InstanceType<typeof UserTextbox>>();
 
@@ -43,11 +43,11 @@ onMounted(async function () {
 });
 
 async function clearImage() {
-    imageData.value = null;
+    imageData.value = undefined;
 }
 
 async function selectImageFile() {
-    imageData.value = await selectLocalFile("base64");
+    imageData.value = await selectLocalFile("base64") as Maybe<string>;
 }
 </script>
 

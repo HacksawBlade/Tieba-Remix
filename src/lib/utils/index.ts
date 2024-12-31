@@ -155,7 +155,7 @@ export function outputFile(filename: string, content: string) {
     URL.revokeObjectURL(url);
 }
 
-export async function selectLocalFile<T extends string | ArrayBuffer | null>(
+export async function selectLocalFile<T extends Maybe<string | ArrayBuffer>>(
     mode: "text" | "base64" = "text"
 ): Promise<T> {
     return new Promise((resolve, reject) => {

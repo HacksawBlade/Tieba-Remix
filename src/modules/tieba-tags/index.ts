@@ -57,7 +57,7 @@ function main(): void {
             const targetFloor = findParent(j_tags[0], "l_post_bright");
             if (targetFloor) {
                 const dataAttr = targetFloor.getAttribute("data-field");
-                if (dataAttr !== null) {
+                if (dataAttr) {
                     const dataField = JSON.parse(dataAttr);
                     return split(dataField.author.portrait, "?")[0];
                 }
@@ -94,7 +94,7 @@ function main(): void {
             // 层主，如果我/楼主是层主则不显示
             if (!isMe && !isLouzhu) {
                 const floor = findParent(elem, "l_post_bright");
-                if (floor !== null) {
+                if (floor) {
                     const cengzhuCard = floor.getElementsByClassName("p_author_name")[0];
                     const cengzhu = cengzhuCard.textContent;
 
@@ -113,21 +113,21 @@ function main(): void {
                 } else if (indexOf(["", " "], username) !== -1) {
                     // 无法正常获取到 username 和 dataField
                     const targetPortrait = elem.getAttribute("portrait");
-                    if (targetPortrait !== null && portrait) {
+                    if (targetPortrait && portrait) {
                         if (targetPortrait === portrait) {
                             return true;
                         }
                     } else {
                         return dataClassify();
                     }
-                } else if (username === null) {
+                } else if (!username) {
                     return dataClassify();
                 }
                 return false;
 
                 function dataClassify() {
                     const dataAttr = elem.getAttribute("data-field");
-                    if (dataAttr !== null) {
+                    if (dataAttr) {
                         const dataField = JSON.parse(dataAttr.replace(/'/g, "\""));
                         if (portrait) {
                             if (dataField.id === portrait) {

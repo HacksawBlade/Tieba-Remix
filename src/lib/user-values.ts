@@ -157,7 +157,7 @@ export const experimental = new UserKey("experimental", {
     rasterEffect: false,
 });
 /** 最新发行版相关信息 */
-export const latestRelease = new UserKeyTS<GiteeRelease | null>("latestRelease", null);
+export const latestRelease = new UserKeyTS<Maybe<GiteeRelease>>("latestRelease", undefined);
 /** 更新配置 */
 export const updateConfig = new UserKey<UpdateConfig>("updateConfig", {
     time: "6h",
@@ -189,9 +189,9 @@ export const themeColor = new UserKey("themeColor", {
     dark: "#7161c1",
 });
 /** 用户自定义背景图 */
-export const customBackground = new UserKey<string | null>(
+export const customBackground = new UserKey<Maybe<string>>(
     "customBackground",
-    null,
+    undefined,
     {
         setter() {
             setCustomBackground();

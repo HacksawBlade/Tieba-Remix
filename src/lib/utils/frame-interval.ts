@@ -2,7 +2,7 @@ type Callback = () => void;
 type Condition = () => boolean;
 
 export class FrameInterval {
-    private id: number | null = null;
+    private id: Maybe<number>;
     private callback: Callback;
     private thenfn: Callback = () => undefined;
     private stopCondition: Condition;
@@ -25,9 +25,9 @@ export class FrameInterval {
     }
 
     public cancel(): void {
-        if (this.id !== null) {
+        if (this.id) {
             cancelAnimationFrame(this.id);
-            this.id = null;
+            this.id = undefined;
         }
         this.thenfn();
     }

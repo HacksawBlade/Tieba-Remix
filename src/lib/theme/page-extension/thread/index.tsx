@@ -242,7 +242,7 @@ export default async function () {
     // pager 相关
     const pagerVNodes: VNode[] = [];
     const insertPager = (parent: Element, position: Node | null, additionalStyles?: CSSRule) => {
-        const { vnode: pagerVNode } = insertJSX(createPager(additionalStyles), parent, position);
+        const { vnode: pagerVNode } = insertJSX(createPager(additionalStyles), parent, position ?? undefined);
         pagerVNodes.push(pagerVNode);
 
         function createPager(additionalStyles?: CSSRule) {

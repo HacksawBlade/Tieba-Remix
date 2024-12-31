@@ -110,7 +110,7 @@ async function addFeeds(newFeeds?: TiebaPost[]) {
 
     feeds.value.push(...newFeeds);
 
-    await waitUntil(() => currentLoadedFeeds.length >= newFeeds.length);
+    await waitUntil(() => currentLoadedFeeds.length >= (newFeeds ?? []).length);
     renderMasonry().then(function () {
         unreadFeeds.set(newFeeds ? newFeeds : [], spawnOffsetTS(0, 0, 0, unreadTTL));
         currentLoadedFeeds.length = 0;

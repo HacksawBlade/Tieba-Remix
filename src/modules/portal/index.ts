@@ -36,17 +36,17 @@ function main(): void {
                 // av号
                 if (elem.textContent?.toLowerCase().indexOf("av") !== -1) {
                     const avs = elem.textContent?.match(avRegExp);
-                    bindingLinks(avs, true);
+                    bindingLinks(avs ?? undefined, true);
                 }
 
                 // BV号
                 if (elem.textContent?.indexOf("BV") !== -1) {
                     const BVs = elem.textContent?.match(BVRegExp);
-                    bindingLinks(BVs);
+                    bindingLinks(BVs ?? undefined);
                 }
 
                 function bindingLinks(
-                    array: RegExpMatchArray | null | undefined,
+                    array: Maybe<RegExpMatchArray>,
                     lowerCase = false
                 ) {
                     if (!array) return;
