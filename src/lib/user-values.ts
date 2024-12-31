@@ -142,7 +142,7 @@ export interface UpdateConfig {
 export type PerfType = "default" | "saver" | "performance";
 
 /** 性能配置 */
-export const perfProfile = new UserKey<PerfType>("perfProfile", "performance", {
+export const perfProfile = new UserKey<PerfType>("perfProfile", "default", {
     setter() {
         setPerfAttr();
     },
