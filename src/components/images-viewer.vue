@@ -134,6 +134,7 @@ onMounted(() => {
 
     currImage.value?.addEventListener("load", function () {
         if (!currImage.value) return;
+        vliMode.value = false;
 
         (() => {
             if (currImage.value.naturalHeight < window.innerHeight &&
