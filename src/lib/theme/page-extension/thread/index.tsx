@@ -96,7 +96,7 @@ export default async function () {
         const forumIconLink = (thread.forum.components.iconContainer.children[0] as HTMLImageElement).src;  // 分辨率比从 PageData 中获取到的更高
 
         insertJSX(
-            <div id="title-wrapper" class="title-wrapper">
+            <div id="title-wrapper">
                 <h3 class="thread-title">{PageData.thread.title}</h3>
 
                 <UserButton class="forum-wrapper-button" noBorder>
