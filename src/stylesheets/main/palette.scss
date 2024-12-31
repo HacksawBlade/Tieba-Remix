@@ -1,48 +1,5 @@
-@use "sass:color";
-
-// 全局
-$defaultBack: var(--default-background);
-$defaultHover: var(--default-hover);
-$defaultActive: var(--default-active);
-$pageBack: var(--page-background);
-$transDefaultBack: var(--trans-default-background);
-$deepBack: var(--deep-background);
-$transDeepBack: var(--trans-deep-background);
-$lightBack: var(--light-background);
-$transLightBack: var(--trans-light-background);
-$minimalBack: var(--very-light-background);
-$elemColor: var(--elem-color);
-$defaultFore: var(--default-fore);
-$lightFore: var(--light-fore);
-$minimalFore: var(--minimal-fore);
-$highlightFore: var(--highlight-fore);
-$borderColor: var(--border-color);
-$lightBorderColor: var(--light-border-color);
-
-$tiebaThemeColor: var(--tieba-theme-color);
-$transTiebaThemeColor: var(--trans-tieba-theme-color);
-$tiebaThemeHover: var(--tieba-theme-hover);
-$tiebaThemeActive: var(--tieba-theme-active);
-$tiebaThemeBack: var(--tieba-theme-background);
-$tiebaThemeFore: var(--tieba-theme-fore);
-
-$levelGreenBack: var(--level-green-background);
-$levelGreenFore: var(--level-green-fore);
-$levelBlueBack: var(--level-blue-background);
-$levelBlueFore: var(--level-blue-fore);
-$levelYellowBack: var(--level-yellow-background);
-$levelYellowFore: var(--level-yellow-fore);
-$levelOrangeBack: var(--level-orange-background);
-$levelOrangeFore: var(--level-orange-fore);
-
-$check-color: color.adjust(green, $lightness: 10%);
-$error-color: color.adjust(red, $lightness: 16%);
-$warning-color: color.adjust(orange, $blackness: 10%);
-
-$iconMain: url("https://gitee.com/HacksawBlade/Tieba-Remix/raw/master/assets/images/main/icon.png");
-
 :root {
-    --img-tieba-icon: #{$iconMain};
+    --img-tieba-icon: url("https://gitee.com/HacksawBlade/Tieba-Remix/raw/master/assets/images/main/icon.png");
 }
 
 .dark-theme {
@@ -81,9 +38,9 @@ $iconMain: url("https://gitee.com/HacksawBlade/Tieba-Remix/raw/master/assets/ima
     --level-orange-background: rgb(204 122 0 / 10%);
     --level-orange-fore: rgb(255 170 0);
 
-    --check-color: color.adjust(green, $lightness: 10%);
-    --error-color: color.adjust(red, $lightness: 16%);
-    --warning-color: color.adjust(orange, $blackness: 10%);
+    --check-color: lawngreen;
+    --error-color: tomato;
+    --warning-color: orange;
 
     color-scheme: dark;
 }
@@ -124,9 +81,9 @@ $iconMain: url("https://gitee.com/HacksawBlade/Tieba-Remix/raw/master/assets/ima
     --level-orange-background: rgb(255 153 0 / 10%);
     --level-orange-fore: rgb(178 104 0);
 
-    --check-color: color.adjust(green, $lightness: 10%);
-    --error-color: color.adjust(red, $lightness: 16%);
-    --warning-color: color.adjust(orange, $blackness: 10%);
+    --check-color: green;
+    --error-color: darkred;
+    --warning-color: darkorange;
 
     color-scheme: "light";
 }
