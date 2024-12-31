@@ -162,3 +162,11 @@
 .blur-if-custom-background {
     @include blur-if-custom-background;
 }
+
+.blur-effect {
+    @include blur-effect;
+}
+
+.raster-effect {
+    @include raster-effect;
+}
