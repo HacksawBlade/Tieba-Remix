@@ -12,7 +12,7 @@ import { appendJSX, insertJSX } from "@/lib/render/jsx-extension";
 import { bindFloatMessage } from "@/lib/render/universal";
 import { floatBar } from "@/lib/tieba-components/float-bar";
 import { pager } from "@/lib/tieba-components/pager";
-import { compactLayout, pageExtension } from "@/lib/user-values";
+import { compactLayout, experimental, pageExtension, perfProfile } from "@/lib/user-values";
 import { waitUntil } from "@/lib/utils";
 import { find, forEach, some } from "lodash-es";
 import { VNode } from "vue";
@@ -79,6 +79,11 @@ export default async function () {
 
     const content = DOMS(true, ".content", "div");
     const pbContent = DOMS(true, "#pb_content", "div");
+
+    if (perfProfile.get() === "performance" && experimental.get().moreBlurEffect) {
+        pbContent.classList.add("blur-effect");
+        pbContent.style.backgroundColor = "var(--trans-default-background)";
+    }
 
     createContents();
     async function createContents() {
@@ -255,6 +260,7 @@ export default async function () {
                     }}
                     style={parseCSSRule({
                         width: "100%",
+                        padding: "0",
                         ...additionalStyles,
                     })}>
                     {{
@@ -267,7 +273,7 @@ export default async function () {
     insertPager(pbContent, pbContent.firstChild, {
         marginBottom: "24px",
         position: PageData.pager.total_page <= 1 ? "absolute" : "",
-        right: PageData.pager.total_page <= 1 ? "24px" : "",
+        right: PageData.pager.total_page <= 1 ? "48px" : "",
     });
 
     createTextbox();
@@ -289,7 +295,9 @@ export default async function () {
             paddingTop: "24px",
         });
         appendJSX(
-            <div id="thread-jsx-components">
+            <div id="thread-jsx-components" class={(perfProfile.get() === "performance" && experimental.get().moreBlurEffect) ? "blur-effect" : ""} style={(perfProfile.get() === "performance" && experimental.get().moreBlurEffect) ? parseCSSRule({
+                backgroundColor: "var(--trans-default-background)",
+            }) : ""}>
                 {/* @ts-ignore */}
                 <UserButton class="dummy-button" noBorder onClick={showEditor}>回复帖子</UserButton>
             </div>, content);
