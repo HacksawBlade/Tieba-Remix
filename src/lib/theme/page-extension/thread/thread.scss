@@ -1,6 +1,8 @@
 @use "@/stylesheets/main/animations" as *;
 @use "@/stylesheets/main/remixed-main" as *;
 
+$content-padding-x: 48px;
+$content-padding-y: 24px;
 $content-font-size: 16px;
 $avatar-size: 36px;
 $floor-padding: 8px;
@@ -42,7 +44,7 @@ body.special_conf_skin {
             position: relative;
             width: 100%;
             box-sizing: border-box;
-            padding: 24px;
+            padding: $content-padding-y $content-padding-x;
             border-radius: 6px 6px 0 0;
             border-top: 6px solid var(--tieba-theme-color);
             background-color: var(--default-background);
@@ -250,7 +252,7 @@ body.special_conf_skin {
     gap: 8px;
 
     .shrink-view & {
-        padding: 0 24px;
+        padding: 0 $content-padding-x;
     }
 
     .thread-title {
@@ -498,7 +500,7 @@ body.special_conf_skin {
     max-width: var(--content-max);
     box-sizing: border-box;
     flex-direction: column;
-    padding: 8px 24px 16px;
+    padding: 8px $content-padding-x 16px;
     background-color: var(--default-background);
     gap: 12px;
 
