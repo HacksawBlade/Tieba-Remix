@@ -153,8 +153,9 @@ body.special_conf_skin {
 
                 .BDE_Image {
                     display: flex;
-                    width: auto;
-                    max-height: 540px;
+                    width: max-content;
+                    max-width: 100%;
+                    height: auto;
                     border-radius: 12px;
                     margin: 6px auto;
                 }
