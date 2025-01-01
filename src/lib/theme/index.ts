@@ -7,33 +7,22 @@ import { customBackground, monospaceFonts, themeColor, userFonts, wideScreen } f
 import { waitUntil } from "../utils";
 import { hexToRGBA, rgbaToHSLA } from "../utils/color";
 
-import materialSymbolsCSS from "@/stylesheets/main/material-symbols.css?inline";
-import paletteCSS from "@/stylesheets/main/palette.scss?inline";
-import mainCSS from "@/stylesheets/main/remixed-main.scss?inline";
-import utilCSS from "@/stylesheets/main/util-classes.scss?inline";
-
-import errorCSS from "@/stylesheets/tieba/tieba-error.scss?inline";
-import forumCSS from "@/stylesheets/tieba/tieba-forum.scss?inline";
-import homeCSS from "@/stylesheets/tieba/tieba-home.scss?inline";
-import tiebaCSS from "@/stylesheets/tieba/tieba-main.scss?inline";
-import threadCSS from "@/stylesheets/tieba/tieba-thread.scss?inline";
-
-import themePlusCSS from "@/stylesheets/main/element-plus.scss?inline";
-import darkVarsCSS from "element-plus/theme-chalk/dark/css-vars.css?inline";
+import "@/stylesheets/main/element-plus.scss";
+import "@/stylesheets/main/material-symbols.css";
+import "@/stylesheets/main/palette.scss";
+import "@/stylesheets/main/remixed-main.scss";
+import "@/stylesheets/main/util-classes.scss";
+import "@/stylesheets/tieba/tieba-error.scss";
+import "@/stylesheets/tieba/tieba-home.scss";
+import "@/stylesheets/tieba/tieba-main.scss";
+import "@/stylesheets/tieba/tieba-thread.scss";
+import "element-plus/theme-chalk/dark/css-vars.css";
 
 export const darkPrefers = matchMedia("(prefers-color-scheme: dark)");
 
 const dynCSSRules = {
     customBackground: () => findIndex(Array.from(defaultStyle.sheet?.cssRules ?? { length: 0 }), rule => (rule as CSSStyleRule).selectorText === "body.custom-background"),
 };
-
-/** 需要第一时间加载以保证正常显示的样式 */
-export function loadBaseCSS() {
-    GM_addStyle(paletteCSS);
-    GM_addStyle(mainCSS);
-    GM_addStyle(utilCSS);
-    GM_addStyle(materialSymbolsCSS);
-}
 
 /** 动态样式 */
 export async function loadDynamicCSS() {
@@ -75,14 +64,9 @@ export async function loadDynamicCSS() {
 }
 
 export async function loadTiebaCSS() {
-    GM_addStyle(tiebaCSS);
-    GM_addStyle(homeCSS);
-    GM_addStyle(errorCSS);
-    GM_addStyle(threadCSS);
-
     switch (currentPageType()) {
         case "forum":
-            GM_addStyle(forumCSS);
+            import("@/stylesheets/tieba/tieba-forum.scss");
             break;
     }
 
@@ -91,11 +75,6 @@ export async function loadTiebaCSS() {
         rel: "shortcut icon",
         href: getResource("/assets/images/main/favicon32.ico"),
     }));
-}
-
-export async function loadExtensionCSS() {
-    GM_addStyle(themePlusCSS);
-    GM_addStyle(darkVarsCSS);
 }
 
 export async function setCustomBackground() {
