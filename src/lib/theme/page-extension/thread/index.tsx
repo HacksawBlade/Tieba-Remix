@@ -77,8 +77,10 @@ export default async function () {
         }), document.body.firstChild);
     });
 
-    const content = DOMS(true, ".content", "div");
-    const pbContent = DOMS(true, "#pb_content", "div");
+    const content = await waitUntil(() => DOMS(true, ".content") !== null)
+        .then(() => DOMS(true, ".content", "div"));
+    const pbContent = await waitUntil(() => DOMS(true, "#pb_content") !== null)
+        .then(() => DOMS(true, "#pb_content", "div"));
 
     if (perfProfile.get() === "performance" && experimental.get().moreBlurEffect) {
         pbContent.classList.add("blur-effect");
@@ -87,7 +89,7 @@ export default async function () {
 
     createContents();
     async function createContents() {
-        const threadList = (await waitUntil(() => DOMS("#j_p_postlist").length > 0).then(() => DOMS(true, "#j_p_postlist")));
+        const threadList = (await waitUntil(() => DOMS(true, "#j_p_postlist") !== null).then(() => DOMS(true, "#j_p_postlist")));
 
         threadList.classList.add("content-wrapper");
 
