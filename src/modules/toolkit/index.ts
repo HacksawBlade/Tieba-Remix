@@ -22,9 +22,9 @@ export default {
                 `该功能会自动将帖子中所有的长图片自动展开，无需手动操作`,
             widgets: [{
                 type: "toggle",
-                init: () => toolkitToogles.get().autoExpand,
+                init: () => toolkitToggles.get().autoExpand,
                 event() {
-                    toolkitToogles.merge({ autoExpand: !toolkitToogles.get().autoExpand });
+                    toolkitToggles.merge({ autoExpand: !toolkitToggles.get().autoExpand });
                 },
             }],
         },
@@ -34,9 +34,9 @@ export default {
             description: `原版贴吧的帖子页面时常会出现加载失败的头像，本功能可以将这些无法正常显示的头像资源链接到正常的 URL`,
             widgets: [{
                 type: "toggle",
-                init: () => toolkitToogles.get().reloadAvatars,
+                init: () => toolkitToggles.get().reloadAvatars,
                 event() {
-                    toolkitToogles.merge({ reloadAvatars: !toolkitToogles.get().reloadAvatars });
+                    toolkitToggles.merge({ reloadAvatars: !toolkitToggles.get().reloadAvatars });
                 },
             }],
         },
@@ -44,7 +44,7 @@ export default {
     entry: function () {
         for (const key in toolkitFeatures) {
             const k = key as keyof typeof toolkitFeatures;
-            if (toolkitToogles.get()[k]) toolkitFeatures[k]();
+            if (toolkitToggles.get()[k]) toolkitFeatures[k]();
         }
     },
 } as UserModuleEx;
@@ -88,9 +88,9 @@ const toolkitFeatures = {
     },
 };
 
-type ToolkitToogles = Record<keyof typeof toolkitFeatures, boolean>;
+type ToolkitToggles = Record<keyof typeof toolkitFeatures, boolean>;
 
-const toolkitToogles = new UserKey<ToolkitToogles>("toolkitToogles", {
+const toolkitToggles = new UserKey<ToolkitToggles>("toolkitToggles", {
     autoExpand: true,
     reloadAvatars: true,
 });
