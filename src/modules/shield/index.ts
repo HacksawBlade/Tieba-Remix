@@ -1,4 +1,4 @@
-import { UserModuleExtended } from "@/global.module";
+import { UserModuleEx } from "@/ex";
 import { DOMS } from "@/lib/elemental";
 import { TbObserver, forumThreadsObserver, legacyIndexFeedsObserver, threadCommentsObserver, threadFloorsObserver } from "@/lib/observers";
 import { join, map } from "lodash-es";
@@ -27,7 +27,7 @@ export default {
         },
     },
     entry: main,
-} as UserModuleExtended;
+} as UserModuleEx;
 
 /**
  * 匹配字符串是否和屏蔽对象规则符合

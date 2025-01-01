@@ -1,5 +1,5 @@
 import { SettingContent } from "@/components/settings.vue";
-import { UserModuleExtended } from "@/global.module";
+import { UserModuleEx } from "@/ex";
 import { tiebaAPI } from "@/lib/api/tieba";
 import { DOMS, findParent } from "@/lib/elemental";
 import { threadCommentsObserver, threadFloorsObserver } from "@/lib/observers";
@@ -47,7 +47,7 @@ export default {
             if (toolkitToogles.get()[k]) toolkitFeatures[k]();
         }
     },
-} as UserModuleExtended;
+} as UserModuleEx;
 
 const toolkitFeatures = {
     /** 自动展开长图 */
