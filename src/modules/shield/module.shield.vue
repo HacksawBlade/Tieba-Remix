@@ -6,7 +6,7 @@
                 <div class="icon">{{ sh.scope === "posts" ? "chat" : "account_circle" }}</div>
                 {{ sh.rule }}
             </UserButton>
-            <UserButton class="remove-all shield-elem icon" @click="removeAll">delete</UserButton>
+            <UserButton class="remove-all shield-elem icon" @click="removeAllWithConfirm">delete</UserButton>
         </div>
         <div v-else class="empty-list-container">当前没有记录屏蔽规则</div>
 
@@ -54,6 +54,12 @@ function inputKeyPress(e: KeyboardEvent) {
 function removeAll() {
     shieldListRef.value.length = 0;
     shieldList.remove();
+}
+
+function removeAllWithConfirm() {
+    if (confirm("确定要删除所有屏蔽规则吗？")) {
+        removeAll();
+    }
 }
 
 function updateShieldList() {
