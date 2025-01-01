@@ -306,6 +306,26 @@ $fold-bar-height: 3px;
         // height: $nav-fold-height;
         transform: translateY(calc(-1 * $nav-height + $nav-fold-height));
 
+        &::after {
+            position: absolute;
+            top: $nav-height;
+            width: 100%;
+            height: calc($nav-height - $nav-fold-height);
+            content: "";
+        }
+
+        &:hover {
+            transform: translateY(0);
+
+            #nav-container {
+                display: flex;
+            }
+
+            #fold-bar {
+                display: none;
+            }
+        }
+
         #fold-bar {
             position: absolute;
             bottom: calc(($nav-fold-height - $fold-bar-height) / 2);
@@ -318,19 +338,6 @@ $fold-bar-height: 3px;
 
         #nav-container {
             display: none;
-        }
-
-        &:hover {
-            // height: $nav-height;
-            transform: translateY(0);
-
-            #nav-container {
-                display: flex;
-            }
-
-            #fold-bar {
-                display: none;
-            }
         }
     }
 
