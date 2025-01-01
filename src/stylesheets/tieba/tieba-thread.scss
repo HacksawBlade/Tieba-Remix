@@ -318,16 +318,15 @@ span.tP {
     padding-left: unset;
 }
 
+/* 左侧用户信息 */
 .l_post_bright {
-    width: unset;
-    border-color: var(--border-color);
-    /* 左侧用户信息 */
-    background: none;
+    width: unset !important;
+    border-color: var(--border-color) !important;
+    background: none !important;
 }
 
 .p_author_face {
-    border: none;
-    /* 层主头像边框 */
+    border: none !important;
     background: none !important;
 }
 
