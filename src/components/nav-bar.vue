@@ -1,6 +1,6 @@
 <template>
     <nav ref="navBar" id="nav-bar" class="nav-bar remove-default"
-        :class="{ 'fold': hideMode === 'alwaysFold', 'blur-effect': !experimental.get().rasterEffect, 'raster-effect': experimental.get().rasterEffect }">
+        :class="{ 'fold': hideMode === 'alwaysFold', 'blur-effect': !experimental.get().rasterEffect, 'raster-effect': experimental.get().rasterEffect, 'fixed-on-top': hideMode === 'fixedOnTop' }">
         <div v-show="teiggerHide" id="fold-bar"></div>
 
         <div id="nav-container">
@@ -52,7 +52,7 @@ import Settings from "./settings.vue";
 import DropdownMenu from "./utils/dropdown-menu.vue";
 import UserButton from "./utils/user-button.vue";
 
-export type NavBarHideMode = "fold" | "alwaysFold" | "hideWhenScroll" | "never";
+export type NavBarHideMode = "fold" | "alwaysFold" | "hideWhenScroll" | "fixedOnTop" | "never";
 
 interface Props {
     hideMode?: NavBarHideMode
@@ -303,7 +303,6 @@ $fold-bar-height: 3px;
     @include main-box-shadow(0, 10px);
 
     &.fold {
-        // height: $nav-fold-height;
         transform: translateY(calc(-1 * $nav-height + $nav-fold-height));
 
         &::after {
@@ -345,6 +344,10 @@ $fold-bar-height: 3px;
         // height: 0;
         box-shadow: none !important;
         transform: translateY(-100%);
+    }
+
+    &.fixed-on-top {
+        position: absolute;
     }
 
     #nav-container {

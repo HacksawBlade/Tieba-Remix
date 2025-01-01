@@ -229,6 +229,7 @@ export const getUserSettings = once((): UserSettings => ({
                                 "滚动折叠": "fold",
                                 "始终折叠": "alwaysFold",
                                 "滚动隐藏": "hideWhenScroll",
+                                "顶部固定": "fixedOnTop",
                                 "始终显示": "never",
                             } as Record<string, NavBarHideMode>,
                             init() {
