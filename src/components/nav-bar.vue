@@ -76,7 +76,7 @@ init();
 onMounted(async function () {
     {
         waitUntil(() => userPortrait.value !== "").then(function () {
-            if (navAvatar.value !== undefined)
+            if (navAvatar.value)
                 navAvatar.value.src = tiebaAPI.URL_profile(userPortrait.value);
         });
     }

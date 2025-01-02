@@ -6,6 +6,7 @@ import { parseMultiCSS } from "@/lib/elemental/styles";
 import { renderPage } from "@/lib/render";
 import { pageExtension } from "@/lib/user-values";
 import { waitUntil } from "@/lib/utils";
+import { isNil } from "lodash-es";
 
 export default async function () {
     if (currentPageType() !== "index") return;
@@ -17,7 +18,7 @@ export default async function () {
         },
     }));
 
-    await waitUntil(() => DOMS(true, ".wrap1") !== null);
+    await waitUntil(() => !isNil(DOMS(true, ".wrap1")));
     renderPage(indexVue);
     DOMS(true, ".wrap1").remove();
     bodyMask.remove();

@@ -1,5 +1,5 @@
 import "element-plus/dist/index.css";
-import { throttle } from "lodash-es";
+import { isNil, throttle } from "lodash-es";
 import { checkUpdateAndNotify, currentPageType, setTheme } from "./lib/api/remixed";
 import { parseUserModules } from "./lib/common/packer";
 import { forumThreadsObserver, legacyIndexFeedsObserver, threadCommentsObserver, threadFloorsObserver } from "./lib/observers";
@@ -47,7 +47,7 @@ window.addEventListener("load", function () {
 });
 
 // 收缩视图检测
-waitUntil(() => document.body !== null).then(function () {
+waitUntil(() => !isNil(document.body)).then(function () {
     if (wideScreen.get().noLimit) {
         document.body.classList.add("shrink-view");
     } else {

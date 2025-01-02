@@ -14,7 +14,7 @@ import { floatBar } from "@/lib/tieba-components/float-bar";
 import { pager } from "@/lib/tieba-components/pager";
 import { compactLayout, experimental, pageExtension, perfProfile } from "@/lib/user-values";
 import { waitUntil } from "@/lib/utils";
-import { find, forEach, some } from "lodash-es";
+import { find, forEach, isNil, some } from "lodash-es";
 import { VNode } from "vue";
 import compactCSS from "./compact.scss?inline";
 import { threadParser } from "./parser";
@@ -27,14 +27,14 @@ export default async function () {
     injectCSSList(threadCSS);
     injectCSSList(compactCSS);
 
-    await waitUntil(() => document.body !== undefined).then(function () {
+    await waitUntil(() => !isNil(document.body)).then(function () {
         // document.body.insertBefore(mainWrapper, document.body.firstChild);
         if (compactLayout.get()) {
             document.body.toggleAttribute("compact-layout");
         }
     });
 
-    waitUntil(() => floatBar.get() !== undefined).then(function () {
+    waitUntil(() => !isNil(floatBar.get())).then(function () {
         floatBar.add("other", function () {
             renderDialog<TogglePanelProps>(TogglePanel, {
                 toggles: [
@@ -77,9 +77,9 @@ export default async function () {
         }), document.body.firstChild);
     });
 
-    const content = await waitUntil(() => DOMS(true, ".content") !== null)
-        .then(() => DOMS(true, ".content", "div"));
-    const pbContent = await waitUntil(() => DOMS(true, "#pb_content") !== null)
+    // const content = await waitUntil(() => !isNil(DOMS(true, ".content")))
+    //     .then(() => DOMS(true, ".content", "div"));
+    const pbContent = await waitUntil(() => !isNil(DOMS(true, "#pb_content")))
         .then(() => DOMS(true, "#pb_content", "div"));
 
     if (perfProfile.get() === "performance" && experimental.get().moreBlurEffect) {
@@ -89,7 +89,8 @@ export default async function () {
 
     createContents();
     async function createContents() {
-        const threadList = (await waitUntil(() => DOMS(true, "#j_p_postlist") !== null).then(() => DOMS(true, "#j_p_postlist")));
+        const threadList = await waitUntil(() => !isNil(DOMS(true, "#j_p_postlist")))
+            .then(() => DOMS(true, "#j_p_postlist"));
 
         threadList.classList.add("content-wrapper");
 
@@ -229,7 +230,7 @@ export default async function () {
             forEach(DOMS(".lzl_cnt"), el => {
                 forEach(el.childNodes, node => {
                     if (node)
-                        node.nodeType === 3 ? node.remove() : void 0;
+                        node.nodeType === 3 ? node.remove() : undefined;
                 });
             });
         });
@@ -280,8 +281,8 @@ export default async function () {
 
     createTextbox();
     async function createTextbox() {
-        await waitUntil(() => floatBar.get() !== undefined);
-        await waitUntil(() => DOMS("#ueditor_replace").length > 0);
+        await waitUntil(() => !isNil(floatBar.get()));
+        await waitUntil(() => !isNil(DOMS(true, "#ueditor_replace")));
 
         if (!some(floatBar.buttons(), { type: "post" })) {
             floatBar.add("post", showEditor, undefined, undefined, 2);
@@ -297,12 +298,10 @@ export default async function () {
             paddingTop: "24px",
         });
         appendJSX(
-            <div id="thread-jsx-components" class={(perfProfile.get() === "performance" && experimental.get().moreBlurEffect) ? "blur-effect" : ""} style={(perfProfile.get() === "performance" && experimental.get().moreBlurEffect) ? parseCSSRule({
-                backgroundColor: "var(--trans-default-background)",
-            }) : ""}>
+            <div id="thread-jsx-components">
                 {/* @ts-ignore */}
                 <UserButton class="dummy-button" noBorder onClick={showEditor}>回复帖子</UserButton>
-            </div>, content);
+            </div>, pbContent);
 
         function showEditor() {
             const ueditor = (function () {

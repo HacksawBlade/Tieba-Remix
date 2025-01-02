@@ -1,5 +1,5 @@
 import { GM_addStyle } from "$";
-import { findIndex, join } from "lodash-es";
+import { findIndex, isNil, join } from "lodash-es";
 import { currentPageType, getResource } from "../api/remixed";
 import { afterHead, templateCreate } from "../elemental";
 import { defaultStyle, injectCSSRule, parseMultiCSS, removeCSSRule } from "../elemental/styles";
@@ -89,7 +89,7 @@ export async function setCustomBackground() {
             backgroundSize: "cover !important",
         }) ?? -1;
 
-        waitUntil(() => document.body !== null).then(function () {
+        waitUntil(() => !isNil(document.body)).then(function () {
             if (customBackground.get()) {
                 document.body.classList.add("custom-background");
             } else {
