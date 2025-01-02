@@ -495,22 +495,18 @@ body.special_conf_skin {
 }
 
 #thread-jsx-components {
-    position: absolute;
     display: flex;
-    width: 100%;
-    max-width: var(--content-max);
     box-sizing: border-box;
     flex-direction: column;
-    padding: 8px $content-padding-x 16px;
-    background-color: var(--default-background);
     gap: 12px;
 
     .dummy-button {
         width: 100%;
-        padding: 6px 0 0;
+        padding: 8px 0 0;
         border: none;
         border-radius: 0;
         border-bottom: 3px solid var(--border-color);
+        margin-top: 8px;
         background-color: transparent;
         box-shadow: none;
         color: var(--minimal-fore);
