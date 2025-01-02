@@ -11,7 +11,7 @@ const scriptOptions: MonkeyOption = {
     userscript: {
         name: "Tieba Remix",
         namespace: "https://github.com/HacksawBlade/Tieba-Remix",
-        version: "0.4.4-beta",
+        version: "0.4.4-r1-beta",
         description: "贴吧网页端重塑",
         author: "锯条",
         license: "MIT",
