@@ -298,7 +298,7 @@ $fold-bar-height: 3px;
     justify-content: center;
     border-bottom: 1px solid var(--border-color);
     background-color: var(--trans-page-background);
-    transition: $default-animation-duration;
+    transition: all $default-animation-duration, width 0;
 
     @include main-box-shadow(0, 10px);
 
@@ -348,6 +348,10 @@ $fold-bar-height: 3px;
 
     &.fixed-on-top {
         position: absolute;
+    }
+
+    [no-scrollbar] & {
+        width: calc(100% - var(--scrollbar-width));
     }
 
     #nav-container {

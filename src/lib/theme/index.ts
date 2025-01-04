@@ -17,6 +17,7 @@ import "@/stylesheets/tieba/tieba-home.scss";
 import "@/stylesheets/tieba/tieba-main.scss";
 import "@/stylesheets/tieba/tieba-thread.scss";
 import "element-plus/theme-chalk/dark/css-vars.css";
+import { scrollbarWidth } from "../render";
 
 export const darkPrefers = matchMedia("(prefers-color-scheme: dark)");
 
@@ -39,6 +40,7 @@ export async function loadDynamicCSS() {
                 : `${wideScreen.get().maxWidth}px`,
             "--code-zh": `${join(userFonts.get(), ",")}`,
             "--code-monospace": `${join(monospaceFonts.get(), ",")}`,
+            "--scrollbar-width": `${scrollbarWidth()}px`,
         },
 
         "html.dark-theme": {

@@ -1,8 +1,13 @@
+@use "@/stylesheets/main/animations" as *;
 @use "@/stylesheets/main/remixed-main" as *;
 
+$float-bar-width: 40px;
+$float-bar-layout-margin: 20px;
+$float-bar-default-left: calc(50% + var(--content-max) / 2 + $float-bar-layout-margin);
+
 .tbui_aside_float_bar {
-    bottom: 20px;
-    left: calc(50% + var(--content-max) / 2 + 20px);
+    bottom: $float-bar-layout-margin;
+    left: $float-bar-default-left;
     display: flex;
     overflow: hidden;
     width: max-content;
@@ -14,16 +19,20 @@
 
     @include main-box-shadow;
 
+    [no-scrollbar] & {
+        left: calc($float-bar-default-left - var(--scrollbar-width) / 2);
+    }
+
     .shrink-view & {
         bottom: 0;
-        left: calc(100% - 40px);
+        left: calc(100% - $float-bar-width);
     }
 
     .tbui_aside_fbar_button {
         border-radius: 0;
         margin: 0 !important;
         background-color: var(--default-background);
-        transition: 0.4s;
+        transition: $default-animation-duration;
 
         a {
             border-radius: 0;
