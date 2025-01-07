@@ -14,7 +14,7 @@ export function renderJSX<T extends Element>(jsxel: JSX.Element, parent: Element
     return { el: parent.firstChild as T, vnode: vnode };
 }
 
-export function insertJSX<T extends Element>(jsxel: JSX.Element, parent: Element, position: Maybe<Node>) {
+export function insertJSX<T extends Element>(jsxel: JSX.Element, parent: Element, position?: Node) {
     const tempContainer = templateCreate("div");
     const vnode = renderJSX<T>(jsxel, parent.appendChild(tempContainer));
     forEach(tempContainer.children, el => {
