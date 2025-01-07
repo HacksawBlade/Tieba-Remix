@@ -60,6 +60,26 @@ $xslow-animation-duration: 0.6s;
     }
 }
 
+@keyframes kf-dialog-out {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.2);
+    }
+}
+
+@mixin dialog-in($time: $default-animation-duration) {
+    animation: kf-dialog-in $time;
+}
+
+@mixin dialog-out($time: $default-animation-duration) {
+    animation: kf-dialog-out $time;
+}
+
 @keyframes kf-zoom-in {
     0% {
         transform: scale(0.72);
