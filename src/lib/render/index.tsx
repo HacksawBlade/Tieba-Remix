@@ -1,15 +1,11 @@
+import CommonDialog, { CommonDialogOpts } from "@/components/common-dialog.vue";
 import { SupportedComponent } from "@/ex";
 import { DOMS, templateCreate } from "@/lib/elemental";
 import { assignCSSRule, injectCSSRule } from "@/lib/elemental/styles";
 import { Queue } from "@/lib/utils/queue";
 import { forEach, includes, isNil, once } from "lodash-es";
-import { App, Component, ComponentPublicInstance, createApp } from "vue";
+import { App, Component, ComponentPublicInstance, createApp, h } from "vue";
 import { experimental, perfProfile } from "../user-values";
-
-/** dialog 组件实例 */
-export let publicDialogInstance: App<Element>;
-
-const dialogQueue = new Queue<[Component, LiteralObject?, LiteralObject?]>();
 
 export interface RenderedComponent<T extends Element = Element> {
     app: App<T>;
@@ -263,6 +259,19 @@ export function unloadDialog() {
             _renderDialog(...nextDialog.params, nextDialog.requestTime);
         }
     }
+}
+
+/**
+ * 渲染标准通用对话框
+ * @param content 对话框内组件
+ * @param dialogOpts 对话框选项
+ * @returns 对话框组件实例
+ */
+export function commonDialog(
+    content: SupportedComponent,
+    dialogOpts?: CommonDialogOpts,
+) {
+    return renderDialog(<CommonDialog>{h(content)}</CommonDialog>, undefined, dialogOpts);
 }
 
 export function removeDefault() {
