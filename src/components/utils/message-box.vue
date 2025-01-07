@@ -1,134 +1,101 @@
 <template>
-    <div class="message-box remove-default">
+    <CommonDialog v-bind="dialogOpts">
         <div ref="messageWrapper" class="message-wrapper">
-            <div v-if="props.title" class="title">{{ props.title }}</div>
-            <div ref="messageContent" v-if="props.message" class="message markdown">{{ props.message }}</div>
+            <template v-if="content">
+                <div ref="messageContent" v-if="typeof content === 'string'" class="message markdown">
+                    {{ content }}
+                </div>
+                <component v-else :is="content"></component>
+            </template>
             <slot></slot>
         </div>
-
-        <div v-if="!props.buttons || props.buttons.length === 0" class="message-controls">
-            <UserButton class="message-button" :shadow-border="true" :theme-style="true" @click="emitAndClose('positive')">
-                确定</UserButton>
-
-            <UserButton v-if="props.type === 'OkCancel'" class="message-button" :shadow-border="true"
-                @click="emitAndClose('cancel')">取消</UserButton>
-
-            <UserButton v-if="props.type === 'forceTrueFalse'" class="message-button" :shadow-border="true"
-                @click="emitAndClose('cancel')">拒绝</UserButton>
-        </div>
-
-        <div v-else class="message-controls">
-            <UserButton v-for="(button, index) in props.buttons" class="message-button" shadow-border
-                :theme-style="index == 0" @click="defaultClose(button.event)">
-                {{ button.title }}</UserButton>
-        </div>
-    </div>
+    </CommonDialog>
 </template>
 
-<script setup lang="ts">
+<script setup lang="tsx">
+import { SupportedComponent } from "@/ex";
 import { unloadDialog } from "@/lib/render";
-import { setMessageInbox } from "@/lib/render/message-box";
-import { onMounted, ref } from "vue";
-import UserButton from "./user-button.vue";
+import CommonDialog, { CommonDialogButton, CommonDialogOpts } from "../common-dialog.vue";
 
-export type MessageBoxType = "basic" | "OkCancel" | "forceTrueFalse";
-export type MessageBoxEvents = Parameters<typeof emit>[0];
+export type MessageBoxType = "default" | "okCancel" | "forceTrueFalse";
+export type MessageBoxResponse = "positive" | "negative" | "cancel";
 
-export interface MessageBoxProps {
-    title?: string
-    message?: string
-    type?: MessageBoxType
-    embedded?: true
-    buttons?: SimpleButton[]
+export interface MessageBoxOpts {
+    title?: string;
+    content?: string | SupportedComponent;
+    type?: MessageBoxType;
 }
-const props = withDefaults(defineProps<MessageBoxProps>(), {
-    type: "basic",
+
+export interface MessageBoxButton extends CommonDialogButton {
+    response: MessageBoxResponse;
+}
+
+const props = withDefaults(defineProps<MessageBoxOpts>(), {
+    type: "default",
 });
 
-const messageWrapper = ref<HTMLDivElement>();
-const messageContent = ref<HTMLDivElement>();
+const emit = defineEmits<{ (e: MessageBoxResponse, response: MessageBoxResponse): void }>();
 
-const emit = defineEmits(["positive", "cancel", "negative"]);
+const positiveButton: MessageBoxButton = {
+    response: "positive",
+    text: "确定",
+    event: () => emitAndClose("positive"),
+    style: "themed",
+};
+const negativeButton: MessageBoxButton = {
+    response: "cancel",
+    text: "取消",
+    event: () => emitAndClose("cancel"),
+};
+const forceTrueButton: MessageBoxButton = {
+    response: "positive",
+    text: "接受",
+    event: () => emitAndClose("positive"),
+};
+const forceFalseButton: MessageBoxButton = {
+    response: "negative",
+    text: "拒绝",
+    event: () => emitAndClose("negative"),
+};
 
-onMounted(function () {
-    if (props.embedded) {
-        if (messageContent.value) {
-            if (props.message) {
-                messageContent.value.innerHTML = props.message;
-            }
+const dialogOpts: CommonDialogOpts = {
+    animation: true,
+    lockScroll: true,
+    modal: true,
+    title: props.title,
+    force: props.type === "forceTrueFalse",
+    dialogButtons: ((): CommonDialogButton[] => {
+        switch (props.type) {
+            case "default":
+                return [positiveButton];
+            case "okCancel":
+                return [positiveButton, negativeButton];
+            case "forceTrueFalse":
+                return [forceTrueButton, forceFalseButton];
         }
-    }
-});
+    })(),
+};
 
-// const emitter = (() => {
-//     const cache = getPublicLib<Emitter<Record<EventType, unknown>>>("messageBoxEmitter");
-//     if (cache) {
-//         return cache;
-//     } else {
-//         const _emitter = mitt();
-//         setPublicLib("messageBoxEmitter", _emitter);
-//         return _emitter;
-//     }
-// })();
+let response: MessageBoxResponse = "positive";
 
-function defaultClose(event: (() => void)) {
-    event();
-    emitAndClose("positive");
-}
-
-function emitAndClose(emitName: MessageBoxEvents) {
-    emit(emitName, emitName);
-    setMessageInbox(emitName);
+function emitAndClose(res: MessageBoxResponse) {
+    emit(res, res);
+    response = res;
     unloadDialog();
 }
+
+defineExpose({
+    dialogOpts,
+    response,
+});
 </script>
 
 <style scoped lang="scss">
 @use "@/stylesheets/main/remixed-main" as *;
 
-.message-box {
+.message-wrapper {
     display: flex;
-    overflow: hidden;
-    max-width: 60vw;
-    max-height: 80vh;
-    box-sizing: border-box;
+    overflow: hidden auto;
     flex-direction: column;
-    border: 1px solid var(--light-border-color);
-    border-radius: 16px;
-    margin: auto;
-    animation: kf-dialog-in 0.4s ease;
-    background-color: var(--default-background);
-    box-shadow: 0 0 20px rgb(0 0 0 / 30%);
-    font-size: 16px;
-    transition: 0.4s ease;
-
-    .message-wrapper {
-        display: flex;
-        overflow: hidden auto;
-        flex-direction: column;
-        padding: 16px;
-        // gap: 8px;
-
-        .title {
-            margin-bottom: 8px;
-            color: var(--highlight-fore);
-            font-size: 20px;
-            font-weight: bold;
-        }
-    }
-
-    .message-controls {
-        display: flex;
-        padding: 16px;
-        margin-top: auto;
-        background-color: var(--deep-background);
-        gap: 8px;
-
-        .message-button {
-            flex-grow: 1;
-            padding: 6px 16px;
-            font-size: 14px;
-        }
-    }
 }
 </style>

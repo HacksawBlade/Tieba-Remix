@@ -1,53 +1,23 @@
-import { DialogWrapperProps } from "@/components/utils/dialog-wrapper.vue";
-import messageBoxVue, { MessageBoxEvents, MessageBoxProps } from "@/components/utils/message-box.vue";
-import { renderDialog } from ".";
-
-let messageInbox: MessageBoxEvents | undefined;
+import MessageBox, { MessageBoxOpts, MessageBoxResponse } from "@/components/utils/message-box.vue";
+import { DialogBeforeUnloadEvent, DialogEvents, renderDialog } from ".";
 
 /**
- * 展示消息对话框
- * @param messageBoxProps 消息对话框的配置
- * @returns 对话框被关闭时的用户操作
+ * 渲染标准消息对话框
+ * @param opts 消息对话框的配置
+ * @returns 用户操作的消息类型
  */
-export function messageBox(messageBoxProps: MessageBoxProps): Promise<MessageBoxEvents> {
-    renderDialog<MessageBoxProps, DialogWrapperProps>(messageBoxVue, {
-        message: messageBoxProps.message,
-        title: messageBoxProps.title,
-        type: messageBoxProps.type,
-        embedded: messageBoxProps.embedded,
-        buttons: messageBoxProps.buttons,
-    }, {
-        forced: messageBoxProps.type === "forceTrueFalse",
-    });
-
-    // 监听被创建的 App的 emit事件
-    // const emitter = getPublicLib<Emitter<Record<EventType, MessageBoxEvents>>>("messageBoxEmitter");
-    // return new Promise((resolve) => {
-    //     emitter?.on("*", (tagOfEvent: MessageBoxEvents) => {
-    //         if (callbackfn) callbackfn(tagOfEvent);
-    //         alert(tagOfEvent);
-    //         emitter.off("*");
-    //         resolve(tagOfEvent);
-    //     });
-    // });
-
+export async function messageBox(opts: MessageBoxOpts) {
+    const instance = await renderDialog(<MessageBox {...opts} />);
+    console.log(instance);
     return new Promise((resolve) => {
-        const interval = setInterval(() => {
-            const inbox = getMessageInbox();
-            if (inbox) {
-                clearInterval(interval);
-                resolve(inbox);
-            }
-        }, 10);
+        window.addEventListener(DialogEvents.BeforeUnload, handler);
+
+        function handler(e: DialogBeforeUnloadEvent) {
+            if (e.detail.renderedDialog.renderTime !== instance.renderTime) return;
+
+            const response: MessageBoxResponse =
+                (e.detail.renderedDialog.instance as InstanceType<typeof MessageBox>).response;
+            resolve(response);
+        }
     });
-}
-
-export function getMessageInbox() {
-    const inbox = messageInbox;
-    messageInbox = undefined;
-    return inbox;
-}
-
-export function setMessageInbox(value: MessageBoxEvents) {
-    messageInbox = value;
 }
