@@ -1,5 +1,5 @@
 <template>
-    <CommonDialog v-bind="dialogOpts">
+    <UserDialog ref="dialog" v-bind="dialogOpts" @unload="unloadHandler('cancel')">
         <div ref="messageWrapper" class="message-wrapper">
             <template v-if="content">
                 <div ref="messageContent" v-if="typeof content === 'string'" class="message markdown">
@@ -9,15 +9,15 @@
             </template>
             <slot></slot>
         </div>
-    </CommonDialog>
+    </UserDialog>
 </template>
 
 <script setup lang="tsx">
 import { SupportedComponent } from "@/ex";
-import { unloadDialog } from "@/lib/render";
-import CommonDialog, { CommonDialogButton, CommonDialogOpts } from "../common-dialog.vue";
+import { ref } from "vue";
+import UserDialog, { UserDialogButton, UserDialogOpts } from "../user-dialog.vue";
 
-export type MessageBoxType = "default" | "okCancel" | "forceTrueFalse";
+export type MessageBoxType = "okOnly" | "okCancel" | "forceTrueFalse";
 export type MessageBoxResponse = "positive" | "negative" | "cancel";
 
 export interface MessageBoxOpts {
@@ -26,47 +26,49 @@ export interface MessageBoxOpts {
     type?: MessageBoxType;
 }
 
-export interface MessageBoxButton extends CommonDialogButton {
+export interface MessageBoxButton extends UserDialogButton {
     response: MessageBoxResponse;
 }
 
 const props = withDefaults(defineProps<MessageBoxOpts>(), {
-    type: "default",
+    type: "okOnly",
 });
-
-const emit = defineEmits<{ (e: MessageBoxResponse, response: MessageBoxResponse): void }>();
 
 const positiveButton: MessageBoxButton = {
     response: "positive",
     text: "确定",
-    event: () => emitAndClose("positive"),
+    event: () => unloadHandler("positive"),
     style: "themed",
 };
 const negativeButton: MessageBoxButton = {
     response: "cancel",
     text: "取消",
-    event: () => emitAndClose("cancel"),
+    event: () => unloadHandler("cancel"),
 };
 const forceTrueButton: MessageBoxButton = {
     response: "positive",
     text: "接受",
-    event: () => emitAndClose("positive"),
+    event: () => unloadHandler("positive"),
+    style: "themed",
 };
 const forceFalseButton: MessageBoxButton = {
     response: "negative",
     text: "拒绝",
-    event: () => emitAndClose("negative"),
+    event: () => unloadHandler("negative"),
 };
 
-const dialogOpts: CommonDialogOpts = {
+const dialog = ref<InstanceType<typeof UserDialog>>();
+const response = ref<MessageBoxResponse>("cancel");
+
+const dialogOpts: UserDialogOpts = {
     animation: true,
     lockScroll: true,
     modal: true,
     title: props.title,
     force: props.type === "forceTrueFalse",
-    dialogButtons: ((): CommonDialogButton[] => {
+    dialogButtons: ((): UserDialogButton[] => {
         switch (props.type) {
-            case "default":
+            case "okOnly":
                 return [positiveButton];
             case "okCancel":
                 return [positiveButton, negativeButton];
@@ -74,18 +76,16 @@ const dialogOpts: CommonDialogOpts = {
                 return [forceTrueButton, forceFalseButton];
         }
     })(),
+    unloadPayload: [response.value],
 };
 
-let response: MessageBoxResponse = "positive";
-
-function emitAndClose(res: MessageBoxResponse) {
-    emit(res, res);
-    response = res;
-    unloadDialog();
+function unloadHandler(_response: MessageBoxResponse, event?: (() => void)) {
+    response.value = _response;
+    event?.();
+    dialog.value?.unload(_response);
 }
 
 defineExpose({
-    dialogOpts,
     response,
 });
 </script>

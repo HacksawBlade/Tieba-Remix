@@ -1,96 +1,100 @@
 <template>
-    <div class="settings-wrapper remove-default">
-        <div class="left-container">
-            <div class="search-controls">
-                <div class="title">设置</div>
+    <UserDialog v-bind="dialogOpts">
+        <div class="settings-wrapper remove-default">
+            <div class="left-container">
+                <div class="search-controls">
+                    <div class="title">设置</div>
 
-                <!-- 搜索文本框 -->
-                <UserTextbox v-model="searchText" class="search-box" placeholder="输入需要搜索的设置"
-                    @update:model-value="debSearchKey"></UserTextbox>
-            </div>
-
-            <div class="left-panel">
-                <UserButton v-for="setting in userSettings" class="key-button main-key"
-                    :class="{ 'selected': selectedKey?.name === setting.name }" @click="selectMainKey(setting)"
-                    no-border="all">
-                    <div class="icon">{{ setting.icon }}</div>
-
-                    <div class="key-info">
-                        <div class="key-title">{{ setting.name }}</div>
-                        <div class="key-desc">{{ setting.description }}</div>
-                    </div>
-                </UserButton>
-            </div>
-        </div>
-
-        <div class="middle-container">
-            <UserButton v-for="setting in selectedKey?.sub" class="key-button sub-key"
-                :class="{ 'selected': selectedSubKey?.name === setting.name }" @click="selectSubKey(setting)"
-                no-border="all">
-                <div class="key-title">{{ setting.name }}</div>
-            </UserButton>
-        </div>
-
-        <div v-if="selectedSubKey?.name" class="right-container">
-            <div v-if="selectedSubKey?.name" v-for="content in selectedSubKey.content" class="setting-content">
-                <div v-if="content?.title" class="content-title">{{ content?.title }}</div>
-                <div v-if="content?.description" class="content-desc">
-                    <div v-if="content?.description" v-for="line in content.description.split('\n')" class="line">
-                        {{ line }}
-                    </div>
+                    <!-- 搜索文本框 -->
+                    <UserTextbox v-model="searchText" class="search-box" placeholder="输入需要搜索的设置"
+                        @update:model-value="debSearchKey"></UserTextbox>
                 </div>
 
-                <div v-if="content?.widgets" v-for="widget in content.widgets" class="setting-control">
-                    <!-- Toggle -->
-                    <ToggleButton v-if="widget.type === 'toggle'" class="settings-toggle-button icon"
-                        :model-value="widget.init ? widget.init() : undefined" @click="widget.event" icon-type
+                <div class="left-panel">
+                    <UserButton v-for="setting in userSettings" class="key-button main-key"
+                        :class="{ 'selected': selectedKey?.name === setting.name }" @click="selectMainKey(setting)"
                         no-border="all">
-                    </ToggleButton>
+                        <div class="main-key-selected"></div>
+                        <div class="icon">{{ setting.icon }}</div>
 
-                    <!-- Icon -->
-                    <div v-if="widget.type === 'icon'" class="icon-component icon">{{ widget.content }}
-                    </div>
+                        <div class="key-info">
+                            <div class="key-title">{{ setting.name }}</div>
+                            <div class="key-desc">{{ setting.description }}</div>
+                        </div>
+                    </UserButton>
+                </div>
+            </div>
 
-                    <!-- Button -->
-                    <UserButton v-if="widget.type === 'button'" @click="widget.event" shadow-border>
-                        {{ widget.content }}</UserButton>
+            <div class="middle-container">
+                <UserButton v-for="setting in selectedKey?.sub" class="key-button sub-key"
+                    :class="{ 'selected': selectedSubKey?.name === setting.name }" @click="selectSubKey(setting)"
+                    no-border="all">
+                    <div class="key-title">{{ setting.name }}</div>
+                </UserButton>
+            </div>
 
-                    <!-- Select -->
-                    <select v-if="widget.type === 'select' && isLiteralObject(widget.content)" @change="widget.event">
-                        <option v-for="(value, key) in widget.content" :value="value"
-                            :selected="widget.init && value === widget.init()">
-                            {{ key }}</option>
-                    </select>
-
-                    <!-- SubTitle -->
-                    <div v-if="widget.type === 'subTitle'" class="content-sub-title">{{ widget.content }}</div>
-
-                    <!-- Description -->
-                    <div v-if="widget.type === 'desc'" class="content-desc">
-                        <div v-if="widget.content" v-for="line in widget.content.split('\n')" class="line">
+            <div v-if="selectedSubKey?.name" class="right-container">
+                <div v-if="selectedSubKey?.name" v-for="content in selectedSubKey.content" class="setting-content">
+                    <div v-if="content?.title" class="content-title">{{ content?.title }}</div>
+                    <div v-if="content?.description" class="content-desc">
+                        <div v-if="content?.description" v-for="line in content.description.split('\n')" class="line">
                             {{ line }}
                         </div>
                     </div>
 
-                    <!-- Textbox & TextArea -->
-                    <UserTextbox v-if="includes(['textbox', 'textarea'], widget.type)" class="content-textbox"
-                        :class="{ 'textarea': widget.type === 'textarea' }" :value="widget.init ? widget.init() : ''"
-                        :muti-lines="widget.type === 'textarea'" :placeholder="widget.placeHolder"
-                        @change="widget.event">
-                    </UserTextbox>
+                    <div v-if="content?.widgets" v-for="widget in content.widgets" class="setting-control">
+                        <!-- Toggle -->
+                        <ToggleButton v-if="widget.type === 'toggle'" class="settings-toggle-button icon"
+                            :model-value="widget.init ? widget.init() : undefined" @click="widget.event" icon-type
+                            no-border="all">
+                        </ToggleButton>
 
-                    <!-- Image -->
-                    <img v-if="widget.type === 'image'" class="content-image" :src="widget.content?.toString()"
-                        :alt="widget.altContent" :title="widget.altContent" @load="widget.init">
+                        <!-- Icon -->
+                        <div v-if="widget.type === 'icon'" class="icon-component icon">{{ widget.content }}
+                        </div>
 
-                    <!-- Component -->
-                    <component v-if="widget.component" :is="widget?.component" @change-view="changeView">
-                    </component>
+                        <!-- Button -->
+                        <UserButton v-if="widget.type === 'button'" @click="widget.event" shadow-border>
+                            {{ widget.content }}</UserButton>
+
+                        <!-- Select -->
+                        <select v-if="widget.type === 'select' && isLiteralObject(widget.content)"
+                            @change="widget.event">
+                            <option v-for="(value, key) in widget.content" :value="value"
+                                :selected="widget.init && value === widget.init()">
+                                {{ key }}</option>
+                        </select>
+
+                        <!-- SubTitle -->
+                        <div v-if="widget.type === 'subTitle'" class="content-sub-title">{{ widget.content }}</div>
+
+                        <!-- Description -->
+                        <div v-if="widget.type === 'desc'" class="content-desc">
+                            <div v-if="widget.content" v-for="line in widget.content.split('\n')" class="line">
+                                {{ line }}
+                            </div>
+                        </div>
+
+                        <!-- Textbox & TextArea -->
+                        <UserTextbox v-if="includes(['textbox', 'textarea'], widget.type)" class="content-textbox"
+                            :class="{ 'textarea': widget.type === 'textarea' }"
+                            :value="widget.init ? widget.init() : ''" :muti-lines="widget.type === 'textarea'"
+                            :placeholder="widget.placeHolder" @change="widget.event">
+                        </UserTextbox>
+
+                        <!-- Image -->
+                        <img v-if="widget.type === 'image'" class="content-image" :src="widget.content?.toString()"
+                            :alt="widget.altContent" :title="widget.altContent" @load="widget.init">
+
+                        <!-- Component -->
+                        <component v-if="widget.component" :is="widget?.component" @change-view="changeView">
+                        </component>
+                    </div>
                 </div>
             </div>
+            <div v-else class="empty-container filled-icon">settings</div>
         </div>
-        <div v-else class="empty-container filled-icon">settings</div>
-    </div>
+    </UserDialog>
 </template>
 
 <script lang="tsx" setup>
@@ -100,47 +104,65 @@ import { debounce, find, includes } from "lodash-es";
 import type { Component, VNode } from "vue";
 import { ref } from "vue";
 import { JSX } from "vue/jsx-runtime";
+import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
 import ToggleButton from "./utils/toggle-button.vue";
 import UserButton from "./utils/user-button.vue";
 import UserTextbox from "./utils/user-textbox.vue";
 
 export interface UserSettings {
-    [props: string]: MainSettingKey
+    [props: string]: MainSettingKey;
 }
 
 export interface SettingKey {
-    name: string
-    icon?: string
-    description?: string
+    name: string;
+    icon?: string;
+    description?: string;
 }
 
 export interface MainSettingKey extends SettingKey {
     sub: {
-        [props: string]: SubSettingKey
+        [props: string]: SubSettingKey;
     }
 }
 
 export interface SubSettingKey extends SettingKey {
     content: {
-        [props: string]: SettingContent | undefined
+        [props: string]: SettingContent | undefined;
     }
 }
 
 export interface SettingContent {
-    title?: string
-    description?: string
+    title?: string;
+    description?: string;
     widgets?: {
-        type: "toggle" | "icon" | "button" | "select" | "subTitle" | "desc" | "textbox" | "textarea" | "image" | "component"
-        init?: (() => any)
-        event?: ((e: Event) => any)
-        content?: string | LiteralObject
-        component?: Component | VNode | JSX.Element
-        placeHolder?: string
-        altContent?: string
+        type: "toggle" | "icon" | "button" | "select" | "subTitle" | "desc" | "textbox" | "textarea" | "image" | "component";
+        init?: (() => any);
+        event?: ((e: Event) => any);
+        content?: string | LiteralObject;
+        component?: Component | VNode | JSX.Element;
+        placeHolder?: string;
+        altContent?: string;
     }[]
 }
 
 const userSettings = getUserSettings();
+
+const dialogOpts: UserDialogOpts = {
+    animation: true,
+    modal: true,
+    lockScroll: true,
+    modalStyle: {
+        justifyContent: "flex-start",
+    },
+    contentStyle: {
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        height: "max-content",
+        maxWidth: "var(--content-max)",
+        overflow: "hidden",
+    },
+};
 
 const searchText = ref("");
 const selectedKey = ref<MainSettingKey>();
@@ -186,9 +208,14 @@ function searchKey() {
 }
 
 const debSearchKey = debounce(searchKey, 500);
+
+defineExpose({
+    dialogOpts,
+});
 </script>
 
 <style lang="scss" scoped>
+@use "@/stylesheets/main/animations" as *;
 @use "@/stylesheets/main/remixed-main" as *;
 
 $wrapper-padding: 16px;
@@ -207,20 +234,22 @@ $wrapper-padding: 16px;
 .key-button {
     display: flex;
     overflow: hidden;
-    min-width: 80px;
+    min-width: 120px;
     align-items: center;
-    padding: 12px $wrapper-padding;
+    padding: 12px;
     border-radius: 0;
-    box-shadow: none;
     font-size: 16px;
     gap: 12px;
     text-align: justify;
+    transition: $default-animation-duration;
     white-space: nowrap;
 
     .icon {
         font-size: 20px;
         font-variation-settings: "FILL" 0, "wght" 300;
-        transition: font-variation-settings 0.2s ease;
+        transition:
+            all $default-animation-duration,
+            margin-left $fast-animation-duration ease-out;
     }
 
     .key-info {
@@ -240,18 +269,51 @@ $wrapper-padding: 16px;
         font-size: 14px;
     }
 
-    &.selected {
-        background-color: var(--tieba-theme-color) !important;
-        color: var(--default-background) !important;
-        font-weight: bold;
+    &.main-key {
+        box-sizing: content-box;
 
-        .icon {
-            font-variation-settings: "FILL" 1, "GRAD" 48, "wght" 300;
-            font-weight: normal;
+        .main-key-selected {
+            position: relative;
+            width: 0;
+            height: 100%;
+            margin-left: -12px;
+
+            &::after {
+                position: absolute;
+                top: 0;
+                width: 0;
+                height: 100%;
+                background-color: var(--tieba-theme-color);
+                content: "";
+            }
         }
 
-        .key-desc {
-            color: var(--default-background);
+        &.selected {
+            color: var(--tieba-theme-fore) !important;
+
+            .main-key-selected::after {
+                width: 4px;
+            }
+
+            .icon {
+                margin-left: 4px;
+                font-variation-settings: "FILL" 1, "GRAD" 48, "wght" 300;
+                font-weight: normal;
+            }
+
+            .key-desc {
+                color: var(--tieba-theme-color);
+            }
+        }
+    }
+
+    &.sub-key {
+        text-decoration: none;
+        transition: $default-animation-duration;
+
+        &.selected {
+            color: var(--tieba-theme-fore);
+            text-decoration: underline var(--tieba-theme-color) 2px;
         }
     }
 }
@@ -259,17 +321,10 @@ $wrapper-padding: 16px;
 .settings-wrapper {
     display: flex;
     overflow: hidden;
-    width: 72%;
-    min-width: 720px;
-    height: 72%;
-    min-height: 400px;
+    width: 100%;
+    max-width: var(--content-max);
+    height: 100%;
     box-sizing: border-box;
-    border: 1px solid var(--light-border-color);
-    border-radius: 18px;
-    margin: auto;
-    animation: kf-dialog-in 0.4s ease;
-    background-color: var(--default-background);
-    box-shadow: 0 0 24px rgb(0 0 0 / 20%);
 
     .left-container {
         display: flex;
@@ -280,7 +335,7 @@ $wrapper-padding: 16px;
         .search-controls {
             display: flex;
             flex-direction: column;
-            padding: $wrapper-padding;
+            padding: 0 $wrapper-padding $wrapper-padding 0;
             gap: 8px;
 
             .title {
@@ -310,7 +365,8 @@ $wrapper-padding: 16px;
         max-width: 220px;
         flex-direction: column;
         padding: $wrapper-padding 6px;
-        background-color: var(--deep-background);
+        border-right: 2px solid var(--light-border-color);
+        border-left: 2px solid var(--light-border-color);
         gap: 6px;
 
         .sub-key {

@@ -1,5 +1,5 @@
 import Pager from "@/components/pager.vue";
-import ThreadEditor, { ThreadEditorProps } from "@/components/thread-editor.vue";
+import ThreadEditor from "@/components/thread-editor.vue";
 import TogglePanel, { TogglePanelProps } from "@/components/toggle-panel.vue";
 import UserButton from "@/components/utils/user-button.vue";
 import { currentPageType } from "@/lib/api/remixed";
@@ -309,10 +309,7 @@ export default async function () {
                     return DOMS(true, ".edui-container");
                 return DOMS(true, "#ueditor_replace");
             })();
-            renderDialog<ThreadEditorProps>(ThreadEditor, {
-                ueditor: ueditor,
-                type: "reply",
-            }, { forced: true, blurEffect: false, darker: true });
+            renderDialog(<ThreadEditor ueditor={ueditor} type={"reply"} />);
         }
     }
 }

@@ -1,65 +1,69 @@
 <template>
-    <div ref="imageViewer" class="images-viewer dialog-toggle" @wheel="imageWheel">
-        <div class="image-container dialog-toggle">
-            <img ref="currImage" class="curr-image changing" :src="imageArray[curr]" :style="parseCSSRule(imageStyle)">
-        </div>
+    <UserDialog ref="dialog" v-bind="dialogOpts">
+        <div ref="imagesViewer" class="images-viewer" @click="clickModal">
+            <div ref="imageContainer" class="image-container dialog-toggle">
+                <img ref="currImage" class="curr-image changing" :src="imageArray[curr]"
+                    :style="parseCSSRule(imageStyle)">
+            </div>
 
-        <div class="control-panel head-controls" :class="{ 'hide': !showControls }">
-            <ToggleButton class="vli-mode head-btn icon" title="长图模式" v-model="vliMode">chrome_reader_mode
-            </ToggleButton>
-            <span>|</span>
-            <UserButton class="zoom-in head-btn icon" title="缩小" @click="zoomImage(0.5)">
-                zoom_in
-            </UserButton>
-            <UserButton class="zoom-out head-btn icon" title="放大" @click="zoomImage(-0.5)">
-                zoom_out
-            </UserButton>
-            <span class="zoom-size">{{ round(scale * 100) + "%" }}</span>
-            <span>|</span>
-            <UserButton class="turn-left head-btn icon" title="逆时针旋转" @click="rotateImage(-90)">
-                undo
-            </UserButton>
-            <UserButton class=" turn-right head-btn icon" title="顺时针旋转" @click="rotateImage(90)">
-                redo
-            </UserButton>
-            <span>|</span>
-            <UserButton class="close head-btn icon" title="关闭" @click="unload">
-                close
-            </UserButton>
-        </div>
+            <div class="control-panel head-controls" :class="{ 'hide': !showControls }">
+                <ToggleButton class="vli-mode head-btn icon" title="长图模式" v-model="vliMode">chrome_reader_mode
+                </ToggleButton>
+                <span>|</span>
+                <UserButton class="zoom-in head-btn icon" title="缩小" @click="zoomImage(0.5)">
+                    zoom_in
+                </UserButton>
+                <UserButton class="zoom-out head-btn icon" title="放大" @click="zoomImage(-0.5)">
+                    zoom_out
+                </UserButton>
+                <span class="zoom-size">{{ round(scale * 100) + "%" }}</span>
+                <span>|</span>
+                <UserButton class="turn-left head-btn icon" title="逆时针旋转" @click="rotateImage(-90)">
+                    undo
+                </UserButton>
+                <UserButton class=" turn-right head-btn icon" title="顺时针旋转" @click="rotateImage(90)">
+                    redo
+                </UserButton>
+                <span>|</span>
+                <UserButton class="close head-btn icon" title="关闭" @click="unload">
+                    close
+                </UserButton>
+            </div>
 
-        <UserButton v-if="imageArray.length > 1" class="control-panel back icon" :class="{ 'hide': !showControls }"
-            title="上一张" @click="listBack">
-            chevron_left
-        </UserButton>
-        <UserButton v-if="imageArray.length > 1" class="control-panel forward icon" :class="{ 'hide': !showControls }"
-            title="下一张" @click="listForward">
-            chevron_right
-        </UserButton>
-
-        <div class="control-panel bottom-controls" :class="{ 'hide': !showControls }">
-            <UserButton v-for="image, index in imageArray" class="bottom-btn" :class="{ 'selected': index === curr }"
-                no-border="all">
-                <img class="image-list" :src="image" alt="" @click="curr = index">
+            <UserButton v-if="imageArray.length > 1" class="control-panel back icon" :class="{ 'hide': !showControls }"
+                title="上一张" @click="listBack">
+                chevron_left
             </UserButton>
+            <UserButton v-if="imageArray.length > 1" class="control-panel forward icon"
+                :class="{ 'hide': !showControls }" title="下一张" @click="listForward">
+                chevron_right
+            </UserButton>
+
+            <div class="control-panel bottom-controls" :class="{ 'hide': !showControls }">
+                <UserButton v-for="image, index in imageArray" class="bottom-btn"
+                    :class="{ 'selected': index === curr }" no-border="all">
+                    <img class="image-list" :src="image" alt="" @click="curr = index">
+                </UserButton>
+            </div>
         </div>
-    </div>
+    </UserDialog>
 </template>
 
 <script setup lang="ts">
 import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
-import { unloadDialog } from "@/lib/render";
+import { messageBox } from "@/lib/render/message-box";
 import { map, round } from "lodash-es";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
 import ToggleButton from "./utils/toggle-button.vue";
 import UserButton from "./utils/user-button.vue";
 
-export interface ImageViewerProps {
-    content: string | string[] | TiebaPost
-    defaultIndex?: number
+export interface ImagesViewerOpts {
+    content: string | string[] | TiebaPost;
+    defaultIndex?: number;
 }
 
-const props = withDefaults(defineProps<ImageViewerProps>(), {
+const props = withDefaults(defineProps<ImagesViewerOpts>(), {
     defaultIndex: 0,
 });
 
@@ -74,9 +78,9 @@ if (typeof props.content === "string") {
     });
 }
 
-const emit = defineEmits(["RequestClose"]);
-
-const imageViewer = ref<HTMLDivElement>();
+const dialog = ref<InstanceType<typeof UserDialog>>();
+const imagesViewer = ref<HTMLDivElement>();
+const imageContainer = ref<HTMLDivElement>();
 const currImage = ref<HTMLImageElement>();
 const curr = ref(props.defaultIndex);
 const scale = ref(1.0);
@@ -100,6 +104,17 @@ const imageTransition = computed(function () {
         : "all 0.4s ease, left 0s, top 0s";
 });
 
+const dialogOpts: UserDialogOpts = {
+    blurEffect: false,
+    shadowMode: true,
+    contentStyle: {
+        width: "100%",
+        height: "100%",
+    },
+    renderAnimation: "kf-fade-in 0.4s",
+    unloadAnimation: "kf-fade-out 0.4s",
+};
+
 // 状态
 const MIN_SIZE = 0.1 as const;
 const MAX_SIZE = 8.0 as const;
@@ -114,8 +129,11 @@ const imageProps = {
     vliMinTop: 0,
 };
 
-onMounted(() => {
+onMounted(async () => {
+    await nextTick();
     let offsetX = 0, offsetY = 0;
+
+    imagesViewer.value?.addEventListener("wheel", imageWheel, { passive: true });
 
     currImage.value?.addEventListener("mousedown", (e: MouseEvent) => {
         if (!currImage.value) return;
@@ -181,6 +199,10 @@ onMounted(() => {
     }
 });
 
+onUnmounted(function () {
+    imagesViewer.value?.removeEventListener("wheel", imageWheel);
+});
+
 watch(curr, function () {
     currImage.value?.classList.add("changing");
     deg.value = 0;
@@ -212,8 +234,7 @@ watch(vliMode, function (newMode) {
 
 /** 卸载组件 */
 function unload() {
-    emit("RequestClose");
-    unloadDialog();
+    dialog.value?.unload();
 }
 
 /** 上一张照片 */
@@ -224,6 +245,10 @@ function listBack() {
 /** 下一张照片 */
 function listForward() {
     if (curr.value < imageArray.length - 1) curr.value++;
+    messageBox({
+        content: "hello world",
+        type: "forceTrueFalse",
+    });
 }
 
 /** 缩放图片 */
@@ -243,17 +268,22 @@ function rotateImage(delta: number) {
 }
 
 /** 鼠标滚轮事件 */
-function imageWheel(event: WheelEvent) {
-    event.preventDefault();
+function imageWheel(e: WheelEvent) {
     if (!currImage.value) return;
 
     if (!vliMode.value) {
-        zoomImage(-event.deltaY / 1000);
-        showControls.value = event.deltaY > 0;
+        zoomImage(-e.deltaY / 1000);
+        showControls.value = e.deltaY > 0;
     } else {
         if (!imageTop.value) imageTop.value = 0;
-        imageTop.value += -event.deltaY / 1000 * window.innerHeight;
-        showControls.value = event.deltaY < 0;
+        imageTop.value += -e.deltaY / 1000 * window.innerHeight;
+        showControls.value = e.deltaY < 0;
+    }
+}
+
+function clickModal(e: MouseEvent) {
+    if (e.target === imageContainer.value) {
+        unload();
     }
 }
 </script>
@@ -266,12 +296,14 @@ $panel-margin: 16px;
 $panel-radius: 12px;
 
 .images-viewer {
+    position: fixed;
     display: flex;
     width: 100%;
     height: 100%;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    inset: 0;
     transition: $default-animation-duration;
 
     .icon {
@@ -279,6 +311,7 @@ $panel-radius: 12px;
     }
 
     .control-panel {
+        @include blur-effect;
         position: absolute;
         display: flex;
         align-items: center;
@@ -287,8 +320,6 @@ $panel-radius: 12px;
         border-radius: $panel-radius + 6;
         background-color: var(--trans-default-background);
         box-shadow: 0 0 32px rgb(0 0 0 / 40%);
-
-        @include blur-effect;
     }
 
     .head-controls {

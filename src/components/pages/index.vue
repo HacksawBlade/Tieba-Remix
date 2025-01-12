@@ -382,8 +382,8 @@ function getFollowedInstance() {
 async function oneKeySignInstance() {
     messageBox({
         title: "一键签到",
-        message: "需要注意，Web端签到获取到的经验远少于移动端，建议使用其他设备进行签到。",
-        type: "OkCancel",
+        content: "需要注意，Web端签到获取到的经验远少于移动端，建议使用其他设备进行签到。",
+        type: "okCancel",
     }).then((tag) => {
         if (tag === "positive") {
             requestInstance(tiebaAPI.oneKeySign()).then((response: OneKeySignResponse) => {

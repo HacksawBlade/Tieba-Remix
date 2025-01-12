@@ -142,8 +142,8 @@ async function login() {
     if (directLoginButton.length > 0) {
         const confirmDirect = await messageBox({
             title: "快速登录",
-            message: "检测到快速登录入口，是否尝试直接登录？",
-            type: "OkCancel",
+            content: "检测到快速登录入口，是否尝试直接登录？",
+            type: "okCancel",
         });
 
         if (confirmDirect === "positive") {
@@ -298,7 +298,7 @@ $fold-bar-height: 3px;
     justify-content: center;
     border-bottom: 1px solid var(--border-color);
     background-color: var(--trans-page-background);
-    transition: all $default-animation-duration, width 0;
+    transition: all $default-animation-duration, width 0s;
 
     @include main-box-shadow(0, 10px);
 

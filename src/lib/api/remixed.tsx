@@ -5,6 +5,7 @@ import { GiteeRelease, GiteeReleaseNotFound, GiteeRepo, Owner, RepoName, ignored
 import { outputFile, selectLocalFile, spawnOffsetTS } from "@/lib/utils";
 import { filter, forEach, includes, map, zipObject } from "lodash-es";
 import { marked } from "marked";
+import { userDialog } from "../render";
 import { darkPrefers } from "../theme";
 
 export type PageType = "index" | "thread" | "forum" | "user" | "unhandled"
@@ -92,26 +93,24 @@ export function checkUpdateAndNotify(showLatest = false) {
             // 忽略当前版本
             if (ignoredTag.get() === latestRelease.tag_name) return;
 
-            messageBox({
+            userDialog(<div class="markdown" v-html={marked(latestRelease.body)} />, {
                 title: latestRelease.name,
-                message: marked(latestRelease.body),
-                embedded: true,
-                type: "OkCancel",
-                buttons: [
+                dialogButtons: [
                     {
-                        title: "安装",
+                        text: "安装",
                         event() {
                             installFromRelease(latestRelease);
                         },
+                        style: "themed",
                     },
                     {
-                        title: "今日不再提醒",
+                        text: "今日不再提醒",
                         event() {
                             showUpdateToday.set(false);
                         },
                     },
                     {
-                        title: "跳过该版本",
+                        text: "跳过该版本",
                         event() {
                             ignoredTag.set(latestRelease.tag_name);
                         },
@@ -122,8 +121,8 @@ export function checkUpdateAndNotify(showLatest = false) {
             if (showLatest)
                 messageBox({
                     title: "检查更新",
-                    message: "当前已是最新版本",
-                    type: "OkCancel",
+                    content: "当前已是最新版本",
+                    type: "okCancel",
                 });
         }
     });

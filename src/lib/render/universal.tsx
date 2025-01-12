@@ -1,17 +1,17 @@
 import HeaderProgress, { HeaderProgressProps } from "@/components/header-progress.vue";
-import imagesViewerVue, { ImageViewerProps } from "@/components/images-viewer.vue";
+import ImagesViewer, { ImagesViewerOpts } from "@/components/images-viewer.vue";
 import { getFloatCoord } from "@/lib/render/layout/float";
 import { renderDialog } from ".";
 import { DOMS } from "../elemental";
 import { waitUntil } from "../utils";
 import { appendJSX, insertJSX } from "./jsx-extension";
 
-export function imagesViewer(props: ImageViewerProps) {
-    renderDialog(imagesViewerVue, props, { blurEffect: false });
+export function imagesViewer(opts: ImagesViewerOpts) {
+    renderDialog(<ImagesViewer {...opts} />);
 }
 
 export function headerProgress(props: HeaderProgressProps, delay = 2000, timeout = 10000) {
-    const progressBar = <HeaderProgress calc={props.calc}></HeaderProgress>;
+    const progressBar = <HeaderProgress calc={props.calc} />;
     const rendered = insertJSX<HTMLDivElement>(progressBar, document.body, document.body.firstChild ?? undefined);
     const timeoutTimer = setTimeout(() => {
         rendered.el.remove();
@@ -70,7 +70,6 @@ export function bindFloatMessage(target: HTMLElement, message: string, delay = 5
                     x: e.clientX + CursorMargin,
                     y: e.clientY + CursorMargin,
                 }, "baseline");
-                console.log(coord);
 
                 floatMessage.style.left = `${coord.x}px`;
                 floatMessage.style.top = `${coord.y < e.clientY ? coord.y - CursorMargin * 2 : coord.y}px`;

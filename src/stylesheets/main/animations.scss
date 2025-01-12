@@ -40,6 +40,20 @@ $xslow-animation-duration: 0.6s;
     }
 }
 
+@keyframes kf-slide-in {
+    0% {
+        opacity: 0;
+        transform: translateY(20%);
+    }
+}
+
+@keyframes kf-slide-out {
+    100% {
+        opacity: 0;
+        transform: translateY(20%);
+    }
+}
+
 @mixin fade-in($time: $default-animation-duration) {
     animation: kf-fade-in $time;
 }

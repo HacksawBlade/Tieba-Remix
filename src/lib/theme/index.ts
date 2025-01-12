@@ -40,7 +40,6 @@ export async function loadDynamicCSS() {
                 : `${wideScreen.get().maxWidth}px`,
             "--code-zh": `${join(userFonts.get(), ",")}`,
             "--code-monospace": `${join(monospaceFonts.get(), ",")}`,
-            "--scrollbar-width": `${scrollbarWidth()}px`,
         },
 
         "html.dark-theme": {
@@ -63,6 +62,16 @@ export async function loadDynamicCSS() {
     });
 
     GM_addStyle(dynCSS);
+
+    window.addEventListener("load", function () {
+        GM_addStyle(
+            parseMultiCSS({
+                ":root": {
+                    "--scrollbar-width": `${scrollbarWidth()}px`,
+                },
+            })
+        );
+    }, { once: true });
 }
 
 export async function loadTiebaCSS() {

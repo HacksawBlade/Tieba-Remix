@@ -1,26 +1,28 @@
 <template>
-    <div id="thread-editor">
-        <UserButton id="thread-editor-exit" class="icon" shadow-border @click="unload">close
-        </UserButton>
-        <UserTextbox v-if="type === 'thread'" class="title-editor" placeholder="输入标题" lodash-style></UserTextbox>
+    <UserDialog ref="dialog" v-bind="dialogOpts">
+        <div id="thread-editor">
+            <UserButton aria-label="关闭" id="thread-editor-exit" class="icon" shadow-border @click="unload">close
+            </UserButton>
+            <UserTextbox v-if="type === 'thread'" class="title-editor" placeholder="输入标题" lodash-style></UserTextbox>
 
-        <div ref="editorSlot" id="thread-editor-slot"></div>
+            <div ref="editorSlot" id="thread-editor-slot"></div>
 
-        <div id="thread-editor-toolbar">
-            <UserButton id="thread-editor-submit" shadow-border theme-style @click="submit">发表</UserButton>
+            <div id="thread-editor-toolbar">
+                <UserButton id="thread-editor-submit" shadow-border theme-style @click="submit">发表</UserButton>
+            </div>
         </div>
-    </div>
+    </UserDialog>
 </template>
 
-<script lang="ts" setup>
+<script lang="tsx" setup>
 import { DOMS } from "@/lib/elemental";
-import { unloadDialog } from "@/lib/render";
 import { waitUntil } from "@/lib/utils";
-import { onMounted, onUnmounted, ref } from "vue";
+import { nextTick, onMounted, ref } from "vue";
+import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
 import UserButton from "./utils/user-button.vue";
 import UserTextbox from "./utils/user-textbox.vue";
 
-export interface ThreadEditorProps {
+export interface ThreadEditorOpts {
     ueditor: Element;
     type?: "thread" | "reply";
 }
@@ -29,10 +31,30 @@ export interface ThreadEditorProps {
 //     [className: string]: { title: string, icon: string };
 // };
 
-const props = withDefaults(defineProps<ThreadEditorProps>(), {
+const props = withDefaults(defineProps<ThreadEditorOpts>(), {
     type: "thread",
 });
 
+const dialogOpts: UserDialogOpts = {
+    modal: true,
+    force: true,
+    blurEffect: false,
+    animation: true,
+    lockScroll: true,
+    contentStyle: {
+        position: "fixed",
+        width: "100%",
+        maxWidth: "var(--content-max)",
+        bottom: "0",
+        marginBottom: "0",
+        borderBottomLeftRadius: "0",
+        borderBottomRightRadius: "0",
+    },
+    renderAnimation: "kf-slide-in 0.4s",
+    unloadAnimation: "kf-slide-out 0.4s",
+};
+
+const dialog = ref<InstanceType<typeof UserDialog>>();
 const editorSlot = ref<HTMLDivElement>();
 const originParent = ref<HTMLDivElement>();
 // const visibleButtons = ref<Element[]>([]);
@@ -65,6 +87,8 @@ const originParent = ref<HTMLDivElement>();
 // };
 
 onMounted(async function () {
+    await nextTick();
+
     if (!editorSlot.value) return;
     originParent.value = props.ueditor.parentElement as HTMLDivElement;
     editorSlot.value.appendChild(props.ueditor);
@@ -78,10 +102,6 @@ onMounted(async function () {
     DOMS("#ueditor_replace")[0].focus();
 });
 
-onUnmounted(async function () {
-    unload();
-});
-
 function submit() {
     DOMS(".j_submit", "a")[0].click();
     unload();
@@ -92,21 +112,14 @@ function unload() {
     if (!editorSlot.value) return;
     // 传入的可能是未加载完毕的，归还时一定要完整的
     originParent.value.appendChild(DOMS(".edui-container")[0]);
-    unloadDialog();
+    dialog.value?.unload();
 }
 </script>
 
 <style lang="scss" scoped>
-@keyframes slide-in {
-    0% {
-        opacity: 0;
-        transform: translateY(20%);
-    }
-}
+@use "@/stylesheets/main/animations.scss" as *;
 
 #thread-editor {
-    bottom: 0;
-    left: 50%;
     display: flex;
     width: 100%;
     max-width: var(--content-max);
@@ -114,11 +127,9 @@ function unload() {
     box-sizing: border-box;
     flex-direction: column;
     align-items: center;
-    padding: 24px;
-    border-radius: 8px 8px 0 0;
     margin: auto auto 0;
-    animation: slide-in 0.4s ease;
     background-color: var(--default-background);
+    font-size: 12px;
     gap: 8px;
     transition: 0.4s;
 
@@ -173,6 +184,10 @@ body {
 }
 
 #thread-editor {
+    #ueditor_replace {
+        font-size: 16px;
+    }
+
     .edui-container {
         width: 100% !important;
 

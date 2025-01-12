@@ -1,11 +1,9 @@
-import CommonDialog, { CommonDialogOpts } from "@/components/common-dialog.vue";
+import UserDialog, { UserDialogOpts } from "@/components/user-dialog.vue";
 import { SupportedComponent } from "@/ex";
 import { DOMS, templateCreate } from "@/lib/elemental";
-import { assignCSSRule, injectCSSRule } from "@/lib/elemental/styles";
-import { Queue } from "@/lib/utils/queue";
+import { assignCSSRule, CSSRule, injectCSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import { forEach, includes, isNil, once } from "lodash-es";
 import { App, Component, ComponentPublicInstance, createApp, h } from "vue";
-import { experimental, perfProfile } from "../user-values";
 
 export interface RenderedComponent<T extends Element = Element> {
     app: App<T>;
@@ -61,6 +59,20 @@ export function renderPage(root: Component, rootProps?: LiteralObject) {
     return renderComponent(root, page, rootProps);
 }
 
+export function createRenderWrapper(id: string, style?: CSSRule) {
+    let wrapper = DOMS(true, `#${id}`, "div");
+    return () => {
+        if (isNil(wrapper)) {
+            wrapper = document.body.appendChild(templateCreate("div", {
+                id,
+                style: parseCSSRule(style ?? {} as CSSRule),
+            }));
+            return wrapper;
+        }
+        return wrapper;
+    };
+}
+
 /** 对话框选项 */
 export interface DialogOpts {
     /** 是否渲染为模态 */
@@ -75,203 +87,58 @@ export interface DialogOpts {
     blurEffect?: boolean;
 }
 
-export interface UnloadedDialog {
-    requestTime: number;
-    renderTime: number;
-    unloadTime: number;
+const dialogWrapper = createRenderWrapper("dialog-wrapper");
+
+export interface DialogEvents {
+    beforeRender(): void,
+    rendered(rendered: RenderedComponent): void,
+    beforeUnload(rendered: RenderedComponent): void,
+    unloaded(...payload: any[]): void,
 }
-
-export type RenderedDialog = RenderedComponent & Partial<UnloadedDialog>;
-
-/** 对话框事件名 */
-export enum DialogEvents {
-    /** 事件：对话框渲染前 */
-    BeforeRender = "remix:DialogBeforeRender",
-    /** 事件：对话框已渲染 */
-    Rendered = "remix:DialogRendered",
-    /** 事件：对话框卸载前 */
-    BeforeUnload = "remix:DialogBeforeUnload",
-    /** 事件：对话框已卸载 */
-    Unloaded = "remix:DialogUnloaded",
-}
-
-/** 对话框渲染前 */
-export type DialogBeforeRenderEvent = CustomEvent<{ dialogRenderParams: DialogRenderParams }>;
-/** 对话框渲染事件 */
-export type DialogRenderedEvent = CustomEvent<{ renderedDialog: RenderedDialog }>;
-/** 对话框卸载前 */
-export type DialogBeforeUnloadEvent = CustomEvent<{ renderedDialog: RenderedDialog }>;
-/** 对话框卸载事件 */
-export type DialogUnloadedEvent = CustomEvent<{ unloadedDialog: UnloadedDialog }>;
-
-declare global {
-    interface WindowEventMap {
-        "remix:DialogBeforeRender": DialogBeforeRenderEvent;
-        "remix:DialogRendered": DialogRenderedEvent;
-        "remix:DialogBeforeUnload": DialogBeforeUnloadEvent;
-        "remix:DialogUnloaded": DialogUnloadedEvent;
-    }
-}
-
-type DialogRenderParams = [Component, Maybe<LiteralObject>, Maybe<DialogOpts>];
-interface CachedDialog {
-    params: DialogRenderParams;
-    requestTime: number;
-}
-
-const currentDialog: Partial<RenderedDialog> = {};
-const topLevelQueue = new Queue<CachedDialog>();
-
-/** 默认对话框通用选项 */
-export const DEFAULT_DIALOG_OPTS: Required<DialogOpts> = {
-    modal: false,
-    force: false,
-    lockScroll: false,
-    animation: false,
-    blurEffect: perfProfile.get() === "performance" && experimental.get().moreBlurEffect,
-} as const;
-
-let dialogWrapper = DOMS(true, "#dialog-wrapper", "div");
 
 /**
- * 渲染对话框
- * @param content 对话框组件
- * @param contentOpts 当前组件的选项
- * @param dialogOpts 对话框通用选项
+ * 渲染对话框。只有以 `<UserDialog>` 为唯一根节点的组件才能作为对话框被正确渲染。
+ * @param content 对话框内容组件
+ * @param opts 组件选项
+ * @param events 对话框事件绑定
  * @returns 对话框组件实例
  */
-export async function renderDialog<ContentOpts extends LiteralObject>(
-    content: SupportedComponent | HTMLDialogElement,
-    contentOpts?: ContentOpts,
-    dialogOpts?: DialogOpts,
-): Promise<RenderedDialog> {
-    if (isNil(dialogWrapper)) {
-        document.body.appendChild(templateCreate("div", { id: "dialog-wrapper" }));
-    }
-    dialogWrapper = DOMS(true, "#dialog-wrapper", "div");
+export function renderDialog<ContentOpts extends LiteralObject>(
+    content: SupportedComponent,
+    opts?: ContentOpts,
+    events?: Partial<DialogEvents>,
+): RenderedComponent {
+    events?.beforeRender?.();
 
-    const currentTime = performance.now();
-    currentDialog.requestTime = currentTime;
+    const dialogApp = createApp(content, {
+        ...opts,
+        onUnload(...payload: any[]) {
+            events?.beforeUnload?.(rendered);
 
-    if (isNil(currentDialog.instance)) {
-        return _renderDialog(content, contentOpts, dialogOpts);
-    }
+            dialogApp.unmount();
+            if (DOMS("[aria-modal]").length === 0) {
+                document.body.removeAttribute("no-scrollbar");
+                document.body.style.paddingRight = "";
+            }
 
-    topLevelQueue.enqueue({
-        params: [content, contentOpts, dialogOpts],
-        requestTime: currentTime,
+            events?.unloaded?.(payload);
+        },
     });
-    return new Promise((resolve) => {
-        window.addEventListener(DialogEvents.Rendered, handler);
-
-        function handler() {
-            if (currentDialog.requestTime !== currentTime) return;
-
-            window.removeEventListener(DialogEvents.Rendered, handler);
-            currentDialog.renderTime = performance.now();
-            resolve({ ...currentDialog } as RenderedDialog);
-        }
-    });
-}
-
-function _renderDialog<ContentOpts extends LiteralObject>(
-    dialog: SupportedComponent | HTMLDialogElement,
-    contentOpts: Maybe<ContentOpts>,
-    dialogOpts: Maybe<DialogOpts>,
-    cachedRequestTime?: number,
-) {
-    if (cachedRequestTime) currentDialog.requestTime = cachedRequestTime;
-
-    window.dispatchEvent(
-        new CustomEvent<DialogBeforeRenderEvent["detail"]>(DialogEvents.BeforeRender, {
-            detail: { dialogRenderParams: [dialog, contentOpts, dialogOpts] },
-        })
-    );
-
-    dialogWrapper.style.display = "none";
-    currentDialog.app = createApp(dialog, contentOpts);
-    currentDialog.instance = currentDialog.app.mount(dialogWrapper);
-    dialogWrapper.style.display = "";
-
-    const opts = {
-        ...DEFAULT_DIALOG_OPTS,
-        ...(currentDialog.instance as LiteralObject).dialogOpts ?? {},
-        ...dialogOpts,
+    const rendered: RenderedComponent = {
+        app: dialogApp,
+        instance: dialogApp.mount(dialogWrapper()),
     };
 
-    if (opts.lockScroll) {
-        document.body.setAttribute("no-scrollbar", "");
-        document.body.style.paddingRight = `${scrollbarWidth()}px`;
-    }
-
-    const dialogElement: HTMLDialogElement = currentDialog.instance.$el;
-    opts.modal ? dialogElement.showModal() : dialogElement.show();
-
-    currentDialog.renderTime = performance.now();
-
-    window.dispatchEvent(
-        new CustomEvent<DialogRenderedEvent["detail"]>(DialogEvents.Rendered, {
-            detail: { renderedDialog: { ...currentDialog } as RenderedDialog },
-        })
-    );
-
-    return { ...currentDialog } as RenderedDialog;
+    events?.rendered?.(rendered);
+    return rendered;
 }
 
-/**
- * 卸载当前对话框，并渲染下一个顶层对话框（如果有）
- */
-export function unloadDialog() {
-    if (!currentDialog) return;
-    if ((currentDialog.instance?.$el as HTMLDialogElement).classList.contains("animation")) {
-        const dialogElement: HTMLDialogElement = currentDialog.instance?.$el;
-        dialogElement.classList.add("closing");
-        dialogElement.addEventListener("animationend", function () {
-            _unload();
-        });
-        return;
-    }
-    _unload();
-
-    function _unload() {
-        window.dispatchEvent(
-            new CustomEvent<DialogBeforeUnloadEvent["detail"]>(DialogEvents.BeforeUnload, {
-                detail: { renderedDialog: { ...currentDialog } as RenderedDialog },
-            })
-        );
-
-        currentDialog.app?.unmount();
-        currentDialog.app = undefined;
-        currentDialog.instance = undefined;
-        document.body.removeAttribute("no-scrollbar");
-        document.body.style.paddingRight = "";
-        currentDialog.unloadTime = performance.now();
-
-        window.dispatchEvent(
-            new CustomEvent<DialogUnloadedEvent["detail"]>(DialogEvents.Unloaded, {
-                detail: { unloadedDialog: { ...currentDialog } as UnloadedDialog },
-            })
-        );
-
-        if (topLevelQueue.isEmpty()) return;
-        const nextDialog = topLevelQueue.dequeue();
-        if (nextDialog) {
-            _renderDialog(...nextDialog.params, nextDialog.requestTime);
-        }
-    }
-}
-
-/**
- * 渲染标准通用对话框
- * @param content 对话框内组件
- * @param dialogOpts 对话框选项
- * @returns 对话框组件实例
- */
-export function commonDialog(
+export function userDialog<ContentOpts extends LiteralObject>(
     content: SupportedComponent,
-    dialogOpts?: CommonDialogOpts,
+    dialogOpts?: UserDialogOpts,
+    opts?: ContentOpts
 ) {
-    return renderDialog(<CommonDialog>{h(content)}</CommonDialog>, undefined, dialogOpts);
+    return renderDialog(<UserDialog {...dialogOpts}>{h(content, opts)}</UserDialog>);
 }
 
 export function removeDefault() {
