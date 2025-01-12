@@ -95,13 +95,10 @@ const imageStyle = computed<CSSRule>(() => {
         transform: `scale(${scale.value}) rotate(${deg.value}deg)`,
         left: `${imageLeft.value}px`,
         top: `${imageTop.value}px`,
+        transition: vliMode.value
+            ? "all 0.4s ease, left 0s, top 0.1s ease-out"
+            : "all 0.4s ease, left 0s, top 0s",
     };
-});
-
-const imageTransition = computed(function () {
-    return vliMode.value
-        ? "all 0.4s ease, left 0s, top 0.1s ease-out"
-        : "all 0.4s ease, left 0s, top 0s";
 });
 
 const imageProps = computed(function () {
@@ -414,7 +411,6 @@ $panel-radius: 12px;
         .curr-image {
             position: absolute;
             object-fit: contain;
-            transition: v-bind("imageTransition");
 
             &.changing {
                 display: none;
