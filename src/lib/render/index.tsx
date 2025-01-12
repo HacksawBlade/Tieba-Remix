@@ -87,8 +87,6 @@ export interface DialogOpts {
     blurEffect?: boolean;
 }
 
-const dialogWrapper = createRenderWrapper("dialog-wrapper");
-
 export interface DialogEvents {
     beforeRender(): void,
     rendered(rendered: RenderedComponent): void,
@@ -110,6 +108,9 @@ export function renderDialog<ContentOpts extends LiteralObject>(
 ): RenderedComponent {
     events?.beforeRender?.();
 
+    const dialogWrapper = document.body.appendChild(
+        templateCreate("div", { class: "dialog-wrapper" })
+    );
     const dialogApp = createApp(content, {
         ...opts,
         onUnload(...payload: any[]) {
@@ -120,14 +121,18 @@ export function renderDialog<ContentOpts extends LiteralObject>(
                 document.body.removeAttribute("no-scrollbar");
                 document.body.style.paddingRight = "";
             }
+            dialogWrapper.remove();
 
             events?.unloaded?.(payload);
         },
     });
+
     const rendered: RenderedComponent = {
         app: dialogApp,
-        instance: dialogApp.mount(dialogWrapper()),
+        instance: dialogApp.mount(dialogWrapper),
     };
+
+    console.log(dialogApp);
 
     events?.rendered?.(rendered);
     return rendered;
