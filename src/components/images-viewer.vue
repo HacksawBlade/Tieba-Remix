@@ -104,6 +104,16 @@ const imageTransition = computed(function () {
         : "all 0.4s ease, left 0s, top 0s";
 });
 
+const imageProps = computed(function () {
+    const naturalHeight = currImage.value?.naturalHeight ?? 0;
+    return {
+        naturalHeight: naturalHeight ?? 0,
+        scaledHeight: naturalHeight ?? 0 * scale.value,
+        vliMaxTop: -(naturalHeight * (1 - scale.value) / 2) + window.innerHeight / 2,
+        vliMinTop: -(naturalHeight * scale.value) - (naturalHeight * (1 - scale.value) / 2) + window.innerHeight / 2,
+    };
+});
+
 const dialogOpts: UserDialogOpts = {
     blurEffect: false,
     shadowMode: true,
@@ -121,13 +131,6 @@ const MAX_SIZE = 8.0 as const;
 // VLI = very long image
 const VLI_THRESHOLD = 5 as const;
 const VLI_WIDTH_SCALE = 2 as const;
-
-const imageProps = {
-    naturalHeight: 0,
-    scaledHeight: 0,
-    vliMaxTop: 0,
-    vliMinTop: 0,
-};
 
 onMounted(async () => {
     await nextTick();
@@ -175,11 +178,6 @@ onMounted(async () => {
             );
         })();
 
-        imageProps.naturalHeight = currImage.value.naturalHeight;
-        imageProps.scaledHeight = imageProps.naturalHeight * scale.value;
-        imageProps.vliMaxTop = -(imageProps.naturalHeight * (1 - scale.value) / 2) + window.innerHeight / 2;
-        imageProps.vliMinTop = -imageProps.scaledHeight - (imageProps.naturalHeight * (1 - scale.value) / 2) + window.innerHeight / 2;
-
         currImage.value.classList.remove("changing");
     });
 
@@ -214,11 +212,11 @@ watch(imageTop, function (newTop) {
     if (vliMode.value) {
         if (!currImage.value || !imageTop.value || !newTop) return;
 
-        if (newTop > imageProps.vliMaxTop) {
-            imageTop.value = imageProps.vliMaxTop;
+        if (newTop > imageProps.value.vliMaxTop) {
+            imageTop.value = imageProps.value.vliMaxTop;
         }
-        if (newTop < imageProps.vliMinTop) {
-            imageTop.value = imageProps.vliMinTop;
+        if (newTop < imageProps.value.vliMinTop) {
+            imageTop.value = imageProps.value.vliMinTop;
         }
     }
 });
@@ -226,7 +224,7 @@ watch(imageTop, function (newTop) {
 watch(vliMode, function (newMode) {
     if (newMode && currImage.value && !imageTop.value) {
         imageTop.value = Math.max(
-            imageProps.vliMinTop,
+            imageProps.value.vliMinTop,
             -(currImage.value.naturalHeight * (1 - scale.value) / 2),
         );
     }
