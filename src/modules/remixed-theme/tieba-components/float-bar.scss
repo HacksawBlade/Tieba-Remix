@@ -28,6 +28,10 @@ $float-bar-default-left: calc(50% + var(--content-max) / 2 + $float-bar-layout-m
         left: calc(100% - $float-bar-width);
     }
 
+    [no-scrollbar].shrink-view & {
+        left: calc(100% - $float-bar-width - var(--scrollbar-width));
+    }
+
     .tbui_aside_fbar_button {
         border-radius: 0;
         margin: 0 !important;
