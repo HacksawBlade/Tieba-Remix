@@ -179,7 +179,7 @@ defineExpose({
         }
 
         &.default.force-alert {
-            box-shadow: 0 0 0 4px var(--error-color);
+            box-shadow: 0 0 0 2px var(--error-color) !important;
         }
 
         .dialog-title {
@@ -202,29 +202,6 @@ defineExpose({
                 font-size: 14px;
             }
         }
-    }
-}
-
-.common-dialog-wrapper {
-    overflow: visible;
-    padding: 0;
-    border: none;
-    background: none;
-
-    &::backdrop {
-        background-color: rgb(0 0 0 / 50%);
-    }
-
-    &.backdrop-blur::backdrop {
-        @include blur-effect;
-    }
-
-    &.animation {
-        animation: kf-dialog-in $default-animation-duration;
-    }
-
-    &.animation.closing {
-        animation: kf-dialog-out $default-animation-duration;
     }
 }
 </style>
