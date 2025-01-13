@@ -87,24 +87,27 @@ export interface DialogOpts {
     blurEffect?: boolean;
 }
 
-export interface DialogEvents {
+export interface DialogEvents<PayloadType = any> {
     beforeRender(): void,
     rendered(rendered: RenderedComponent): void,
     beforeUnload(rendered: RenderedComponent): void,
-    unloaded(...payload: any[]): void,
+    unloaded(payload: PayloadType): void,
 }
 
 /**
- * 渲染对话框。只有以 `<UserDialog>` 为唯一根节点的组件才能作为对话框被正确渲染。
+ * 渲染对话框。只有以 `<UserDialog>` 及其继承组件为唯一根节点的组件才能作为对话框被正确渲染。
  * @param content 对话框内容组件
  * @param opts 组件选项
  * @param events 对话框事件绑定
  * @returns 对话框组件实例
  */
-export function renderDialog<ContentOpts extends LiteralObject>(
+export function renderDialog<
+    ContentOpts extends LiteralObject,
+    PayloadType = any,
+>(
     content: SupportedComponent,
     opts?: ContentOpts,
-    events?: Partial<DialogEvents>,
+    events?: Partial<DialogEvents<PayloadType>>,
 ): RenderedComponent {
     events?.beforeRender?.();
 
@@ -113,7 +116,7 @@ export function renderDialog<ContentOpts extends LiteralObject>(
     );
     const dialogApp = createApp(content, {
         ...opts,
-        onUnload(...payload: any[]) {
+        onUnload(payload: PayloadType) {
             events?.beforeUnload?.(rendered);
 
             dialogApp.unmount();
@@ -131,8 +134,6 @@ export function renderDialog<ContentOpts extends LiteralObject>(
         app: dialogApp,
         instance: dialogApp.mount(dialogWrapper),
     };
-
-    console.log(dialogApp);
 
     events?.rendered?.(rendered);
     return rendered;

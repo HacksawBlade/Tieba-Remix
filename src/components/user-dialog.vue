@@ -53,7 +53,7 @@ export interface UserDialogOpts extends DialogOpts {
     /** 在按下 `ESC` 时是否会执行默认卸载函数（force 模式下永远不会执行默认函数） */
     pressEscapeToUnload?: boolean;
     /** 卸载事件负载 */
-    unloadPayload?: any[];
+    defaultPayload?: any;
     renderAnimation?: string;
     unloadAnimation?: string;
 }
@@ -73,7 +73,7 @@ const props = withDefaults(defineProps<UserDialogOpts>(), {
     unloadAnimation: "kf-dialog-out 0.4s",
 });
 
-const emit = defineEmits<{ (e: "unload", ...payload: any[]): void }>();
+const emit = defineEmits<{ (e: "unload", payload?: any): void }>();
 
 const dialogShow = ref(false);
 const dialogModal = ref<HTMLDivElement>();
@@ -109,7 +109,7 @@ onMounted(async function () {
             dialogModal.value.addEventListener("click", function (e) {
                 if (e.target !== dialogModal.value) return;
                 e.preventDefault();
-                unload();
+                unload(props.defaultPayload);
             });
         }
 
@@ -117,19 +117,21 @@ onMounted(async function () {
             dialogModal.value.addEventListener("keydown", function (e) {
                 if (e.key === "Escape") {
                     e.preventDefault();
-                    unload();
+                    unload(props.defaultPayload);
                 }
             });
         }
     }
 });
 
-function unload(...payload: any[]) {
+function unload(payload?: any) {
     dialogShow.value = false;
     userDialog.value?.addEventListener("animationend", function () {
-        (payload && payload.length > 0)
-            ? emit("unload", ...payload)
-            : emit("unload", ...props.unloadPayload ?? []);
+        if (payload) {
+            emit("unload", payload);
+            return;
+        }
+        emit("unload");
     }, { once: true });
 }
 

@@ -1,5 +1,5 @@
 <template>
-    <UserDialog ref="dialog" v-bind="dialogOpts" @unload="unloadHandler('cancel')">
+    <UserDialog ref="dialog" v-bind="dialogOpts" @unload="unloadHandler(response)">
         <div ref="messageWrapper" class="message-wrapper">
             <template v-if="content">
                 <div ref="messageContent" v-if="typeof content === 'string'" class="message markdown">
@@ -76,7 +76,7 @@ const dialogOpts: UserDialogOpts = {
                 return [forceTrueButton, forceFalseButton];
         }
     })(),
-    unloadPayload: [response.value],
+    defaultPayload: response.value,
 };
 
 function unloadHandler(_response: MessageBoxResponse, event?: (() => void)) {
