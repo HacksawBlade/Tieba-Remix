@@ -9,14 +9,14 @@ const fadeInClass = "fade-in-elem";
  * @param selector 选择器字符串
  * @param parent 从哪个元素开始查找
  */
-export function DOMS(selector: string, parent?: Element): HTMLElement[];
+export function dom(selector: string, parent?: Element): HTMLElement[];
 /**
  * 该函数会根据 `type` 参数返回对应类型的元素数组，而不是 `NodeList`
  * @param selector 选择器字符串
  * @param type 选择的元素的标签名
  * @param parent 从哪个元素开始查找
  */
-export function DOMS<T extends keyof HTMLElementTagNameMap>(
+export function dom<T extends keyof HTMLElementTagNameMap>(
     selector: string, type: T, parent?: Element
 ): HTMLElementTagNameMap[T][];
 /**
@@ -25,7 +25,7 @@ export function DOMS<T extends keyof HTMLElementTagNameMap>(
  * @param selector 选择器字符串
  * @param parent 从哪个元素开始查找
  */
-export function DOMS(single: true, selector: string, parent?: Element): HTMLElement;
+export function dom(single: true, selector: string, parent?: Element): HTMLElement;
 /**
  * 该函数会根据 `type` 参数返回对应类型的元素数组，而不是 `NodeList` 
  * @param single 只查询单个元素
@@ -33,11 +33,11 @@ export function DOMS(single: true, selector: string, parent?: Element): HTMLElem
  * @param type 选择的元素的标签名
  * @param parent 从哪个元素开始查找
  */
-export function DOMS<T extends keyof HTMLElementTagNameMap>
+export function dom<T extends keyof HTMLElementTagNameMap>
     (single: true, selector: string, type: T, parent?: Element)
     : HTMLElementTagNameMap[T];
 
-export function DOMS<_T extends keyof HTMLElementTagNameMap>(...args: any[]): any {
+export function dom<_T extends keyof HTMLElementTagNameMap>(...args: any[]): any {
     const single = args[0] === true;
     const selector = single ? args[1] : args[0];
     switch (args.length) {
@@ -167,7 +167,7 @@ export function mergeNodeAttrsDeeply<T extends HTMLElement>(
  * @param doc 从哪个 `Document` 创建节点
  * @returns 被创建的节点
  */
-export function templateCreate<T extends keyof HTMLElementTagNameMap>(
+export function domrd<T extends keyof HTMLElementTagNameMap>(
     tag: T, attrs?: LiteralObject, children: (Node | string)[] | string = [], doc?: Document,
 ): HTMLElementTagNameMap[T] {
     const DOC = doc ? doc : document;
@@ -207,7 +207,7 @@ export function findParent<T extends keyof HTMLElementTagNameMap>(
     const verifier = ((): (parent: HTMLElement) => boolean => {
         switch (mode) {
             case "selector": {
-                const allValid = new Set(DOMS(trait));
+                const allValid = new Set(dom(trait));
                 return (parent: HTMLElement) => {
                     return allValid.has(parent);
                 };
@@ -238,7 +238,7 @@ export function findParent<T extends keyof HTMLElementTagNameMap>(
  * @param selector QuerySelector 字符串
  */
 export function fadeInLoad(selector: string) {
-    DOMS(selector).forEach(elem => {
+    dom(selector).forEach(elem => {
         elem.classList.add(fadeInClass);
         elem.addEventListener("animationend", () => {
             elem.style.opacity = "1";

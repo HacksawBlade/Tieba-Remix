@@ -1,4 +1,4 @@
-import { DOMS } from "@/lib/elemental";
+import { dom } from "@/lib/elemental";
 
 export interface TiebaAbstract {
     el: HTMLElement;
@@ -17,8 +17,8 @@ export class TiebaComponent<T extends keyof HTMLElementTagNameMap> {
 
     public get() {
         if (!this.parent)
-            return DOMS(this.selector, this.type)[0];
+            return dom(this.selector, this.type)[0];
         else
-            return DOMS(this.selector, this.type, this.parent)[0];
+            return dom(this.selector, this.type, this.parent)[0];
     }
 }

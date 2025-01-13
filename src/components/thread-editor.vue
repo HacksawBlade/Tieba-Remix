@@ -15,7 +15,7 @@
 </template>
 
 <script lang="tsx" setup>
-import { DOMS } from "@/lib/elemental";
+import { dom } from "@/lib/elemental";
 import { waitUntil } from "@/lib/utils";
 import { nextTick, onMounted, ref } from "vue";
 import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
@@ -93,17 +93,17 @@ onMounted(async function () {
     originParent.value = props.ueditor.parentElement as HTMLDivElement;
     editorSlot.value.appendChild(props.ueditor);
 
-    await waitUntil(() => DOMS(".edui-editor-body").length > 0);
-    const toolbar = DOMS(".edui-toolbar")[0];
-    const editorBody = DOMS(".edui-editor-body")[0];
+    await waitUntil(() => dom(".edui-editor-body").length > 0);
+    const toolbar = dom(".edui-toolbar")[0];
+    const editorBody = dom(".edui-editor-body")[0];
     if (toolbar.compareDocumentPosition(editorBody) & Node.DOCUMENT_POSITION_FOLLOWING) {
         toolbar.parentNode?.insertBefore(editorBody, toolbar);
     }
-    DOMS("#ueditor_replace")[0].focus();
+    dom("#ueditor_replace")[0].focus();
 });
 
 function submit() {
-    DOMS(".j_submit", "a")[0].click();
+    dom(".j_submit", "a")[0].click();
     unload();
 }
 
@@ -111,7 +111,7 @@ function unload() {
     if (!originParent.value) return;
     if (!editorSlot.value) return;
     // 传入的可能是未加载完毕的，归还时一定要完整的
-    originParent.value.appendChild(DOMS(".edui-container")[0]);
+    originParent.value.appendChild(dom(".edui-container")[0]);
     dialog.value?.unload();
 }
 </script>

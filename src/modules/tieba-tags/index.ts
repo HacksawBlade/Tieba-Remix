@@ -1,4 +1,4 @@
-import { DOMS, findParent, templateCreate } from "@/lib/elemental";
+import { dom, domrd, findParent } from "@/lib/elemental";
 import { injectCSSList } from "@/lib/elemental/styles";
 import { threadCommentsObserver } from "@/lib/observers";
 import { forEach, indexOf, split } from "lodash-es";
@@ -67,7 +67,7 @@ function main(): void {
     }
 
     function createTagsAll() {
-        forEach(DOMS(".lzl_cnt .at"), (elem) => {
+        forEach(dom(".lzl_cnt .at"), (elem) => {
             if (elem.classList.contains(TAGGED)) return;
             elem.classList.add(TAGGED);
 
@@ -146,7 +146,7 @@ function main(): void {
 
         function addTag(elem: HTMLElement, className: string) {
             elem.appendChild(
-                templateCreate("div", {
+                domrd("div", {
                     class: `${TB_TAG} ${className}`,
                 })
             );

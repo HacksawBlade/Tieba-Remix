@@ -1,6 +1,6 @@
 import { findKey } from "lodash-es";
-import { DOMS, templateCreate } from "../elemental";
 import { TiebaAbstract, TiebaComponent } from "../api/abstract";
+import { dom, domrd } from "../elemental";
 
 export const floatButtonMap = {
     "auxiliary": "tbui_fbar_auxiliaryCare",
@@ -22,7 +22,7 @@ export class FloatBar extends TiebaComponent<"ul"> {
      */
     public buttons(): FloatButton[] {
         if (!this.get()) return [];
-        return Array.from(DOMS(".tbui_aside_fbar_button", "li", floatBar.get())).map(el => ({
+        return Array.from(dom(".tbui_aside_fbar_button", "li", floatBar.get())).map(el => ({
             el: el,
             type: (function () {
                 for (let i = 0; i < el.classList.length; i++) {
@@ -44,11 +44,11 @@ export class FloatBar extends TiebaComponent<"ul"> {
         type: FloatButtonKey, event: (() => void),
         className?: string, icon?: string, index = 0
     ) {
-        const anchor = templateCreate("a", {
+        const anchor = domrd("a", {
             href: "javascript:;",
         });
 
-        const el = templateCreate("li", {
+        const el = domrd("li", {
             class: "tbui_aside_fbar_button",
         }, [anchor]);
 
@@ -82,7 +82,7 @@ export class FloatBar extends TiebaComponent<"ul"> {
     public remove(param: string | number) {
         switch (typeof param) {
             case "string": {
-                const el = DOMS(param, "li", floatBar.get())[0];
+                const el = dom(param, "li", floatBar.get())[0];
                 el.remove();
                 break;
             }

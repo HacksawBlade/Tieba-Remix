@@ -1,6 +1,6 @@
 import UserDialog, { UserDialogOpts } from "@/components/user-dialog.vue";
 import { SupportedComponent } from "@/ex";
-import { DOMS, templateCreate } from "@/lib/elemental";
+import { dom, domrd } from "@/lib/elemental";
 import { assignCSSRule, CSSRule, injectCSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import { forEach, includes, isNil, once } from "lodash-es";
 import { App, Component, ComponentPublicInstance, createApp, h } from "vue";
@@ -23,7 +23,7 @@ export function renderComponent<T extends LiteralObject>(
 
 /** 获取垂直滚动条的宽度。对应的 CSS 变量为 `--scrollbar-width` */
 export const scrollbarWidth = once(function () {
-    const temp = templateCreate("div");
+    const temp = domrd("div");
     assignCSSRule(temp, {
         width: "100px",
         height: "100px",
@@ -40,15 +40,15 @@ export const scrollbarWidth = once(function () {
 
 export function renderPage(root: Component, rootProps?: LiteralObject) {
     if (document.getElementsByTagName("body").length === 0) {
-        document.documentElement.appendChild(templateCreate("body"));
+        document.documentElement.appendChild(domrd("body"));
     }
 
     removeDefault();
 
-    const page = templateCreate("div", { id: "remixed-page" });
+    const page = domrd("div", { id: "remixed-page" });
     document.body.insertBefore(page, document.body.firstChild);
 
-    document.body.appendChild(templateCreate("div", {
+    document.body.appendChild(domrd("div", {
         "id": "carousel_wrap",
     }));
 
@@ -60,10 +60,10 @@ export function renderPage(root: Component, rootProps?: LiteralObject) {
 }
 
 export function createRenderWrapper(id: string, style?: CSSRule) {
-    let wrapper = DOMS(true, `#${id}`, "div");
+    let wrapper = dom(true, `#${id}`, "div");
     return () => {
         if (isNil(wrapper)) {
-            wrapper = document.body.appendChild(templateCreate("div", {
+            wrapper = document.body.appendChild(domrd("div", {
                 id,
                 style: parseCSSRule(style ?? {} as CSSRule),
             }));
@@ -112,7 +112,7 @@ export function renderDialog<
     events?.beforeRender?.();
 
     const dialogWrapper = document.body.appendChild(
-        templateCreate("div", { class: "dialog-wrapper" })
+        domrd("div", { class: "dialog-wrapper" })
     );
     const dialogApp = createApp(content, {
         ...opts,
@@ -120,7 +120,7 @@ export function renderDialog<
             events?.beforeUnload?.(rendered);
 
             dialogApp.unmount();
-            if (DOMS("[aria-modal]").length === 0) {
+            if (dom("[aria-modal]").length === 0) {
                 document.body.removeAttribute("no-scrollbar");
                 document.body.style.paddingRight = "";
             }

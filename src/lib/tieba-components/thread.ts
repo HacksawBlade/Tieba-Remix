@@ -1,7 +1,6 @@
 import { defaults, map } from "lodash-es";
-import { DOMS } from "../elemental";
-import { TiebaForum } from "./forum";
 import { transEmojiFromDOMString } from "../api/tieba";
+import { TiebaForum } from "./forum";
 
 export interface ThreadContent {
     post: HTMLDivElement;
@@ -85,20 +84,20 @@ export function threadParser(param: Document | string): TiebaThread {
     else
         dom = param;
 
-    const postWrappers = DOMS(".l_post", "div", dom.body);
-    const contents = DOMS(".d_post_content", "div", dom.body);
-    const dAuthors = DOMS(".d_author", "div", dom.body);
-    const avatars = DOMS(".p_author_face", "a", dom.body);
-    const nameAnchors = DOMS(".p_author_name", "a", dom.body);
-    const levels = DOMS(".d_badge_lv", "div", dom.body);
-    const badgeTitles = DOMS(".d_badge_title", "div", dom.body);
+    const postWrappers = dom(".l_post", "div", dom.body);
+    const contents = dom(".d_post_content", "div", dom.body);
+    const dAuthors = dom(".d_author", "div", dom.body);
+    const avatars = dom(".p_author_face", "a", dom.body);
+    const nameAnchors = dom(".p_author_name", "a", dom.body);
+    const levels = dom(".d_badge_lv", "div", dom.body);
+    const badgeTitles = dom(".d_badge_title", "div", dom.body);
 
-    const replyButtons = DOMS(".lzl_link_unfold", "a", dom.body);
+    const replyButtons = dom(".lzl_link_unfold", "a", dom.body);
 
-    const locations = map(DOMS(".post-tail-wrap span:first-child, .ip-location", "span", dom.body), el => el.innerText);
-    const platforms = map(DOMS(".tail-info a, .p_tail_wap", "a", dom.body), el => el.innerText);
-    const floors = map(DOMS(".j_jb_ele + .tail-info + .tail-info, .p_tail li:first-child span", "span", dom.body), el => el.innerText);
-    const times = map(DOMS(".post-tail-wrap span:nth-last-child(2), .p_tail li:last-child span", "span", dom.body), el => el.innerText);
+    const locations = map(dom(".post-tail-wrap span:first-child, .ip-location", "span", dom.body), el => el.innerText);
+    const platforms = map(dom(".tail-info a, .p_tail_wap", "a", dom.body), el => el.innerText);
+    const floors = map(dom(".j_jb_ele + .tail-info + .tail-info, .p_tail li:first-child span", "span", dom.body), el => el.innerText);
+    const times = map(dom(".post-tail-wrap span:nth-last-child(2), .p_tail li:last-child span", "span", dom.body), el => el.innerText);
 
     const threadContents: ThreadContent[] = [];
 
@@ -111,7 +110,7 @@ export function threadParser(param: Document | string): TiebaThread {
             post: contents[i],
             replyButton: replyButtons[i],
             dataField: defaults(postWrappers[i].getAttribute("data-field"), ""),
-            isLouzhu: DOMS(".louzhubiaoshi_wrap", dAuthors[i]).length > 0,
+            isLouzhu: dom(".louzhubiaoshi_wrap", dAuthors[i]).length > 0,
 
             profile: {
                 avatar: avatars[i],
@@ -129,12 +128,12 @@ export function threadParser(param: Document | string): TiebaThread {
     }
 
     const thread: TiebaThread = {
-        displayWrapper: DOMS(".wrap2", "div", dom.body)[0],
+        displayWrapper: dom(".wrap2", "div", dom.body)[0],
         title: PageData.thread.title,
-        reply: parseInt(DOMS(".l_reply_num span:nth-child(1)", "span", dom.body)[0].innerText),
+        reply: parseInt(dom(".l_reply_num span:nth-child(1)", "span", dom.body)[0].innerText),
         pages: PageData.pager.total_page,
-        lzOnlyButton: DOMS("#lzonly_cntn", "a", dom.body)[0],
-        favorButton: DOMS(".j_favor", "a", dom.body)[0],
+        lzOnlyButton: dom("#lzonly_cntn", "a", dom.body)[0],
+        favorButton: dom(".j_favor", "a", dom.body)[0],
 
         cotents: threadContents,
         forum: {
@@ -145,17 +144,17 @@ export function threadParser(param: Document | string): TiebaThread {
             },
 
             components: {
-                nameAnchor: DOMS(".card_title_fname", "a", dom.body)[0],
-                iconContainer: DOMS(".card_head a, .plat_picbox", "a", dom.body)[0],
-                followButton: DOMS(".card_head .focus_btn", "a", dom.body)[0],
-                signButton: DOMS(".j_sign_box", "a", dom.body)[0],
+                nameAnchor: dom(".card_title_fname", "a", dom.body)[0],
+                iconContainer: dom(".card_head a, .plat_picbox", "a", dom.body)[0],
+                followButton: dom(".card_head .focus_btn", "a", dom.body)[0],
+                signButton: dom(".j_sign_box", "a", dom.body)[0],
             },
         },
         pager: {
-            listPager: DOMS(".pb_list_pager", "li", dom.body)[0],
+            listPager: dom(".pb_list_pager", "li", dom.body)[0],
             jumper: {
-                textbox: DOMS(".jump_input_bright", "input", dom.body)[0],
-                submitButton: DOMS(".jump_btn_bright", "button", dom.body)[0],
+                textbox: dom(".jump_input_bright", "input", dom.body)[0],
+                submitButton: dom(".jump_btn_bright", "button", dom.body)[0],
             },
         },
     };

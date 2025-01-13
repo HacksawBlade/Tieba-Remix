@@ -1,8 +1,8 @@
 import toastVue, { ToastProps } from "@/components/utils/toast.vue";
 import { App, createApp } from "vue";
-import { templateCreate } from "../elemental";
-import { Queue } from "../utils/queue";
+import { domrd } from "../elemental";
 import { perfProfile } from "../user-values";
+import { Queue } from "../utils/queue";
 
 /** toast 组件实例 */
 export let publicToastInstance: App<Element>;
@@ -34,7 +34,7 @@ function renderToast(toastProps: ToastProps) {
 
     // id 名带 "toast" 会被 AdBlock 直接暴力隐藏
     if (!document.getElementById("t-wrapper"/* toast-wrapper */)) {
-        document.body.insertBefore(templateCreate("div", {
+        document.body.insertBefore(domrd("div", {
             "id": "t-wrapper",
         }), document.body.firstChild);
     }

@@ -2,7 +2,7 @@ import HeaderProgress, { HeaderProgressProps } from "@/components/header-progres
 import ImagesViewer, { ImagesViewerOpts } from "@/components/images-viewer.vue";
 import { getFloatCoord } from "@/lib/render/layout/float";
 import { renderDialog } from ".";
-import { DOMS } from "../elemental";
+import { dom } from "../elemental";
 import { waitUntil } from "../utils";
 import { appendJSX, insertJSX } from "./jsx-extension";
 
@@ -34,13 +34,13 @@ export function headerProgress(props: HeaderProgressProps, delay = 2000, timeout
 export function bindFloatMessage(target: HTMLElement, message: string, delay = 500) {
     const CursorMargin = 4;
 
-    if (DOMS(".float-message").length <= 0) {
+    if (dom(".float-message").length <= 0) {
         appendJSX(
             <div class="float-message">
                 <div class="float-content"></div>
             </div>, document.body);
     }
-    const floatMessage = DOMS(true, ".float-message", "div");
+    const floatMessage = dom(true, ".float-message", "div");
     let timeout = -1;
 
     target.addEventListener("mouseenter", function () {

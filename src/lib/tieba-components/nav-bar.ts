@@ -1,17 +1,17 @@
 import { TiebaComponent } from "../api/abstract";
-import { DOMS } from "../elemental";
+import { dom } from "../elemental";
 
 export class NavBar extends TiebaComponent<"div"> {
     public leftContainer() {
-        return DOMS(".left-container", "div", this.get())[0];
+        return dom(".left-container", "div", this.get())[0];
     }
 
     public middleContainer() {
-        return DOMS(".middle-container", "div", this.get())[0];
+        return dom(".middle-container", "div", this.get())[0];
     }
 
     public rightContainer() {
-        return DOMS(".right-container", "div", this.get())[0];
+        return dom(".right-container", "div", this.get())[0];
     }
 }
 

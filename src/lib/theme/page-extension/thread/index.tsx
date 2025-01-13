@@ -4,7 +4,7 @@ import TogglePanel, { TogglePanelProps } from "@/components/toggle-panel.vue";
 import UserButton from "@/components/utils/user-button.vue";
 import { currentPageType } from "@/lib/api/remixed";
 import { levelToClass } from "@/lib/api/tieba";
-import { DOMS, templateCreate } from "@/lib/elemental";
+import { dom, domrd } from "@/lib/elemental";
 import { CSSRule, injectCSSList, parseCSSRule } from "@/lib/elemental/styles";
 import { threadCommentsObserver, threadFloorsObserver } from "@/lib/observers";
 import { renderDialog } from "@/lib/render";
@@ -42,20 +42,20 @@ export default async function () {
                         icon: "favorite",
                         name: "收藏",
                         defaultValue: (function () {
-                            return DOMS(true, ".j_favor, #j_favthread .p_favthr_main").innerText === "收藏" ? false : true;
+                            return dom(true, ".j_favor, #j_favthread .p_favthr_main").innerText === "收藏" ? false : true;
                         })(),
                         event() {
-                            DOMS(true, ".j_favor, #j_favthread .p_favthr_main").click();
+                            dom(true, ".j_favor, #j_favthread .p_favthr_main").click();
                         },
                     },
                     {
                         icon: "face_6",
                         name: "只看楼主",
                         defaultValue: (function () {
-                            return DOMS(true, "#lzonly_cntn").innerText === "只看楼主" ? false : true;
+                            return dom(true, "#lzonly_cntn").innerText === "只看楼主" ? false : true;
                         })(),
                         event() {
-                            DOMS(true, "#lzonly_cntn").click();
+                            dom(true, "#lzonly_cntn").click();
                         },
                     },
                     {
@@ -71,7 +71,7 @@ export default async function () {
             });
         }, "module-settings", "menu");
 
-        document.body.insertBefore(templateCreate("div", {
+        document.body.insertBefore(domrd("div", {
             class: "vue-module-control",
             style: "display: none;",
         }), document.body.firstChild);
@@ -79,8 +79,8 @@ export default async function () {
 
     // const content = await waitUntil(() => !isNil(DOMS(true, ".content")))
     //     .then(() => DOMS(true, ".content", "div"));
-    const pbContent = await waitUntil(() => !isNil(DOMS(true, "#pb_content")))
-        .then(() => DOMS(true, "#pb_content", "div"));
+    const pbContent = await waitUntil(() => !isNil(dom(true, "#pb_content")))
+        .then(() => dom(true, "#pb_content", "div"));
 
     if (perfProfile.get() === "performance" && experimental.get().moreBlurEffect) {
         pbContent.classList.add("blur-effect");
@@ -89,8 +89,8 @@ export default async function () {
 
     createContents();
     async function createContents() {
-        const threadList = await waitUntil(() => !isNil(DOMS(true, "#j_p_postlist")))
-            .then(() => DOMS(true, "#j_p_postlist"));
+        const threadList = await waitUntil(() => !isNil(dom(true, "#j_p_postlist")))
+            .then(() => dom(true, "#j_p_postlist"));
 
         threadList.classList.add("content-wrapper");
 
@@ -111,34 +111,34 @@ export default async function () {
                         {/* {PageData.user.is_like ? <UserButton class="outline-icon forum-button sign-in-button" shadow-border>{PageData.is_sign_in ? "assignment_turned_in" : "assignment"}</UserButton> : null} */}
                     </div>
                 </UserButton>
-            </div>, DOMS(true, ".content"), DOMS(true, "#pb_content"));
+            </div>, dom(true, ".content"), dom(true, "#pb_content"));
 
         // 绑定事件
-        bindFloatMessage(DOMS(true, ".forum-wrapper-button"),
+        bindFloatMessage(dom(true, ".forum-wrapper-button"),
             `关注 ${PageData.forum.member_count}，帖子 ${PageData.forum.post_num}`);
-        DOMS(true, ".add-forum-button", "button").addEventListener("click", function () {
-            DOMS(true, "#j_head_focus_btn", "button").click();
+        dom(true, ".add-forum-button", "button").addEventListener("click", function () {
+            dom(true, "#j_head_focus_btn", "button").click();
         });
-        DOMS(true, ".sign-in-button", "button")?.addEventListener("click", function () {
-            DOMS(true, ".j_signbtn", "button").click();
+        dom(true, ".sign-in-button", "button")?.addEventListener("click", function () {
+            dom(true, ".j_signbtn", "button").click();
         });
 
         threadFloorsObserver.addEvent(function () {
-            if (DOMS(".d_author").length === 0) return;
+            if (dom(".d_author").length === 0) return;
 
             // TODO: performance
             thread = threadParser();
-            forEach(DOMS(".d_post_content_main", "div", threadList), (floor, i) => {
+            forEach(dom(".d_post_content_main", "div", threadList), (floor, i) => {
                 const authorContainer = createAuthorContainer(i);
                 floor.insertBefore(authorContainer, floor.firstChild);
             });
 
             // 去除左侧用户栏
-            forEach(DOMS(".d_author"), el => el.remove());
+            forEach(dom(".d_author"), el => el.remove());
         });
 
         function createAuthorContainer(index: number) {
-            const authorContainer = templateCreate("div", {
+            const authorContainer = domrd("div", {
                 class: "author-container",
             });
 
@@ -227,7 +227,7 @@ export default async function () {
 
         // 去除楼中楼用户发言的冒号
         threadCommentsObserver.addEvent(() => {
-            forEach(DOMS(".lzl_cnt"), el => {
+            forEach(dom(".lzl_cnt"), el => {
                 forEach(el.childNodes, node => {
                     if (node)
                         node.nodeType === 3 ? node.remove() : undefined;
@@ -282,7 +282,7 @@ export default async function () {
     createTextbox();
     async function createTextbox() {
         await waitUntil(() => !isNil(floatBar.get()));
-        await waitUntil(() => !isNil(DOMS(true, "#ueditor_replace")));
+        await waitUntil(() => !isNil(dom(true, "#ueditor_replace")));
 
         if (!some(floatBar.buttons(), { type: "post" })) {
             floatBar.add("post", showEditor, undefined, undefined, 2);
@@ -305,9 +305,9 @@ export default async function () {
 
         function showEditor() {
             const ueditor = (function () {
-                if (DOMS(".edui-container").length > 0)
-                    return DOMS(true, ".edui-container");
-                return DOMS(true, "#ueditor_replace");
+                if (dom(".edui-container").length > 0)
+                    return dom(true, ".edui-container");
+                return dom(true, "#ueditor_replace");
             })();
             renderDialog(<ThreadEditor ueditor={ueditor} type={"reply"} />);
         }

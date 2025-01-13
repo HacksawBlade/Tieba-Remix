@@ -1,4 +1,4 @@
-import { DOMS } from "@/lib/elemental";
+import { dom } from "@/lib/elemental";
 import { threadCommentsObserver } from "@/lib/observers";
 import { forEach } from "lodash-es";
 
@@ -29,7 +29,7 @@ function main(): void {
         addBiliLinks(".lzl_cnt .lzl_content_main");
 
         function addBiliLinks(selector: string): void {
-            forEach(DOMS(selector), (elem) => {
+            forEach(dom(selector), (elem) => {
                 if (elem.classList.contains(LINKED_CLASS)) return;
                 elem.classList.add(LINKED_CLASS);
 

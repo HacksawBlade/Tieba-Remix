@@ -39,7 +39,7 @@
 <script lang="ts" setup>
 import { checkUpdateAndNotify, getResource } from "@/lib/api/remixed";
 import { tiebaAPI } from "@/lib/api/tieba";
-import { DOMS } from "@/lib/elemental";
+import { dom } from "@/lib/elemental";
 import { renderDialog } from "@/lib/render";
 import { getFloatCoord } from "@/lib/render/layout/float";
 import { messageBox } from "@/lib/render/message-box";
@@ -88,7 +88,7 @@ async function init() {
         loadNavMenuContent();
     });
 
-    forEach(DOMS(".menu-trigger", "button", DOMS(true, "#nav-bar")), el => {
+    forEach(dom(".menu-trigger", "button", dom(true, "#nav-bar")), el => {
         el.addEventListener("mousemove", function (e) {
             e.stopPropagation();
             const menu = el.lastElementChild as HTMLElement;
@@ -136,8 +136,8 @@ async function init() {
 }
 
 async function login() {
-    const loginButton = DOMS(".u_login");
-    const directLoginButton = DOMS("#TANGRAM__PSP_24__submit");
+    const loginButton = dom(".u_login");
+    const directLoginButton = dom("#TANGRAM__PSP_24__submit");
 
     if (directLoginButton.length > 0) {
         const confirmDirect = await messageBox({
@@ -157,7 +157,7 @@ async function login() {
 
     function regularLogin() {
         loginButton.length > 0
-            ? DOMS("a", loginButton[0])[0].click()
+            ? dom("a", loginButton[0])[0].click()
             : cannotLogin();
     }
 
@@ -236,7 +236,7 @@ function loadNavMenuContent() {
         ? userMenu.value.push("separator", {
             title: "退出登录",
             click() {
-                DOMS("a", "a", DOMS(".u_logout")[0])[0].click();
+                dom("a", "a", dom(".u_logout")[0])[0].click();
             },
         })
         : userMenu.value.push("separator", {

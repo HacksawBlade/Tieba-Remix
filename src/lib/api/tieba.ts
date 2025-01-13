@@ -1,4 +1,4 @@
-import { DOMS } from "@/lib/elemental";
+import { dom } from "@/lib/elemental";
 import { requestBody, requestInstance } from "@/lib/utils";
 import { defaultTo, forEach, join, split } from "lodash-es";
 
@@ -385,11 +385,11 @@ export interface OneKeySignResponse extends TiebaResponse1 {
  */
 export function parsePostFromElement(elem: Element): TiebaPost {
     // console.log("🚀 ~ file: api/tieba.ts:19 ~ parsePostFromElement ~ elem:", elem);
-    const titleTagWrapperAnch = DOMS(".title-tag-wraper a", "a", elem)[0];
+    const titleTagWrapperAnch = dom(".title-tag-wraper a", "a", elem)[0];
     const threadNameWrapper = elem.getElementsByClassName("thread-name-wraper")[0];
     const threadNameWrapperAnch = threadNameWrapper.getElementsByTagName("a")[0];
-    const listPostNum = DOMS(".list-post-num em", threadNameWrapper)[0];
-    const imgs = DOMS("img:not(.nicknameEmoji)", "img", elem);
+    const listPostNum = dom(".list-post-num em", threadNameWrapper)[0];
+    const imgs = dom("img:not(.nicknameEmoji)", "img", elem);
     const nReply = elem.getElementsByClassName("n_reply")[0];
     const nReplyAnch = nReply.getElementsByTagName("a")[0];
 

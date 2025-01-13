@@ -3,7 +3,7 @@
  * @HacksawBlade
 */
 
-import { DOMS, fadeInElems, fadeInLoad } from "@/lib/elemental";
+import { dom, fadeInElems, fadeInLoad } from "@/lib/elemental";
 import { injectCSSList, injectCSSRule } from "@/lib/elemental/styles";
 import { threadFloorsObserver } from "@/lib/observers";
 import { defaults } from "lodash-es";
@@ -63,14 +63,14 @@ function main(): void {
 
     document.addEventListener("DOMContentLoaded", () => {
         // 修改元素
-        DOMS(".post-tail-wrap .icon-jubao").forEach(elem => {
+        dom(".post-tail-wrap .icon-jubao").forEach(elem => {
             elem.removeAttribute("src");
             elem.after("举报");
         });
 
         // 远古用户没有等级则隐藏等级标签
         threadFloorsObserver.addEvent(() => {
-            DOMS(".d_badge_lv").forEach(elem => {
+            dom(".d_badge_lv").forEach(elem => {
                 if (elem.textContent === "") {
                     let parent = elem;
                     while (!parent.classList.contains("l_badge")) {
@@ -95,7 +95,7 @@ function main(): void {
             const lvlYellow = `${lvlClassHead}yellow`;
             const lvlOrange = `${lvlClassHead}orange`;
 
-            DOMS(
+            dom(
                 ".d_badge_bawu1 .d_badge_lv, .d_badge_bawu2 .d_badge_lv, .badge_index",
             ).forEach(elem => {
                 if (elem.className.indexOf(lvlClassHead) !== -1) return;

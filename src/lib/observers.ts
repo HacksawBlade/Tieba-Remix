@@ -1,5 +1,5 @@
 import { forEach } from "lodash-es";
-import { DOMS } from "./elemental";
+import { dom } from "./elemental";
 
 export class TbObserver {
     constructor(selector: string, options?: MutationObserverInit, initEvent?: keyof WindowEventMap) {
@@ -28,7 +28,7 @@ export class TbObserver {
         }
 
         const observer = new MutationObserver(eventFuncs);
-        const obsElem = DOMS(this.selector)[0];
+        const obsElem = dom(this.selector)[0];
         if (obsElem) observer.observe(obsElem, this.options);
     }
 

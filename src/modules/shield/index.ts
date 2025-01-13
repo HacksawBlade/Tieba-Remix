@@ -1,5 +1,5 @@
 import { UserModuleEx } from "@/ex";
-import { DOMS } from "@/lib/elemental";
+import { dom } from "@/lib/elemental";
 import { TbObserver, forumThreadsObserver, legacyIndexFeedsObserver, threadCommentsObserver, threadFloorsObserver } from "@/lib/observers";
 import { join, map } from "lodash-es";
 import { markRaw } from "vue";
@@ -83,9 +83,9 @@ function shieldElementsBySelector(
     subSelector: string
 ) {
     observer.addEvent(() => {
-        DOMS(parentSelector).forEach(elem => {
+        dom(parentSelector).forEach(elem => {
             let isMatch = false;
-            const content = join(map(DOMS(subSelector, elem), el => el.textContent ?? ""), "\n");
+            const content = join(map(dom(subSelector, elem), el => el.textContent ?? ""), "\n");
 
             for (const sh of shieldList.get()) {
                 if (matchShield(sh, content)) {

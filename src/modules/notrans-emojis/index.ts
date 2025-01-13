@@ -1,4 +1,4 @@
-import { DOMS } from "@/lib/elemental";
+import { dom } from "@/lib/elemental";
 import { forumThreadsObserver, legacyIndexFeedsObserver, threadCommentsObserver } from "@/lib/observers";
 import { forEach, includes } from "lodash-es";
 
@@ -77,7 +77,7 @@ function main() {
     // 看贴页面
     threadCommentsObserver.addEvent(() => {
         try {
-            forEach(DOMS(`
+            forEach(dom(`
                 .p_author_name:has(.nicknameEmoji),
                 .at:has(.nicknameEmoji),
                 .lzl_content_main:has(.nicknameEmoji)
@@ -85,7 +85,7 @@ function main() {
                 updateEmojis(el);
             });
         } catch (error) {
-            forEach(DOMS(".p_author_name, .at, .lzl_content_main"), (el) => {
+            forEach(dom(".p_author_name, .at, .lzl_content_main"), (el) => {
                 if (includes(el.classList, "nicknameEmoji")) {
                     updateEmojis(el);
                 }
@@ -96,14 +96,14 @@ function main() {
     // 首页
     legacyIndexFeedsObserver.addEvent(() => {
         try {
-            forEach(DOMS(`
+            forEach(dom(`
                 .new_list .post_author:has(.nicknameEmoji),
                 .userinfo_username:has(.nicknameEmoji)
             `), (el) => {
                 updateEmojis(el);
             });
         } catch (error) {
-            forEach(DOMS(".newlist .post_author, .userinfo_username"), (el) => {
+            forEach(dom(".newlist .post_author, .userinfo_username"), (el) => {
                 if (includes(el.classList, "nicknameEmoji")) {
                     updateEmojis(el);
                 }
@@ -114,11 +114,11 @@ function main() {
     // 进吧页面
     forumThreadsObserver.addEvent(() => {
         try {
-            forEach(DOMS(".threadlist_author a:has(.nicknameEmoji)"), (el) => {
+            forEach(dom(".threadlist_author a:has(.nicknameEmoji)"), (el) => {
                 updateEmojis(el);
             });
         } catch (error) {
-            forEach(DOMS(".threadlist_author a"), (el) => {
+            forEach(dom(".threadlist_author a"), (el) => {
                 if (includes(el.classList, "nicknameEmoji")) {
                     updateEmojis(el);
                 }

@@ -1,12 +1,12 @@
 import { includes } from "lodash-es";
 import { TiebaComponent } from "../api/abstract";
-import { DOMS } from "../elemental";
+import { dom } from "../elemental";
 
 export type PagerType = "prev" | "next" | "head" | "tail" | "page";
 
 export class Pager extends TiebaComponent<"li"> {
     public allPagerButtons(): Array<HTMLAnchorElement | HTMLSpanElement> {
-        return DOMS("a, .tP", this.get());
+        return dom("a, .tP", this.get());
     }
 
     public getPagerButton(pagerType: PagerType, index = 0) {
@@ -64,8 +64,8 @@ export class Pager extends TiebaComponent<"li"> {
         url.search = newParams.toString();
         history.pushState({}, "", url);
 
-        const jumperBox = DOMS(true, "#jumpPage4, #jumpPage6", "input");
-        const jumperButton = DOMS(true, "#pager_go4, #pager_go6", "button");
+        const jumperBox = dom(true, "#jumpPage4, #jumpPage6", "input");
+        const jumperButton = dom(true, "#pager_go4, #pager_go6", "button");
         jumperBox.value = page.toString();
         jumperButton.click();
     }

@@ -1,7 +1,7 @@
 import { GM_addStyle } from "$";
 import indexVue from "@/components/pages/index.vue";
 import { currentPageType } from "@/lib/api/remixed";
-import { DOMS } from "@/lib/elemental";
+import { dom } from "@/lib/elemental";
 import { parseMultiCSS } from "@/lib/elemental/styles";
 import { renderPage } from "@/lib/render";
 import { pageExtension } from "@/lib/user-values";
@@ -18,8 +18,8 @@ export default async function () {
         },
     }));
 
-    await waitUntil(() => !isNil(DOMS(true, ".wrap1")));
+    await waitUntil(() => !isNil(dom(true, ".wrap1")));
     renderPage(indexVue);
-    DOMS(true, ".wrap1").remove();
+    dom(true, ".wrap1").remove();
     bodyMask.remove();
 }

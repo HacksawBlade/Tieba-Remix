@@ -1,7 +1,7 @@
 import { GM_addStyle } from "$";
 import { findIndex, isNil, join } from "lodash-es";
 import { currentPageType, getResource } from "../api/remixed";
-import { afterHead, templateCreate } from "../elemental";
+import { afterHead, domrd } from "../elemental";
 import { defaultStyle, injectCSSRule, parseMultiCSS, removeCSSRule } from "../elemental/styles";
 import { customBackground, monospaceFonts, themeColor, userFonts, wideScreen } from "../user-values";
 import { waitUntil } from "../utils";
@@ -81,7 +81,7 @@ export async function loadTiebaCSS() {
             break;
     }
 
-    document.head.appendChild(templateCreate("link", {
+    document.head.appendChild(domrd("link", {
         type: "image/icon",
         rel: "shortcut icon",
         href: getResource("/assets/images/main/favicon32.ico"),

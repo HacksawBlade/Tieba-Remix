@@ -1,7 +1,7 @@
 import { SettingContent } from "@/components/settings.vue";
 import { UserModuleEx } from "@/ex";
 import { tiebaAPI } from "@/lib/api/tieba";
-import { DOMS, findParent } from "@/lib/elemental";
+import { dom, findParent } from "@/lib/elemental";
 import { threadCommentsObserver, threadFloorsObserver } from "@/lib/observers";
 import { UserKey } from "@/lib/user-values";
 import { forEach } from "lodash-es";
@@ -53,7 +53,7 @@ const toolkitFeatures = {
     /** 自动展开长图 */
     autoExpand() {
         threadFloorsObserver.addEvent(() => {
-            forEach(DOMS(".replace_tip"), (el) => {
+            forEach(dom(".replace_tip"), (el) => {
                 (el as HTMLDivElement).click();
             });
         });
@@ -82,7 +82,7 @@ const toolkitFeatures = {
         }, { threshold: 0 });
 
         threadCommentsObserver.addEvent(function () {
-            const avatars = DOMS(".lzl_single_post img:not(.BDE_Smiley, [data-loaded])", "img");
+            const avatars = dom(".lzl_single_post img:not(.BDE_Smiley, [data-loaded])", "img");
             avatars.forEach(avatar => observer.observe(avatar));
         });
     },

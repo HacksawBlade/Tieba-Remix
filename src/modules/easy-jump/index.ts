@@ -4,7 +4,7 @@
  * @HacksawBlade
 */
 
-import { DOMS, afterHead } from "@/lib/elemental";
+import { afterHead, dom } from "@/lib/elemental";
 import { injectCSSRule } from "@/lib/elemental/styles";
 import { waitUntil } from "@/lib/utils";
 
@@ -30,8 +30,8 @@ function main() {
         });
     });
 
-    waitUntil(() => DOMS(".link").length > 0).then(function () {
-        const link = DOMS(".link")[0].innerText;
+    waitUntil(() => dom(".link").length > 0).then(function () {
+        const link = dom(".link")[0].innerText;
         location.href = link;
     });
 }
