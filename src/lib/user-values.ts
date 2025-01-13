@@ -26,15 +26,17 @@ const userKeyEvents = ["getter", "setter"] as const;
 type UserKeyEvent = typeof userKeyEvents[number];
 type UserKeyEventsListener<T> = Record<UserKeyEvent, ((value: T) => unknown)>;
 type UserKeyEventsListeners<T> = Record<UserKeyEvent, Array<((value: T) => unknown)>>;
-export class UserKey<T> {
+export class UserKey<T, LegacyType = unknown> {
     public key: string;
     public defaultValue: T;
     private listeners: UserKeyEventsListeners<T>;
+    protected migration?: (maybeLegacy: T | LegacyType) => T;
 
     constructor(
         key: string,
         defaultValue: T,
-        listeners?: Partial<UserKeyEventsListener<T>>
+        listeners?: Partial<UserKeyEventsListener<T>>,
+        migration?: (maybeLegacy: T | LegacyType) => T,
     ) {
         this.key = key;
         this.defaultValue = defaultValue;
@@ -42,6 +44,7 @@ export class UserKey<T> {
             getter: listeners?.getter ? [listeners.getter] : [],
             setter: listeners?.setter ? [listeners.setter] : [],
         };
+        this.migration = migration;
     }
 
     protected dispatchEvent(event: UserKeyEvent, value: T) {
@@ -54,6 +57,7 @@ export class UserKey<T> {
             keys(value).length < keys(this.defaultValue).length) {
             value = merge(this.defaultValue, value);
         }
+        if (this.migration) value = this.migration(value);
         this.dispatchEvent("getter", value);
         return value;
     }
@@ -84,7 +88,7 @@ export class UserKey<T> {
     }
 }
 
-export class UserKeyTS<T> extends UserKey<T> {
+export class UserKeyTS<T, LegacyType = unknown> extends UserKey<T, LegacyType> {
     private defaultInvalid = () => spawnOffsetTS(0, 0, 0, 12);
 
     constructor(
@@ -92,8 +96,9 @@ export class UserKeyTS<T> extends UserKey<T> {
         defaultValue: T,
         invalidfn?: (() => number),
         listeners?: Partial<UserKeyEventsListener<T>>,
+        migration?: (maybeLegacy: T | LegacyType) => T,
     ) {
-        super(key, defaultValue, listeners);
+        super(key, defaultValue, listeners, migration);
         this.defaultInvalid = invalidfn ? invalidfn : this.defaultInvalid;
     }
 
@@ -103,6 +108,7 @@ export class UserKeyTS<T> extends UserKey<T> {
             keys(value).length < keys(this.defaultValue).length) {
             value = merge(this.defaultValue, value);
         }
+        if (this.migration) value = this.migration(value);
         this.dispatchEvent("getter", value);
         return value;
     }
