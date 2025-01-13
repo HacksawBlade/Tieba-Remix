@@ -77,7 +77,7 @@ function matchShield(rule: ShieldRule, str: string): boolean {
  * @param parentSelector 父元素选择器
  * @param subSelector 子元素选择器
  */
-function shieldElementsBySelector(
+function shieldBySelector(
     observer: TbObserver,
     parentSelector: string,
     subSelector: string
@@ -103,13 +103,14 @@ function shieldElementsBySelector(
 
 function main() {
     // 看贴页面
-    shieldElementsBySelector(threadFloorsObserver, ".l_post_bright", ".d_post_content");
-    shieldElementsBySelector(threadFloorsObserver, ".l_post_bright", ".d_name a");
-    shieldElementsBySelector(threadCommentsObserver, ".lzl_single_post", ".lzl_cnt .j_user_card");
+    shieldBySelector(threadFloorsObserver, ".l_post_bright", ".d_post_content");
+    shieldBySelector(threadFloorsObserver, ".l_post_bright", ".d_name a");
+    shieldBySelector(threadFloorsObserver, ".l_post_bright", ".p_author_name");
+    shieldBySelector(threadCommentsObserver, ".lzl_single_post", ".lzl_cnt .j_user_card");
     // 首页动态
-    shieldElementsBySelector(legacyIndexFeedsObserver, ".j_feed_li", ".title, .n_txt");
-    shieldElementsBySelector(legacyIndexFeedsObserver, ".j_feed_li", ".post_author");
+    shieldBySelector(legacyIndexFeedsObserver, ".j_feed_li", ".title, .n_txt");
+    shieldBySelector(legacyIndexFeedsObserver, ".j_feed_li", ".post_author");
     // 进吧页面
-    shieldElementsBySelector(forumThreadsObserver, ".j_thread_list", ".threadlist_title a");
-    shieldElementsBySelector(forumThreadsObserver, ".j_thread_list", ".frs-author-name-wrap");
+    shieldBySelector(forumThreadsObserver, ".j_thread_list", ".threadlist_title a");
+    shieldBySelector(forumThreadsObserver, ".j_thread_list", ".frs-author-name-wrap");
 }
