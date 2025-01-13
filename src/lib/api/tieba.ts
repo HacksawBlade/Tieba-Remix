@@ -385,11 +385,11 @@ export interface OneKeySignResponse extends TiebaResponse1 {
  */
 export function parsePostFromElement(elem: Element): TiebaPost {
     // console.log("🚀 ~ file: api/tieba.ts:19 ~ parsePostFromElement ~ elem:", elem);
-    const titleTagWrapperAnch = dom(".title-tag-wraper a", "a", elem)[0];
+    const titleTagWrapperAnch = dom<"a">(".title-tag-wraper a", elem);
     const threadNameWrapper = elem.getElementsByClassName("thread-name-wraper")[0];
     const threadNameWrapperAnch = threadNameWrapper.getElementsByTagName("a")[0];
-    const listPostNum = dom(".list-post-num em", threadNameWrapper)[0];
-    const imgs = dom("img:not(.nicknameEmoji)", "img", elem);
+    const listPostNum = dom(".list-post-num em", threadNameWrapper);
+    const imgs = dom<"img">("img:not(.nicknameEmoji)", elem, []);
     const nReply = elem.getElementsByClassName("n_reply")[0];
     const nReplyAnch = nReply.getElementsByTagName("a")[0];
 
@@ -408,8 +408,8 @@ export function parsePostFromElement(elem: Element): TiebaPost {
         id: defaultTo(elem.getAttribute("data-thread-id"), ""),
         forum: {
             id: defaultTo(elem.getAttribute("data-forum-id"), ""),
-            name: titleTagWrapperAnch.title,
-            href: titleTagWrapperAnch.href,
+            name: titleTagWrapperAnch?.title ?? "",
+            href: titleTagWrapperAnch?.href ?? "",
         },
         author: {
             portrait: split(nReplyAnch.href, /(\?id=)|&/)[2],
@@ -419,7 +419,7 @@ export function parsePostFromElement(elem: Element): TiebaPost {
         time: defaultTo(elem.getElementsByClassName("time")[0].textContent, ""),
         title: threadNameWrapperAnch.title,
         content: defaultTo(elem.getElementsByClassName("n_txt")[0].textContent, ""),
-        replies: defaultTo(listPostNum.getAttribute("data-num"), 0),
+        replies: defaultTo(listPostNum?.getAttribute("data-num"), 0),
         images: imgArray,
     };
 }

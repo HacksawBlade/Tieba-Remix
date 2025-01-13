@@ -81,11 +81,11 @@ function main() {
                 .p_author_name:has(.nicknameEmoji),
                 .at:has(.nicknameEmoji),
                 .lzl_content_main:has(.nicknameEmoji)
-            `), (el) => {
+            `, []), (el) => {
                 updateEmojis(el);
             });
         } catch (error) {
-            forEach(dom(".p_author_name, .at, .lzl_content_main"), (el) => {
+            forEach(dom(".p_author_name, .at, .lzl_content_main", []), (el) => {
                 if (includes(el.classList, "nicknameEmoji")) {
                     updateEmojis(el);
                 }
@@ -99,11 +99,11 @@ function main() {
             forEach(dom(`
                 .new_list .post_author:has(.nicknameEmoji),
                 .userinfo_username:has(.nicknameEmoji)
-            `), (el) => {
+            `, []), (el) => {
                 updateEmojis(el);
             });
         } catch (error) {
-            forEach(dom(".newlist .post_author, .userinfo_username"), (el) => {
+            forEach(dom(".newlist .post_author, .userinfo_username", []), (el) => {
                 if (includes(el.classList, "nicknameEmoji")) {
                     updateEmojis(el);
                 }
@@ -114,11 +114,11 @@ function main() {
     // 进吧页面
     forumThreadsObserver.addEvent(() => {
         try {
-            forEach(dom(".threadlist_author a:has(.nicknameEmoji)"), (el) => {
+            forEach(dom(".threadlist_author a:has(.nicknameEmoji)", []), (el) => {
                 updateEmojis(el);
             });
         } catch (error) {
-            forEach(dom(".threadlist_author a"), (el) => {
+            forEach(dom(".threadlist_author a", []), (el) => {
                 if (includes(el.classList, "nicknameEmoji")) {
                     updateEmojis(el);
                 }
@@ -126,7 +126,7 @@ function main() {
         }
     });
 
-    function updateEmojis(elem: HTMLElement) {
+    function updateEmojis(elem: Element) {
         const arrIndex = elem.innerHTML.match(indexRegExp);
         arrIndex?.forEach(index => {
             const emoji = emojis[transformed.indexOf(`${index}.png`)];

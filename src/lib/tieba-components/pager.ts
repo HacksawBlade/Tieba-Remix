@@ -6,7 +6,7 @@ export type PagerType = "prev" | "next" | "head" | "tail" | "page";
 
 export class Pager extends TiebaComponent<"li"> {
     public allPagerButtons(): Array<HTMLAnchorElement | HTMLSpanElement> {
-        return dom("a, .tP", this.get());
+        return dom<"a" | "span">("a, .tP", this.get(), []);
     }
 
     public getPagerButton(pagerType: PagerType, index = 0) {
@@ -64,10 +64,10 @@ export class Pager extends TiebaComponent<"li"> {
         url.search = newParams.toString();
         history.pushState({}, "", url);
 
-        const jumperBox = dom(true, "#jumpPage4, #jumpPage6", "input");
-        const jumperButton = dom(true, "#pager_go4, #pager_go6", "button");
-        jumperBox.value = page.toString();
-        jumperButton.click();
+        const jumperBox = dom<"input">("#jumpPage4, #jumpPage6");
+        const jumperButton = dom<"button">("#pager_go4, #pager_go6");
+        if (jumperBox) jumperBox.value = page.toString();
+        jumperButton?.click();
     }
 
     private findMatchingButton(buttons: HTMLElement[], text: string, reverse = false) {
@@ -81,4 +81,4 @@ export class Pager extends TiebaComponent<"li"> {
     }
 }
 
-export const pager = new Pager(".l_pager", "li");
+export const pager = new Pager(".l_pager");

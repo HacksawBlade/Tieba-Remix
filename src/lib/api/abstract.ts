@@ -6,19 +6,17 @@ export interface TiebaAbstract {
 
 export class TiebaComponent<T extends keyof HTMLElementTagNameMap> {
     private selector: string;
-    private type: T;
     private parent?: Element;
 
-    constructor(selector: string, type: T, parent?: Element) {
+    constructor(selector: string, parent?: Element) {
         this.selector = selector;
-        this.type = type;
         this.parent = parent;
     }
 
     public get() {
-        if (!this.parent)
-            return dom(this.selector, this.type)[0];
-        else
-            return dom(this.selector, this.type, this.parent)[0];
+        if (!this.parent) {
+            return dom<T>(this.selector, [])[0];
+        }
+        return dom<T>(this.selector, this.parent, [])[0];
     }
 }

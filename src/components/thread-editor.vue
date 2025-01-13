@@ -15,8 +15,7 @@
 </template>
 
 <script lang="tsx" setup>
-import { dom } from "@/lib/elemental";
-import { waitUntil } from "@/lib/utils";
+import { asyncdom } from "@/lib/elemental";
 import { nextTick, onMounted, ref } from "vue";
 import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
 import UserButton from "./utils/user-button.vue";
@@ -93,25 +92,24 @@ onMounted(async function () {
     originParent.value = props.ueditor.parentElement as HTMLDivElement;
     editorSlot.value.appendChild(props.ueditor);
 
-    await waitUntil(() => dom(".edui-editor-body").length > 0);
-    const toolbar = dom(".edui-toolbar")[0];
-    const editorBody = dom(".edui-editor-body")[0];
+    const toolbar = await asyncdom(".edui-toolbar");
+    const editorBody = await asyncdom(".edui-editor-body");
     if (toolbar.compareDocumentPosition(editorBody) & Node.DOCUMENT_POSITION_FOLLOWING) {
         toolbar.parentNode?.insertBefore(editorBody, toolbar);
     }
-    dom("#ueditor_replace")[0].focus();
+    (await asyncdom<"div">("#ueditor_replace")).focus();
 });
 
-function submit() {
-    dom(".j_submit", "a")[0].click();
+async function submit() {
+    (await asyncdom<"a">(".j_submit")).click();
     unload();
 }
 
-function unload() {
+async function unload() {
     if (!originParent.value) return;
     if (!editorSlot.value) return;
     // 传入的可能是未加载完毕的，归还时一定要完整的
-    originParent.value.appendChild(dom(".edui-container")[0]);
+    originParent.value.appendChild(await asyncdom(".edui-container"));
     dialog.value?.unload();
 }
 </script>

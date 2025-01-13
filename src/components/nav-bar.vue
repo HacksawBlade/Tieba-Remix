@@ -88,17 +88,20 @@ async function init() {
         loadNavMenuContent();
     });
 
-    forEach(dom(".menu-trigger", "button", dom(true, "#nav-bar")), el => {
-        el.addEventListener("mousemove", function (e) {
-            e.stopPropagation();
-            const menu = el.lastElementChild as HTMLElement;
+    const navBarElement = dom("#nav-bar");
+    if (navBarElement) {
+        forEach(dom<"button">(".menu-trigger", navBarElement, []), el => {
+            el.addEventListener("mousemove", function (e) {
+                e.stopPropagation();
+                const menu = el.lastElementChild as HTMLElement;
 
-            const elRect = el.getBoundingClientRect();
-            const menuCoord = getFloatCoord(menu, { x: elRect.left + elRect.width / 2, y: 0 }, "middle");
-            menu.style.left = `${menuCoord.x}px`;
-            menu.style.top = "48px";
+                const elRect = el.getBoundingClientRect();
+                const menuCoord = getFloatCoord(menu, { x: elRect.left + elRect.width / 2, y: 0 }, "middle");
+                menu.style.left = `${menuCoord.x}px`;
+                menu.style.top = "48px";
+            });
         });
-    });
+    }
 
     switch (props.hideMode) {
         case "alwaysFold":
@@ -137,9 +140,9 @@ async function init() {
 
 async function login() {
     const loginButton = dom(".u_login");
-    const directLoginButton = dom("#TANGRAM__PSP_24__submit");
+    const directLoginButton = dom<"a">("#TANGRAM__PSP_24__submit");
 
-    if (directLoginButton.length > 0) {
+    if (directLoginButton) {
         const confirmDirect = await messageBox({
             title: "快速登录",
             content: "检测到快速登录入口，是否尝试直接登录？",
@@ -147,7 +150,7 @@ async function login() {
         });
 
         if (confirmDirect === "positive") {
-            directLoginButton[0].click();
+            directLoginButton.click();
         } else {
             regularLogin();
         }
@@ -156,8 +159,8 @@ async function login() {
     }
 
     function regularLogin() {
-        loginButton.length > 0
-            ? dom("a", loginButton[0])[0].click()
+        loginButton
+            ? dom<"a">("a", loginButton)?.click()
             : cannotLogin();
     }
 
@@ -236,7 +239,12 @@ function loadNavMenuContent() {
         ? userMenu.value.push("separator", {
             title: "退出登录",
             click() {
-                dom("a", "a", dom(".u_logout")[0])[0].click();
+                const logoutButton = dom(".u_logout");
+                if (logoutButton) {
+                    dom<"a">("a", logoutButton)?.click();
+                } else {
+                    toast({ message: "未检测到退出登录入口，请刷新重试。", type: "warning" });
+                }
             },
         })
         : userMenu.value.push("separator", {

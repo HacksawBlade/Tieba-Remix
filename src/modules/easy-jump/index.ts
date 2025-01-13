@@ -4,9 +4,8 @@
  * @HacksawBlade
 */
 
-import { afterHead, dom } from "@/lib/elemental";
+import { afterHead, asyncdom } from "@/lib/elemental";
 import { injectCSSRule } from "@/lib/elemental/styles";
-import { waitUntil } from "@/lib/utils";
 
 export default {
     id: "easy-jump",
@@ -20,7 +19,7 @@ export default {
     entry: main,
 } as UserModule;
 
-function main() {
+async function main() {
     afterHead(function () {
         injectCSSRule("html", {
             backgroundColor: "var(--page-background)",
@@ -30,8 +29,5 @@ function main() {
         });
     });
 
-    waitUntil(() => dom(".link").length > 0).then(function () {
-        const link = dom(".link")[0].innerText;
-        location.href = link;
-    });
+    location.href = (await asyncdom<"a">(".link")).innerText;
 }

@@ -67,7 +67,7 @@ function main(): void {
     }
 
     function createTagsAll() {
-        forEach(dom(".lzl_cnt .at"), (elem) => {
+        forEach(dom(".lzl_cnt .at", []), (elem) => {
             if (elem.classList.contains(TAGGED)) return;
             elem.classList.add(TAGGED);
 
@@ -144,7 +144,7 @@ function main(): void {
             }
         });
 
-        function addTag(elem: HTMLElement, className: string) {
+        function addTag(elem: Element, className: string) {
             elem.appendChild(
                 domrd("div", {
                     class: `${TB_TAG} ${className}`,

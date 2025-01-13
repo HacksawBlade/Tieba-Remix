@@ -22,7 +22,7 @@ export class FloatBar extends TiebaComponent<"ul"> {
      */
     public buttons(): FloatButton[] {
         if (!this.get()) return [];
-        return Array.from(dom(".tbui_aside_fbar_button", "li", floatBar.get())).map(el => ({
+        return Array.from(dom<"li">(".tbui_aside_fbar_button", floatBar.get(), [])).map(el => ({
             el: el,
             type: (function () {
                 for (let i = 0; i < el.classList.length; i++) {
@@ -82,8 +82,8 @@ export class FloatBar extends TiebaComponent<"ul"> {
     public remove(param: string | number) {
         switch (typeof param) {
             case "string": {
-                const el = dom(param, "li", floatBar.get())[0];
-                el.remove();
+                const el = dom<"li">(param, floatBar.get());
+                el?.remove();
                 break;
             }
 
@@ -107,7 +107,7 @@ export interface FloatButton extends TiebaAbstract {
 }
 
 /** 浮动栏 */
-export const floatBar = new FloatBar(".tbui_aside_float_bar", "ul");
+export const floatBar = new FloatBar(".tbui_aside_float_bar");
 
 // /**
 //  * 获取当前页面的 float buttons

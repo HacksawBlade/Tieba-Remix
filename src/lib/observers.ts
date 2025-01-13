@@ -28,7 +28,7 @@ export class TbObserver {
         }
 
         const observer = new MutationObserver(eventFuncs);
-        const obsElem = dom(this.selector)[0];
+        const obsElem = dom(this.selector);
         if (obsElem) observer.observe(obsElem, this.options);
     }
 

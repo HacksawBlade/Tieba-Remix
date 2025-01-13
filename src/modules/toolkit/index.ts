@@ -53,8 +53,8 @@ const toolkitFeatures = {
     /** 自动展开长图 */
     autoExpand() {
         threadFloorsObserver.addEvent(() => {
-            forEach(dom(".replace_tip"), (el) => {
-                (el as HTMLDivElement).click();
+            forEach(dom<"div">(".replace_tip", []), (el) => {
+                el.click();
             });
         });
     },
@@ -82,7 +82,7 @@ const toolkitFeatures = {
         }, { threshold: 0 });
 
         threadCommentsObserver.addEvent(function () {
-            const avatars = dom(".lzl_single_post img:not(.BDE_Smiley, [data-loaded])", "img");
+            const avatars = dom<"img">(".lzl_single_post img:not(.BDE_Smiley, [data-loaded])", []);
             avatars.forEach(avatar => observer.observe(avatar));
         });
     },

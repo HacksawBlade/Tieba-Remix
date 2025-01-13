@@ -83,9 +83,9 @@ function shieldElementsBySelector(
     subSelector: string
 ) {
     observer.addEvent(() => {
-        dom(parentSelector).forEach(elem => {
+        dom(parentSelector, []).forEach(elem => {
             let isMatch = false;
-            const content = join(map(dom(subSelector, elem), el => el.textContent ?? ""), "\n");
+            const content = join(map(dom(subSelector, elem, []), el => el.textContent ?? ""), "\n");
 
             for (const sh of shieldList.get()) {
                 if (matchShield(sh, content)) {
@@ -95,7 +95,7 @@ function shieldElementsBySelector(
             }
 
             if (isMatch) {
-                elem.style.display = "none";
+                (elem as HTMLElement).style.display = "none";
             }
         });
     });

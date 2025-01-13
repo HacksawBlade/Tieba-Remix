@@ -76,20 +76,20 @@ export interface PostDataField {
 }
 
 export function threadParser(): TiebaThread {
-    const postWrappers = dom(".l_post", "div");
-    const contents = dom(".d_post_content", "div");
-    const dAuthors = dom(".d_author", "div");
-    const avatars = dom(".p_author_face", "a");
-    const nameAnchors = dom(".p_author_name", "a");
-    const levels = dom(".d_badge_lv", "div");
-    const badgeTitles = dom(".d_badge_title", "div");
+    const postWrappers = dom<"div">(".l_post", []);
+    const contents = dom<"div">(".d_post_content", []);
+    const dAuthors = dom<"div">(".d_author", []);
+    const avatars = dom<"a">(".p_author_face", []);
+    const nameAnchors = dom<"a">(".p_author_name", []);
+    const levels = dom<"div">(".d_badge_lv", []);
+    const badgeTitles = dom<"div">(".d_badge_title", []);
 
-    const replyButtons = dom(".lzl_link_unfold", "a");
+    const replyButtons = dom<"a">(".lzl_link_unfold", []);
 
-    const locations = map(dom(".post-tail-wrap span:first-child, .ip-location", "span"), el => el.innerText);
-    const platforms = map(dom(".tail-info a, .p_tail_wap", "a"), el => el.innerText);
-    const floors = map(dom(".j_jb_ele + .tail-info + .tail-info, .p_tail li:first-child span", "span"), el => el.innerText);
-    const times = map(dom(".post-tail-wrap span:nth-last-child(2), .p_tail li:last-child span", "span"), el => el.innerText);
+    const locations = map(dom<"span">(".post-tail-wrap span:first-child, .ip-location", []), el => el.innerText);
+    const platforms = map(dom<"a">(".tail-info a, .p_tail_wap", []), el => el.innerText);
+    const floors = map(dom<"span">(".j_jb_ele + .tail-info + .tail-info, .p_tail li:first-child span", []), el => el.innerText);
+    const times = map(dom<"span">(".post-tail-wrap span:nth-last-child(2), .p_tail li:last-child span", []), el => el.innerText);
 
     const threadContents: ThreadContent[] = [];
 
@@ -102,7 +102,7 @@ export function threadParser(): TiebaThread {
             post: contents[i],
             replyButton: replyButtons[i],
             dataField: defaults(postWrappers[i].getAttribute("data-field"), ""),
-            isLouzhu: dom(".louzhubiaoshi_wrap", dAuthors[i]).length > 0,
+            isLouzhu: !!dom(".louzhubiaoshi_wrap", dAuthors[i]),
 
             profile: {
                 avatar: avatars[i],
@@ -120,12 +120,12 @@ export function threadParser(): TiebaThread {
     }
 
     const thread: TiebaThread = {
-        displayWrapper: dom(true, ".wrap2", "div"),
+        displayWrapper: dom<"div">(".wrap2", [])[0],
         title: PageData.thread.title,
-        reply: parseInt(dom(true, ".l_reply_num span:nth-child(1)", "span").innerText),
+        reply: +(dom<"span">(".l_reply_num span:nth-child(1)")?.innerText ?? 0),
         pages: PageData.pager.total_page,
-        lzOnlyButton: dom(true, "#lzonly_cntn", "a"),
-        favorButton: dom(true, ".j_favor", "a"),
+        lzOnlyButton: dom<"a">("#lzonly_cntn", [])[0],
+        favorButton: dom<"a">(".j_favor", [])[0],
 
         cotents: threadContents,
         forum: {
@@ -136,17 +136,17 @@ export function threadParser(): TiebaThread {
             },
 
             components: {
-                nameAnchor: dom(true, ".card_title_fname", "a"),
-                iconContainer: dom(true, ".card_head a, .plat_picbox", "a"),
-                followButton: dom(true, ".card_head .focus_btn", "a"),
-                signButton: dom(true, ".j_sign_box", "a"),
+                nameAnchor: dom<"a">(".card_title_fname", [])[0],
+                iconContainer: dom<"a">(".card_head a, .plat_picbox", [])[0],
+                followButton: dom<"a">(".card_head .focus_btn", [])[0],
+                signButton: dom<"a">(".j_sign_box", [])[0],
             },
         },
         pager: {
-            listPager: dom(true, ".pb_list_pager", "li"),
+            listPager: dom<"li">(".pb_list_pager", [])[0],
             jumper: {
-                textbox: dom(true, ".jump_input_bright", "input"),
-                submitButton: dom(true, ".jump_btn_bright", "button"),
+                textbox: dom<"input">(".jump_input_bright", [])[0],
+                submitButton: dom<"button">(".jump_btn_bright", [])[0],
             },
         },
     };

@@ -60,7 +60,7 @@ export function renderPage(root: Component, rootProps?: LiteralObject) {
 }
 
 export function createRenderWrapper(id: string, style?: CSSRule) {
-    let wrapper = dom(true, `#${id}`, "div");
+    let wrapper = dom<"div">(`#${id}`);
     return () => {
         if (isNil(wrapper)) {
             wrapper = document.body.appendChild(domrd("div", {
@@ -120,7 +120,7 @@ export function renderDialog<
             events?.beforeUnload?.(rendered);
 
             dialogApp.unmount();
-            if (dom("[aria-modal]").length === 0) {
+            if (dom("[aria-modal]", []).length === 0) {
                 document.body.removeAttribute("no-scrollbar");
                 document.body.style.paddingRight = "";
             }

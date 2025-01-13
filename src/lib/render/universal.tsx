@@ -34,13 +34,15 @@ export function headerProgress(props: HeaderProgressProps, delay = 2000, timeout
 export function bindFloatMessage(target: HTMLElement, message: string, delay = 500) {
     const CursorMargin = 4;
 
-    if (dom(".float-message").length <= 0) {
+    if (dom(".float-message", []).length <= 0) {
         appendJSX(
             <div class="float-message">
                 <div class="float-content"></div>
             </div>, document.body);
     }
-    const floatMessage = dom(true, ".float-message", "div");
+    const floatMessage = dom<"div">(".float-message");
+    if (!floatMessage) return;
+
     let timeout = -1;
 
     target.addEventListener("mouseenter", function () {
