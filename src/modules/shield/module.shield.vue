@@ -1,31 +1,26 @@
 <template>
     <div class="shield-container">
         <div v-if="shieldListRef.length > 0" class="words-container">
-            <UserButton v-for="sh in shieldListRef" class="shield-elem"
-                :class="{ 'content-scope': sh.scope === 'posts', 'user-scope': sh.scope === 'users' }">
+            <UserButton v-for="(sh, index) in shieldListRef" class="shield-elem" :class="{
+                'content-scope': sh.scope === 'posts',
+                'user-scope': sh.scope === 'users',
+                'disabled': !sh.toggle,
+            }" @click="editRule(sh, index)">
                 <div class="icon">{{ sh.scope === "posts" ? "chat" : "account_circle" }}</div>
-                {{ sh.rule }}
+                <p class="content">{{ sh.content }}</p>
             </UserButton>
             <UserButton class="remove-all shield-elem icon" @click="removeAllWithConfirm">delete</UserButton>
         </div>
         <div v-else class="empty-list-container">当前没有记录屏蔽规则</div>
 
         <div class="shield-controls">
-            <UserTextbox v-model="inputRule" :muti-lines="true" class="shield-input" placeholder="输入屏蔽规则"
+            <UserTextbox v-model="inputRule" muti-lines class="shield-input" placeholder="输入屏蔽规则，按下 [ENTER] 提交。"
                 @keypress="inputKeyPress">
             </UserTextbox>
 
             <div class="submit-controls">
-                <div class="regex-check">
-                    <input v-model="useRegex" id="use-regex" type="checkbox">
-                    <label for="use-regex">正则表达式</label>
-                </div>
-
-                <div class="user-scope">
-                    <input v-model="scope" id="user-scope" type="checkbox">
-                    <label for="user-scope">屏蔽用户名</label>
-                </div>
-
+                <UserCheck v-model="useRegex" id="use-regex" text="正则表达式" />
+                <UserCheck v-model="userScope" id="user-scope" text="屏蔽用户名" />
                 <UserButton class="submit-button" :shadow-border="true" :theme-style="true" @click="updateShieldList">确定
                 </UserButton>
             </div>
@@ -33,16 +28,20 @@
     </div>
 </template>
 
-<script lang="ts" setup>
-import { ref } from "vue";
-import UserTextbox from "@/components/utils/user-textbox.vue";
+<script lang="tsx" setup>
+import UserCheck from "@/components/user-check.vue";
 import UserButton from "@/components/utils/user-button.vue";
-import { ShieldObject, shieldList } from "./shield";
+import UserTextbox from "@/components/utils/user-textbox.vue";
+import { renderDialog } from "@/lib/render";
+import { messageBox } from "@/lib/render/message-box";
+import { ref } from "vue";
+import { ShieldRule, shieldList } from "./shield";
+import ShieldEditor from "./shield-editor.vue";
 
-const shieldListRef = ref(shieldList.get());
+const shieldListRef = ref<ShieldRule[]>(shieldList.get());
 const inputRule = ref("");
 const useRegex = ref(false);
-const scope = ref<ShieldObject["scope"]>("posts");
+const userScope = ref(false);
 
 function inputKeyPress(e: KeyboardEvent) {
     if (e.key === "Enter") {
@@ -51,13 +50,30 @@ function inputKeyPress(e: KeyboardEvent) {
     }
 }
 
+function editRule(rule: ShieldRule, index: number) {
+    renderDialog(ShieldEditor, { rule }, {
+        unloaded(rule?: ShieldRule) {
+            if (!rule) {
+                shieldListRef.value.splice(index, 1);
+                shieldList.set(shieldListRef.value);
+                return;
+            }
+            shieldListRef.value[index] = rule;
+            shieldList.set(shieldListRef.value);
+        },
+    });
+}
+
 function removeAll() {
     shieldListRef.value.length = 0;
     shieldList.remove();
 }
 
-function removeAllWithConfirm() {
-    if (confirm("确定要删除所有屏蔽规则吗？")) {
+async function removeAllWithConfirm() {
+    if (await messageBox({
+        content: "该操作将无法恢复，确定要删除所有屏蔽规则吗？",
+        type: "forceTrueFalse",
+    }) === "positive") {
         removeAll();
     }
 }
@@ -65,13 +81,13 @@ function removeAllWithConfirm() {
 function updateShieldList() {
     if (inputRule.value.length <= 0) return;
 
-    const sh: ShieldObject = {
-        rule: inputRule.value,
+    const rule: ShieldRule = {
+        content: inputRule.value,
         type: useRegex.value ? "regex" : "string",
-        scope: scope.value,
-        switch: true,
+        scope: userScope.value ? "users" : "posts",
+        toggle: true,
     };
-    shieldListRef.value.push(sh);
+    shieldListRef.value.push(rule);
 
     inputRule.value = "";
     shieldList.set(shieldListRef.value);
@@ -79,8 +95,6 @@ function updateShieldList() {
 </script>
 
 <style lang="scss" scoped>
-@use "sass:color";
-
 .shield-container {
     display: flex;
     width: 100%;
@@ -104,13 +118,21 @@ function updateShieldList() {
             font-size: 14px;
             gap: 4px;
 
+            &.disabled {
+                opacity: 0.5;
+
+                .content {
+                    text-decoration: line-through;
+                }
+            }
+
             .icon {
                 color: var(--light-fore);
             }
         }
 
         .remove-all {
-            background-color: color.adjust(red, $saturation: -32%);
+            background-color: var(--error-color);
             color: var(--default-background);
             font-variation-settings: "FILL" 0;
         }
@@ -140,16 +162,6 @@ function updateShieldList() {
             align-items: center;
             justify-content: flex-end;
             gap: 12px;
-
-            label {
-                margin-left: 4px;
-                user-select: none;
-            }
-
-            .regex-check {
-                margin-right: 8px;
-                font-size: 16px;
-            }
 
             .submit-button {
                 padding: 4px 12px;
