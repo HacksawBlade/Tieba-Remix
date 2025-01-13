@@ -33,9 +33,13 @@ export default {
  * 匹配字符串是否和屏蔽对象规则符合
  * @param rule 屏蔽对象
  * @param str 需要匹配的字符串
+ * @param scope 作用域，屏蔽规则作用于内容或用户
  * @returns 是否匹配成功
  */
-function matchShield(rule: ShieldRule, str: string): boolean {
+function matchShield(rule: ShieldRule, str: string, scope: ShieldRule["scope"]): boolean {
+    // 作用域不匹配，直接返回
+    if (rule.scope !== scope) return false;
+
     // 可选参数
     if (rule.ignoreCase === undefined) rule.ignoreCase = true;
 
@@ -79,6 +83,7 @@ function matchShield(rule: ShieldRule, str: string): boolean {
  */
 function shieldBySelector(
     observer: TbObserver,
+    scope: ShieldRule["scope"],
     parentSelector: string,
     subSelector: string
 ) {
@@ -87,8 +92,8 @@ function shieldBySelector(
             let isMatch = false;
             const content = join(map(dom(subSelector, elem, []), el => el.textContent ?? ""), "\n");
 
-            for (const sh of shieldList.get()) {
-                if (matchShield(sh, content)) {
+            for (const rule of shieldList.get()) {
+                if (matchShield(rule, content, scope)) {
                     isMatch = true;
                     break;
                 }
@@ -103,14 +108,14 @@ function shieldBySelector(
 
 function main() {
     // 看贴页面
-    shieldBySelector(threadFloorsObserver, ".l_post_bright", ".d_post_content");
-    shieldBySelector(threadFloorsObserver, ".l_post_bright", ".d_name a");
-    shieldBySelector(threadFloorsObserver, ".l_post_bright", ".p_author_name");
-    shieldBySelector(threadCommentsObserver, ".lzl_single_post", ".lzl_cnt .j_user_card");
+    shieldBySelector(threadFloorsObserver, "posts", ".l_post_bright", ".d_post_content");
+    shieldBySelector(threadFloorsObserver, "users", ".l_post_bright", ".d_name a");
+    shieldBySelector(threadFloorsObserver, "users", ".l_post_bright", ".p_author_name");
+    shieldBySelector(threadCommentsObserver, "users", ".lzl_single_post", ".lzl_cnt .j_user_card");
     // 首页动态
-    shieldBySelector(legacyIndexFeedsObserver, ".j_feed_li", ".title, .n_txt");
-    shieldBySelector(legacyIndexFeedsObserver, ".j_feed_li", ".post_author");
+    shieldBySelector(legacyIndexFeedsObserver, "posts", ".j_feed_li", ".title, .n_txt");
+    shieldBySelector(legacyIndexFeedsObserver, "users", ".j_feed_li", ".post_author");
     // 进吧页面
-    shieldBySelector(forumThreadsObserver, ".j_thread_list", ".threadlist_title a");
-    shieldBySelector(forumThreadsObserver, ".j_thread_list", ".frs-author-name-wrap");
+    shieldBySelector(forumThreadsObserver, "posts", ".j_thread_list", ".threadlist_title a");
+    shieldBySelector(forumThreadsObserver, "users", ".j_thread_list", ".frs-author-name-wrap");
 }
