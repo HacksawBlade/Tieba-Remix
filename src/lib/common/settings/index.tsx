@@ -2,6 +2,7 @@ import { GM_deleteValue, GM_listValues } from "$";
 import { NavBarHideMode } from "@/components/nav-bar.vue";
 import { MainSettingKey, SettingContent, SubSettingKey, UserSettings } from "@/components/settings.vue";
 import { backupUserConfigs, restoreUserConfigs } from "@/lib/api/remixed";
+import { messageBox } from "@/lib/render/message-box";
 import { PerfType, UpdateConfig, compactLayout, disabledModules, experimental, monospaceFonts, navBarHideMode, pageExtension, perfProfile, themeType, updateConfig, userFonts, wideScreen } from "@/lib/user-values";
 import { AllModules } from "@/lib/utils";
 import { forEach, includes, join, once, split } from "lodash-es";
@@ -425,8 +426,12 @@ export const getUserSettings = once((): UserSettings => ({
                         widgets: [{
                             type: "button",
                             content: "重置",
-                            event() {
-                                if (confirm("该操作是不可逆的，请做最后一次确认")) {
+                            async event() {
+                                if (await messageBox({
+                                    title: "重置所有配置",
+                                    content: "该操作是不可逆的，请做最后一次确认。",
+                                    type: "forceTrueFalse",
+                                }) === "positive") {
                                     forEach(GM_listValues(), (key) => {
                                         GM_deleteValue(key);
                                     });
