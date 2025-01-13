@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import { DialogOpts, scrollbarWidth } from "@/lib/render";
-import { nextTick, onMounted, ref, Transition } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 import UserButton from "./utils/user-button.vue";
 
 export interface UserDialogButton {
@@ -106,9 +106,8 @@ onMounted(async function () {
         });
     } else {
         if (props.clickModalToUnload) {
-            dialogModal.value.addEventListener("click", function (e) {
+            dialogModal.value.addEventListener("mousedown", function (e) {
                 if (e.target !== dialogModal.value) return;
-                e.preventDefault();
                 unload(props.defaultPayload);
             });
         }
@@ -116,7 +115,6 @@ onMounted(async function () {
         if (props.pressEscapeToUnload) {
             dialogModal.value.addEventListener("keydown", function (e) {
                 if (e.key === "Escape") {
-                    e.preventDefault();
                     unload(props.defaultPayload);
                 }
             });
