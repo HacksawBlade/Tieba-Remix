@@ -655,6 +655,10 @@ span.tP {
     color: var(--tieba-theme-fore);
 }
 
+.j_lzl_container .lzl_li_pager_s {
+    overflow: visible;
+}
+
 .lzl_li_pager_s .lzl_more,
 .lzl_more span {
     /* 还有x条回复 */
