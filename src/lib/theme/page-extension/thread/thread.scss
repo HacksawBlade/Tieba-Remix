@@ -177,7 +177,7 @@ body.special_conf_skin {
                         padding: 0 0 0 $avatar-size;
 
                         .lzl_single_post {
-                            @include fade-in;
+                            animation: kf-slide-in $default-animation-duration;
 
                             &:not(.first_no_border) {
                                 padding-top: 0;
