@@ -1,5 +1,5 @@
-import { isLiteralObject } from "@/lib/utils";
-import { forEach, forOwn, merge } from "lodash-es";
+import { isLiteralObject, waitUntil } from "@/lib/utils";
+import { forEach, forOwn, isNil, merge } from "lodash-es";
 
 export const fadeInElems: string[] = [];
 const fadeInClass = "fade-in-elem";
@@ -43,6 +43,37 @@ export function dom<T extends DOMTagNames = "default">(
         return arg1.querySelector<DOMTagNameMap[T]>(selector) ?? undefined;
     }
     return Array.from(arg1.querySelectorAll(selector));
+}
+
+/**
+ * 等待 DOM 元素出现并获取
+ * @param selector 选择器
+ * @param parent 查找范围
+ * @returns DOM 元素
+ */
+export function asyncdom<T extends DOMTagNames = "default">(
+    selector: string,
+    parent?: Element
+): Promise<DOMTagNameMap[T]>;
+/**
+ * @param selector 选择器
+ * @param parent 查找范围
+ * @param timeout 超时限制，默认永远等待
+ * @returns DOM 元素
+ */
+export function asyncdom<T extends DOMTagNames = "default">(
+    selector: string,
+    parent?: Element,
+    timeout?: number
+): Promise<Maybe<DOMTagNameMap[T]>>;
+
+export async function asyncdom<T extends DOMTagNames = "default">(
+    selector: string,
+    parent?: Element,
+    timeout = Infinity
+) {
+    return waitUntil(() => !isNil(dom<T>(selector, parent)), timeout)
+        .then(() => dom<T>(selector, parent));
 }
 
 /**
