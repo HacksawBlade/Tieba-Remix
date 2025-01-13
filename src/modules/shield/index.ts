@@ -4,7 +4,7 @@ import { TbObserver, forumThreadsObserver, legacyIndexFeedsObserver, threadComme
 import { join, map } from "lodash-es";
 import { markRaw } from "vue";
 import moduleShieldVue from "./module.shield.vue";
-import { ShieldObject, shieldList } from "./shield";
+import { ShieldRule, shieldList } from "./shield";
 
 export default {
     id: "shield",
@@ -31,36 +31,36 @@ export default {
 
 /**
  * 匹配字符串是否和屏蔽对象规则符合
- * @param obj 屏蔽对象
+ * @param rule 屏蔽对象
  * @param str 需要匹配的字符串
  * @returns 是否匹配成功
  */
-function matchShield(obj: ShieldObject, str: string): boolean {
+function matchShield(rule: ShieldRule, str: string): boolean {
     // 可选参数
-    if (obj.ignoreCase === undefined) obj.ignoreCase = true;
+    if (rule.ignoreCase === undefined) rule.ignoreCase = true;
 
     // 字符串
-    if (obj.type === "string") {
+    if (rule.type === "string") {
         // 忽略大小写，先转为小写
-        if (obj.ignoreCase) {
-            obj.rule = obj.rule.toLowerCase();
+        if (rule.ignoreCase) {
+            rule.content = rule.content.toLowerCase();
             str = str.toLowerCase();
         }
 
-        if (str.indexOf(obj.rule) !== -1) {
+        if (str.indexOf(rule.content) !== -1) {
             return true;
         }
     }
 
     // 正则
-    if (obj.type === "regex") {
+    if (rule.type === "regex") {
         let regex: RegExp;
 
         // 忽略大小写
-        if (obj.ignoreCase) {
-            regex = new RegExp(obj.rule, "i");
+        if (rule.ignoreCase) {
+            regex = new RegExp(rule.content, "i");
         } else {
-            regex = new RegExp(obj.rule);
+            regex = new RegExp(rule.content);
         }
 
         if (regex.test(str)) {
