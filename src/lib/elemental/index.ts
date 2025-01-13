@@ -4,64 +4,45 @@ import { forEach, forOwn, merge } from "lodash-es";
 export const fadeInElems: string[] = [];
 const fadeInClass = "fade-in-elem";
 
-/**
- * 利用 CSS 选择器快速选择 DOM 元素
- * @param selector 选择器字符串
- * @param parent 从哪个元素开始查找
- */
-export function dom(selector: string, parent?: Element): HTMLElement[];
-/**
- * 该函数会根据 `type` 参数返回对应类型的元素数组，而不是 `NodeList`
- * @param selector 选择器字符串
- * @param type 选择的元素的标签名
- * @param parent 从哪个元素开始查找
- */
-export function dom<T extends keyof HTMLElementTagNameMap>(
-    selector: string, type: T, parent?: Element
-): HTMLElementTagNameMap[T][];
-/**
- * 使用 CSS 选择器查找单个元素
- * @param single 只查询单个元素
- * @param selector 选择器字符串
- * @param parent 从哪个元素开始查找
- */
-export function dom(single: true, selector: string, parent?: Element): HTMLElement;
-/**
- * 该函数会根据 `type` 参数返回对应类型的元素数组，而不是 `NodeList` 
- * @param single 只查询单个元素
- * @param selector 选择器字符串
- * @param type 选择的元素的标签名
- * @param parent 从哪个元素开始查找
- */
-export function dom<T extends keyof HTMLElementTagNameMap>
-    (single: true, selector: string, type: T, parent?: Element)
-    : HTMLElementTagNameMap[T];
+export interface DOMTagNameMap extends HTMLElementTagNameMap {
+    "default": Element;
+}
+export type DOMTagNames = keyof DOMTagNameMap;
 
-export function dom<_T extends keyof HTMLElementTagNameMap>(...args: any[]): any {
-    const single = args[0] === true;
-    const selector = single ? args[1] : args[0];
-    switch (args.length) {
-        case 1:
-            return document.querySelectorAll(selector);
-        case 2:
-            if (single)
-                return document.querySelector(selector);
+/**
+ * 使用选择器获取 DOM 元素
+ * @param selector 选择器
+ * @param parent 查找范围
+ * @returns DOM 元素
+ */
+export function dom<T extends DOMTagNames = "default">(selector: string, parent?: Element): Maybe<DOMTagNameMap[T]>;
+/**
+ * @param selector 选择器
+ * @param multi 查找全部
+ */
+export function dom<T extends DOMTagNames = "default">(selector: string, multi?: never[]): DOMTagNameMap[T][];
+/**
+ * @param selector 选择器
+ * @param parent 查找范围
+ * @param multi 查找全部
+ */
+export function dom<T extends DOMTagNames = "default">(selector: string, parent: Element, multi?: never[]): DOMTagNameMap[T][];
 
-            if (args[1] instanceof Element) {
-                return (args[1] as Element).querySelectorAll(selector);
-            }
-            return document.querySelectorAll(selector);
-        case 3:
-            if (single) {
-                if (args[2] instanceof Element)
-                    return (args[2]).querySelector(selector);
-                return document.querySelector(selector);
-            }
-
-            return (args[2] as Element).querySelectorAll(selector);
-        case 4:
-            return (args[3] as Element).querySelector(selector);
+export function dom<T extends DOMTagNames = "default">(
+    selector: string,
+    arg1?: Element | never[],
+    arg2?: never[]
+): Maybe<DOMTagNameMap[T] | DOMTagNameMap[T][]> {
+    if (!arg1) {
+        return document.querySelector<DOMTagNameMap[T]>(selector) ?? undefined;
     }
+    if (Array.isArray(arg1)) {
+        return Array.from(document.querySelectorAll(selector));
+    }
+    if (!arg2) {
+        return arg1.querySelector<DOMTagNameMap[T]>(selector) ?? undefined;
+    }
+    return Array.from(arg1.querySelectorAll(selector));
 }
 
 /**
@@ -207,7 +188,7 @@ export function findParent<T extends keyof HTMLElementTagNameMap>(
     const verifier = ((): (parent: HTMLElement) => boolean => {
         switch (mode) {
             case "selector": {
-                const allValid = new Set(dom(trait));
+                const allValid = new Set(dom(trait, []));
                 return (parent: HTMLElement) => {
                     return allValid.has(parent);
                 };
@@ -238,7 +219,7 @@ export function findParent<T extends keyof HTMLElementTagNameMap>(
  * @param selector QuerySelector 字符串
  */
 export function fadeInLoad(selector: string) {
-    dom(selector).forEach(elem => {
+    dom<"div">(selector, []).forEach(elem => {
         elem.classList.add(fadeInClass);
         elem.addEventListener("animationend", () => {
             elem.style.opacity = "1";
