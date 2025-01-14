@@ -44,7 +44,7 @@
 
                     <div v-if="content?.widgets" v-for="widget in content.widgets" class="setting-control">
                         <!-- Toggle -->
-                        <UserCheck v-if="widget.type === 'toggle'" class="settings-toggle"
+                        <UserCheck :key="Math.random()" v-if="widget.type === 'toggle'" class="settings-toggle"
                             :model-value="widget.init ? widget.init() : undefined"
                             :text="typeof widget.content === 'string' ? widget.content : undefined"
                             @change="widget.event" />
