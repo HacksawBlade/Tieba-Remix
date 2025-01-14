@@ -49,8 +49,8 @@ const dialogOpts: UserDialogOpts = {
         borderBottomLeftRadius: "0",
         borderBottomRightRadius: "0",
     },
-    renderAnimation: "kf-slide-in 0.4s",
-    unloadAnimation: "kf-slide-out 0.4s",
+    renderAnimation: "kf-slide-in var(--default-duration)",
+    unloadAnimation: "kf-slide-out var(--default-duration)",
 };
 
 const dialog = ref<InstanceType<typeof UserDialog>>();

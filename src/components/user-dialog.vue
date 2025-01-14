@@ -54,7 +54,9 @@ export interface UserDialogOpts<PayloadType = any> extends DialogOpts {
     pressEscapeToUnload?: boolean;
     /** 卸载事件负载 */
     defaultPayload?: PayloadType;
+    /** 替换渲染动画 */
     renderAnimation?: string;
+    /** 替换卸载动画 */
     unloadAnimation?: string;
 }
 
@@ -69,8 +71,8 @@ const props = withDefaults(defineProps<UserDialogOpts>(), {
     contentStyle: () => ({}),
     clickModalToUnload: true,
     pressEscapeToUnload: true,
-    renderAnimation: "kf-dialog-in 0.4s",
-    unloadAnimation: "kf-dialog-out 0.4s",
+    renderAnimation: "kf-dialog-in var(--default-duration)",
+    unloadAnimation: "kf-dialog-out var(--default-duration)",
 });
 
 const emit = defineEmits<{ (e: "unload", payload?: any): void }>();

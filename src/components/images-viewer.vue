@@ -118,8 +118,8 @@ const dialogOpts: UserDialogOpts = {
         width: "100%",
         height: "100%",
     },
-    renderAnimation: "kf-fade-in 0.4s",
-    unloadAnimation: "kf-fade-out 0.4s",
+    renderAnimation: "kf-fade-in var(--fast-duration)",
+    unloadAnimation: "kf-fade-out var(--fast-duration)",
 };
 
 // 状态
