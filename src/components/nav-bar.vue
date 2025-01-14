@@ -26,9 +26,9 @@
                     <DropdownMenu class="nav-menu" :menu-items="userMenu!"></DropdownMenu>
                 </UserButton>
 
-                <UserButton class="nav-button menu-trigger menu-button icon" shadow-border no-border="all">
-                    menu
-                    <DropdownMenu class="nav-menu" :menu-items="extendMenu!" style="font-family: initial;">
+                <UserButton class="nav-button menu-trigger menu-button" shadow-border no-border="all">
+                    <div class="icon">menu</div>
+                    <DropdownMenu class="nav-menu" :menu-items="extendMenu!">
                     </DropdownMenu>
                 </UserButton>
             </div>

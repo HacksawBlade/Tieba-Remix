@@ -142,7 +142,7 @@
     select,
     textarea {
         font-family: var(--code-zh);
-        font-size: 14px;
+        font-size: 16px;
     }
 
     .content {
@@ -163,6 +163,10 @@
 
     button {
         color: unset;
+    }
+
+    h4 {
+        font-family: var(--code-zh);
     }
 }
 
