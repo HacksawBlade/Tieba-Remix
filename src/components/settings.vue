@@ -34,7 +34,8 @@
             </div>
 
             <div class="right-container">
-                <div v-if="selectedSubKey?.name" v-for="content in selectedSubKey.content" class="setting-content">
+                <div :key="Math.random()" v-if="selectedSubKey?.name" v-for="content in selectedSubKey.content"
+                    class="setting-content">
                     <h3 v-if="content?.title" class="content-title">{{ content?.title }}</h3>
                     <p v-if="content?.description" class="content-desc">
                     <p v-if="content?.description" v-for="line in content.description.split('\n')" class="line">
@@ -44,7 +45,7 @@
 
                     <div v-if="content?.widgets" v-for="widget in content.widgets" class="setting-control">
                         <!-- Toggle -->
-                        <UserCheck :key="Math.random()" v-if="widget.type === 'toggle'" class="settings-toggle"
+                        <UserCheck v-if="widget.type === 'toggle'" class="settings-toggle"
                             :model-value="widget.init ? widget.init() : undefined"
                             :text="typeof widget.content === 'string' ? widget.content : undefined"
                             @change="widget.event" />
@@ -240,14 +241,14 @@ $wrapper-padding: 16px;
     font-size: 16px;
     gap: 12px;
     text-align: justify;
-    transition: $default-animation-duration;
+    transition: var(--default-duration);
     white-space: nowrap;
 
     .icon {
         font-size: 20px;
         font-variation-settings: "FILL" 0, "wght" 300;
         transition:
-            all $default-animation-duration,
+            all var(--default-duration),
             margin-left $fast-animation-duration ease-out;
     }
 
@@ -308,7 +309,7 @@ $wrapper-padding: 16px;
 
     &.sub-key {
         text-decoration: none;
-        transition: $default-animation-duration;
+        transition: var(--default-duration);
 
         &.selected {
             color: var(--tieba-theme-fore);
@@ -400,7 +401,6 @@ $wrapper-padding: 16px;
         .setting-content {
             display: flex;
             flex-direction: column;
-            animation: content-in 0.2s cubic-bezier(0, 0, 0.2, 1);
             gap: 8px;
 
             .content-title {
