@@ -59,10 +59,9 @@ export const getUserSettings = once((): UserSettings => ({
                 content: {
                     "compact-layout": {
                         title: "紧凑布局",
-                        description:
-                            `在尽量保证视觉观感的请款下，针对部分页面应用更加紧凑的布局，以提高信息密度。当前会受到影响的页面有：新版看贴页面。`,
                         widgets: [{
                             type: "toggle",
+                            content: `在尽量保证视觉观感的请款下，针对部分页面应用更加紧凑的布局，以提高信息密度。当前会受到影响的页面有：新版看贴页面。`,
                             init() {
                                 return compactLayout.get();
                             },
@@ -73,7 +72,6 @@ export const getUserSettings = once((): UserSettings => ({
                             },
                         }],
                     },
-
 
                     "custom-background": {
                         title: "自定义背景图",
@@ -95,12 +93,8 @@ export const getUserSettings = once((): UserSettings => ({
                                 content: "强制拉伸画幅",
                             },
                             {
-                                type: "desc",
-                                content:
-                                    `对于宽屏设备，不一定需要页面内容宽度始终等于屏幕宽度。如果你想应用强制宽屏，可以开启此项。`,
-                            },
-                            {
                                 type: "toggle",
+                                content: `对于宽屏设备，不一定需要页面内容宽度始终等于屏幕宽度。如果你想应用强制宽屏，可以开启此项。`,
                                 init() {
                                     return wideScreen.get().noLimit;
                                 },
@@ -145,12 +139,10 @@ export const getUserSettings = once((): UserSettings => ({
                 name: "页面扩展",
                 content: {
                     "index": {
-                        title: "新版主页",
-                        description:
-                            `新版主页旨在提供纯粹的浏览体验，它通过 Vue 构建。
-                            在新版主页上我们目前会更激进地测试一些新功能，包括尚未被广泛使用的新 Web API，以及自构建的 JavaScript 库。`,
+                        title: "首页扩展",
                         widgets: [{
                             type: "toggle",
+                            content: `首页扩展旨在提供更纯粹的浏览体验，提供管理关注的吧、贴吧热议、瀑布流推送等功能。`,
                             init() {
                                 return pageExtension.get().index;
                             },
@@ -162,11 +154,10 @@ export const getUserSettings = once((): UserSettings => ({
                     },
 
                     "thread": {
-                        title: "新版看帖页面",
-                        description:
-                            `新版看帖页面使用了全新的 UI 界面，并试图改进屏幕空间利用率。`,
+                        title: "帖子浏览页面扩展",
                         widgets: [{
                             type: "toggle",
+                            content: `使用全新的 UI 简化帖子浏览，并改进屏幕空间利用率。`,
                             init() {
                                 return pageExtension.get().thread;
                             },
@@ -260,10 +251,10 @@ export const getUserSettings = once((): UserSettings => ({
                         "module-info": {
                             title: module.name,
                             description:
-                                `${module.id} ${module.version}
-                                ${module.description}`,
+                                `${module.id} ${module.version}`,
                             widgets: [{
                                 type: "toggle",
+                                content: module.description,
                                 init() {
                                     return includes(disabledModules.get(), module.id) ? false : true;
                                 },
@@ -351,11 +342,9 @@ export const getUserSettings = once((): UserSettings => ({
 
                     "moreBlurEffect": {
                         title: "更多模糊效果",
-                        description:
-                            `优先考虑提供更多的模糊效果。
-                            仅当性能预设为“高性能”时，才会生效。`,
                         widgets: [{
                             type: "toggle",
+                            content: `优先考虑提供更多的模糊效果。仅当性能预设为“高性能”时，才会生效。`,
                             init() {
                                 return experimental.get().moreBlurEffect;
                             },
@@ -367,10 +356,9 @@ export const getUserSettings = once((): UserSettings => ({
 
                     "rasterEffect": {
                         title: "栅格特效",
-                        description: `将部分场景的模糊效果替换为栅格特效。
-                        可能会使文字可见度降低。存在性能问题。`,
                         widgets: [{
                             type: "toggle",
+                            content: `将部分场景的模糊效果替换为栅格特效。可能会使文字可见度降低。存在性能问题。`,
                             init() {
                                 return experimental.get().rasterEffect;
                             },
@@ -476,9 +464,9 @@ export const getUserSettings = once((): UserSettings => ({
                     },
 
                     "update-notify": {
-                        description: `启用一个对话框提示用户更新。该对话框可以立即安装更新，也可以推迟更新操作。`,
                         widgets: [{
                             type: "toggle",
+                            content: `启用一个对话框提示用户更新。该对话框可以立即安装更新，也可以推迟更新操作。`,
                             init() {
                                 return updateConfig.get().notify;
                             },

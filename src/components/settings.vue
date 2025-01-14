@@ -25,7 +25,7 @@
                 </div>
             </div>
 
-            <div class="middle-container">
+            <div class="middle-container" v-show="selectedKey">
                 <UserButton v-for="setting in selectedKey?.sub" class="key-button sub-key"
                     :class="{ 'selected': selectedSubKey?.name === setting.name }" @click="selectSubKey(setting)"
                     no-border="all">
@@ -35,19 +35,19 @@
 
             <div v-if="selectedSubKey?.name" class="right-container">
                 <div v-if="selectedSubKey?.name" v-for="content in selectedSubKey.content" class="setting-content">
-                    <div v-if="content?.title" class="content-title">{{ content?.title }}</div>
-                    <div v-if="content?.description" class="content-desc">
-                        <div v-if="content?.description" v-for="line in content.description.split('\n')" class="line">
-                            {{ line }}
-                        </div>
-                    </div>
+                    <h3 v-if="content?.title" class="content-title">{{ content?.title }}</h3>
+                    <p v-if="content?.description" class="content-desc">
+                    <p v-if="content?.description" v-for="line in content.description.split('\n')" class="line">
+                        {{ line }}
+                    </p>
+                    </p>
 
                     <div v-if="content?.widgets" v-for="widget in content.widgets" class="setting-control">
                         <!-- Toggle -->
-                        <ToggleButton v-if="widget.type === 'toggle'" class="settings-toggle-button icon"
-                            :model-value="widget.init ? widget.init() : undefined" @click="widget.event" icon-type
-                            no-border="all">
-                        </ToggleButton>
+                        <UserCheck v-if="widget.type === 'toggle'" class="settings-toggle"
+                            :model-value="widget.init ? widget.init() : undefined"
+                            :text="typeof widget.content === 'string' ? widget.content : undefined"
+                            @change="widget.event" />
 
                         <!-- Icon -->
                         <div v-if="widget.type === 'icon'" class="icon-component icon">{{ widget.content }}
@@ -66,7 +66,7 @@
                         </select>
 
                         <!-- SubTitle -->
-                        <div v-if="widget.type === 'subTitle'" class="content-sub-title">{{ widget.content }}</div>
+                        <h4 v-if="widget.type === 'subTitle'" class="content-sub-title">{{ widget.content }}</h4>
 
                         <!-- Description -->
                         <div v-if="widget.type === 'desc'" class="content-desc">
@@ -98,14 +98,13 @@
 </template>
 
 <script lang="tsx" setup>
+import { SupportedComponent } from "@/ex";
 import { getUserSettings } from "@/lib/common/settings";
 import { isLiteralObject } from "@/lib/utils";
 import { debounce, find, includes } from "lodash-es";
-import type { Component, VNode } from "vue";
 import { ref } from "vue";
-import { JSX } from "vue/jsx-runtime";
+import UserCheck from "./user-check.vue";
 import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
-import ToggleButton from "./utils/toggle-button.vue";
 import UserButton from "./utils/user-button.vue";
 import UserTextbox from "./utils/user-textbox.vue";
 
@@ -137,9 +136,9 @@ export interface SettingContent {
     widgets?: {
         type: "toggle" | "icon" | "button" | "select" | "subTitle" | "desc" | "textbox" | "textarea" | "image" | "component";
         init?: (() => any);
-        event?: ((e: Event) => any);
+        event?: ((e: any) => any);
         content?: string | LiteralObject;
-        component?: Component | VNode | JSX.Element;
+        component?: SupportedComponent;
         placeHolder?: string;
         altContent?: string;
     }[]
@@ -320,7 +319,6 @@ $wrapper-padding: 16px;
 
 .settings-wrapper {
     display: flex;
-    overflow: hidden;
     width: 100%;
     max-width: var(--content-max);
     height: 100%;
@@ -331,6 +329,7 @@ $wrapper-padding: 16px;
         width: 30%;
         max-width: 280px;
         flex-direction: column;
+        border-right: 2px solid var(--light-border-color);
 
         .search-controls {
             display: flex;
@@ -364,9 +363,8 @@ $wrapper-padding: 16px;
         width: 20%;
         max-width: 220px;
         flex-direction: column;
-        padding: $wrapper-padding 6px;
+        padding: 0 6px;
         border-right: 2px solid var(--light-border-color);
-        border-left: 2px solid var(--light-border-color);
         gap: 6px;
 
         .sub-key {
@@ -385,6 +383,9 @@ $wrapper-padding: 16px;
         }
     }
 
+    $wrapper-padding-2x: $wrapper-padding * 2;
+    $wrapper-padding-nega: -$wrapper-padding;
+
     .right-container {
         display: flex;
         overflow: auto;
@@ -392,9 +393,9 @@ $wrapper-padding: 16px;
         flex-direction: column;
         flex-grow: 1;
         padding: $wrapper-padding;
+        margin: $wrapper-padding-nega $wrapper-padding-nega $wrapper-padding-nega 0;
         animation: content-in 0.2s cubic-bezier(0, 0, 0.2, 1);
-        background-color: var(--default-background);
-        font-size: 14px;
+        font-size: 16px;
         gap: 32px;
 
         .setting-content {
@@ -403,12 +404,14 @@ $wrapper-padding: 16px;
             gap: 8px;
 
             .content-title {
+                margin: 8px 0 0;
                 color: var(--highlight-fore);
                 font-size: 18px;
                 font-weight: bold;
             }
 
             .content-sub-title {
+                margin: 4px 0 0;
                 color: var(--default-fore);
                 font-size: 16px;
                 font-weight: bold;
@@ -423,7 +426,6 @@ $wrapper-padding: 16px;
 
             .content-textbox {
                 box-sizing: content-box;
-                margin-left: auto;
 
                 &.textarea {
                     width: 100%;
@@ -442,8 +444,7 @@ $wrapper-padding: 16px;
             .setting-control {
                 display: flex;
 
-                .settings-toggle-button {
-                    margin-left: auto;
+                .settings-toggle {
                     background: none;
                     font-size: 36px;
 
