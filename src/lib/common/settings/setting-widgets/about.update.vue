@@ -6,7 +6,7 @@
         </div>
 
         <div class="title-container">
-            <div class="title">{{ release?.name }}</div>
+            <h2 class="title">{{ release?.name }}</h2>
             <div v-if="release?.prerelease" class="is-pre-release">预览版</div>
         </div>
 
@@ -43,8 +43,6 @@ const forbidden = ref(false);
 const isLatest = ref<boolean>();
 
 const scriptInfo = GM_info;
-
-marked.setOptions({});
 
 onMounted(async () => {
     const latest = await getLatestReleaseFromGitee();
@@ -88,11 +86,13 @@ onMounted(async () => {
         gap: 10px;
 
         .title {
+            flex-shrink: 1;
             font-size: 20px;
             font-weight: bold;
         }
 
         .is-pre-release {
+            min-width: max-content;
             padding: 2px 8px;
             border-radius: 16px;
             background-color: var(--level-orange-background);
