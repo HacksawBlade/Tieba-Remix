@@ -33,7 +33,7 @@
                 </UserButton>
             </div>
 
-            <div v-if="selectedSubKey?.name" class="right-container">
+            <div class="right-container">
                 <div v-if="selectedSubKey?.name" v-for="content in selectedSubKey.content" class="setting-content">
                     <h3 v-if="content?.title" class="content-title">{{ content?.title }}</h3>
                     <p v-if="content?.description" class="content-desc">
@@ -91,8 +91,8 @@
                         </component>
                     </div>
                 </div>
+                <div v-else class="empty-container filled-icon">settings</div>
             </div>
-            <div v-else class="empty-container filled-icon">settings</div>
         </div>
     </UserDialog>
 </template>
@@ -394,13 +394,13 @@ $wrapper-padding: 16px;
         flex-grow: 1;
         padding: $wrapper-padding;
         margin: $wrapper-padding-nega $wrapper-padding-nega $wrapper-padding-nega 0;
-        animation: content-in 0.2s cubic-bezier(0, 0, 0.2, 1);
         font-size: 16px;
         gap: 32px;
 
         .setting-content {
             display: flex;
             flex-direction: column;
+            animation: content-in 0.2s cubic-bezier(0, 0, 0.2, 1);
             gap: 8px;
 
             .content-title {
