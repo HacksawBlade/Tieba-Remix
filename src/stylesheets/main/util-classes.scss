@@ -44,9 +44,11 @@
 
     h3 {
         margin: 16px 0 6px;
+        font-size: 18px;
     }
 
     ul {
+        padding: 0;
         margin: 6px 0;
     }
 
@@ -62,6 +64,11 @@
     blockquote {
         margin: 20px 16px;
         color: var(--minimal-fore);
+    }
+
+    hr {
+        border: 2px solid var(--border-color);
+        margin: 10px 0;
     }
 }
 
