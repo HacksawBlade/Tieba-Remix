@@ -1,8 +1,8 @@
 <template>
     <Teleport to="body">
         <div ref="dialogModal" aria-modal class="user-dialog-modal" :style="parseCSSRule(modalStyle)">
-            <Transition name="dialog" type="animation">
-                <div ref="userDialog" v-if="dialogShow" class="user-dialog remove-default"
+            <Transition name="dialog" type="animation" @after-leave="unloadDialog">
+                <div ref="userDialog" v-show="dialogTrigger" class="user-dialog remove-default"
                     :style="parseCSSRule(contentStyle)" :class="{
                         'default': !shadowMode,
                         'shadow': shadowMode,
@@ -35,7 +35,7 @@ export interface UserDialogButton {
     event?: () => void;
 }
 
-export interface UserDialogOpts extends DialogOpts {
+export interface UserDialogOpts<PayloadType = any> extends DialogOpts {
     /** 对话框标题 */
     title?: string;
     /** 使用默认交互按钮 */
@@ -53,7 +53,7 @@ export interface UserDialogOpts extends DialogOpts {
     /** 在按下 `ESC` 时是否会执行默认卸载函数（force 模式下永远不会执行默认函数） */
     pressEscapeToUnload?: boolean;
     /** 卸载事件负载 */
-    defaultPayload?: any;
+    defaultPayload?: PayloadType;
     renderAnimation?: string;
     unloadAnimation?: string;
 }
@@ -75,12 +75,13 @@ const props = withDefaults(defineProps<UserDialogOpts>(), {
 
 const emit = defineEmits<{ (e: "unload", payload?: any): void }>();
 
-const dialogShow = ref(false);
+const dialogTrigger = ref(false);
 const dialogModal = ref<HTMLDivElement>();
 const userDialog = ref<HTMLDivElement>();
+const currentPayload = ref(props.defaultPayload);
 
 onMounted(async function () {
-    dialogShow.value = true;
+    dialogTrigger.value = true;
     await nextTick();
 
     if (!dialogModal.value) return;
@@ -98,7 +99,6 @@ onMounted(async function () {
             if (e.target !== dialogModal.value) return;
             if (userDialog.value?.classList.contains(FORCE_ALERT_CLASS)) return;
 
-            e.preventDefault();
             userDialog.value?.classList.add(FORCE_ALERT_CLASS);
             userDialog.value?.addEventListener("transitionend", function () {
                 userDialog.value?.classList.remove(FORCE_ALERT_CLASS);
@@ -123,14 +123,16 @@ onMounted(async function () {
 });
 
 function unload(payload?: any) {
-    dialogShow.value = false;
-    userDialog.value?.addEventListener("animationend", function () {
-        if (payload) {
-            emit("unload", payload);
-            return;
-        }
-        emit("unload");
-    }, { once: true });
+    currentPayload.value = payload;
+    dialogTrigger.value = false;
+}
+
+function unloadDialog() {
+    if (currentPayload.value) {
+        emit("unload", currentPayload.value);
+        return;
+    }
+    emit("unload");
 }
 
 defineExpose({
