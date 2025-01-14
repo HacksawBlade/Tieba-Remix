@@ -1,9 +1,12 @@
 <template>
     <div class="user-check">
-        <ToggleButton v-model="model" :id="id" class="check-button icon" :theme-style="model">
-            {{ model ? "check" : "" }}
-        </ToggleButton>
-        <label :for="id" class="check-label">{{ text }}</label>
+        <label :for="id" class="check-label">
+            <ToggleButton v-model="model" :id="id" class="check-button icon" :theme-style="model"
+                @update:model-value="emit('change', model)">
+                {{ model ? "check" : "" }}
+            </ToggleButton>
+            <p class="label-text">{{ text }}</p>
+        </label>
     </div>
 </template>
 
@@ -23,6 +26,8 @@ const model = defineModel<boolean>({
     required: true,
     default: false,
 });
+
+const emit = defineEmits<{ (e: "change", value: boolean): void }>();
 </script>
 
 <style lang="scss" scoped>
@@ -34,7 +39,9 @@ const model = defineModel<boolean>({
 
     .check-button {
         width: 16px;
+        min-width: 16px;
         height: 16px;
+        min-height: 16px;
         padding: 0;
         border-radius: 4px;
         color: var(--tieba-theme-color);
@@ -43,6 +50,14 @@ const model = defineModel<boolean>({
     }
 
     .check-label {
+        display: flex;
+        align-items: center;
+        color: var(--light-fore);
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .label-text {
         padding-left: 6px;
     }
 }
