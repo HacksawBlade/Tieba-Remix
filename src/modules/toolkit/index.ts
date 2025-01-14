@@ -18,10 +18,9 @@ export default {
     settings: {
         autoExpand: {
             title: "自动展开长图",
-            description:
-                `该功能会自动将帖子中所有的长图片自动展开，无需手动操作`,
             widgets: [{
                 type: "toggle",
+                content: `该功能会自动将帖子中所有的长图片自动展开，无需手动操作`,
                 init: () => toolkitToggles.get().autoExpand,
                 event() {
                     toolkitToggles.merge({ autoExpand: !toolkitToggles.get().autoExpand });
@@ -31,9 +30,9 @@ export default {
 
         reloadAvatars: {
             title: "重新加载错误头像",
-            description: `原版贴吧的帖子页面时常会出现加载失败的头像，本功能可以将这些无法正常显示的头像资源链接到正常的 URL`,
             widgets: [{
                 type: "toggle",
+                content: `原版贴吧的帖子页面时常会出现加载失败的头像，本功能可以将这些无法正常显示的头像资源链接到正常的 URL`,
                 init: () => toolkitToggles.get().reloadAvatars,
                 event() {
                     toolkitToggles.merge({ reloadAvatars: !toolkitToggles.get().reloadAvatars });
