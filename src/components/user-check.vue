@@ -3,7 +3,7 @@
         <ToggleButton v-model="model" :id="id" class="check-button icon" :theme-style="model">
             {{ model ? "check" : "" }}
         </ToggleButton>
-        <label :for="id">{{ text }}</label>
+        <label :for="id" class="check-label">{{ text }}</label>
     </div>
 </template>
 
@@ -31,15 +31,19 @@ const model = defineModel<boolean>({
 .user-check {
     display: flex;
     align-items: center;
-    gap: 6px;
 
     .check-button {
         width: 16px;
         height: 16px;
         padding: 0;
         border-radius: 4px;
+        color: var(--tieba-theme-color);
         font-size: 14px;
         font-weight: bold;
+    }
+
+    .check-label {
+        padding-left: 6px;
     }
 }
 </style>
