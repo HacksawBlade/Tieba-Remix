@@ -6,7 +6,7 @@
                     :style="parseCSSRule(contentStyle)" :class="{
                         'default': !shadowMode,
                         'shadow': shadowMode,
-                    }">
+                    }" tabindex="-1">
                     <div v-if="title" class="dialog-title">{{ title }}</div>
                     <slot></slot>
                     <div v-if="dialogButtons.length > 0" class="dialog-buttons">
@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import { DialogOpts, scrollbarWidth } from "@/lib/render";
-import { nextTick, onMounted, ref } from "vue";
+import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 import UserButton from "./utils/user-button.vue";
 
 export interface UserDialogButton {
@@ -82,6 +82,8 @@ const dialogModal = ref<HTMLDivElement>();
 const userDialog = ref<HTMLDivElement>();
 const currentPayload = ref(props.defaultPayload);
 
+const eventRecords: EventRecord[] = [];
+
 onMounted(async function () {
     dialogTrigger.value = true;
     await nextTick();
@@ -97,7 +99,7 @@ onMounted(async function () {
     if (props.force) {
         const FORCE_ALERT_CLASS = "force-alert" as const;
 
-        dialogModal.value.addEventListener("mousedown", function (e) {
+        const onMousedown = (e: MouseEvent) => {
             if (e.target !== dialogModal.value) return;
             if (userDialog.value?.classList.contains(FORCE_ALERT_CLASS)) return;
 
@@ -105,23 +107,47 @@ onMounted(async function () {
             userDialog.value?.addEventListener("transitionend", function () {
                 userDialog.value?.classList.remove(FORCE_ALERT_CLASS);
             }, { once: true });
+        };
+        dialogModal.value.addEventListener("mousedown", onMousedown);
+        eventRecords.push({
+            target: dialogModal.value,
+            type: "mousedown",
+            callback: onMousedown,
         });
     } else {
         if (props.clickModalToUnload) {
-            dialogModal.value.addEventListener("mousedown", function (e) {
+            const onMousedown = (e: MouseEvent) => {
                 if (e.target !== dialogModal.value) return;
                 unload(props.defaultPayload);
+            };
+            dialogModal.value.addEventListener("mousedown", onMousedown);
+            eventRecords.push({
+                target: dialogModal.value,
+                type: "mousedown",
+                callback: onMousedown,
             });
         }
 
         if (props.pressEscapeToUnload) {
-            dialogModal.value.addEventListener("keydown", function (e) {
+            const onKeydown = (e: KeyboardEvent) => {
                 if (e.key === "Escape") {
                     unload(props.defaultPayload);
                 }
+            };
+            dialogModal.value.addEventListener("keydown", onKeydown);
+            eventRecords.push({
+                target: dialogModal.value,
+                type: "keydown",
+                callback: onKeydown,
             });
         }
     }
+});
+
+onBeforeUnmount(function () {
+    eventRecords.forEach(record => {
+        record.target.removeEventListener(record.type, record.callback, record.options);
+    });
 });
 
 function unload(payload?: any) {
