@@ -1,6 +1,7 @@
 import { GM_deleteValue, GM_listValues } from "$";
 import { NavBarHideMode } from "@/components/nav-bar.vue";
 import { MainSettingKey, SettingContent, SubSettingKey, UserSettings } from "@/components/settings.vue";
+import { UserSelectItem } from "@/components/user-select.vue";
 import { backupUserConfigs, restoreUserConfigs } from "@/lib/api/remixed";
 import { messageBox } from "@/lib/render/message-box";
 import { PerfType, UpdateConfig, compactLayout, disabledModules, experimental, monospaceFonts, navBarHideMode, pageExtension, perfProfile, themeType, updateConfig, userFonts, wideScreen } from "@/lib/user-values";
@@ -27,17 +28,16 @@ export const getUserSettings = once((): UserSettings => ({
                             `在自动模式下，将根据当前系统设置自动选择合适的主题。你也可以手动应用某一种主题。`,
                         widgets: [{
                             type: "select",
-                            content: {
-                                "自动": "auto",
-                                "深色": "dark",
-                                "浅色": "light",
-                            } as { [props: string]: ReturnType<typeof themeType.get> },
+                            content: [
+                                { value: "auto", text: "自动", desc: "根据系统设置自动切换主题" },
+                                { value: "dark", text: "深色", desc: "使用深色主题" },
+                                { value: "light", text: "浅色", desc: "使用浅色主题" },
+                            ] as UserSelectItem<ReturnType<typeof themeType.get>>[],
                             init() {
                                 return themeType.get();
                             },
-                            event(e) {
-                                const newValue = (e.target as HTMLSelectElement).value;
-                                themeType.set(newValue as ReturnType<typeof themeType.get>);
+                            event(theme: ReturnType<typeof themeType.get>) {
+                                themeType.set(theme);
                             },
                         }],
                     },
@@ -217,19 +217,18 @@ export const getUserSettings = once((): UserSettings => ({
                             `设置导航栏的隐藏模式。`,
                         widgets: [{
                             type: "select",
-                            content: {
-                                "滚动折叠": "fold",
-                                "始终折叠": "alwaysFold",
-                                "滚动隐藏": "hideWhenScroll",
-                                "顶部固定": "fixedOnTop",
-                                "始终显示": "never",
-                            } as Record<string, NavBarHideMode>,
+                            content: [
+                                { value: "fold", text: "滚动折叠" },
+                                { value: "alwaysFold", text: "始终折叠" },
+                                { value: "hideWhenScroll", text: "滚动隐藏" },
+                                { value: "fixedOnTop", text: "顶部固定" },
+                                { value: "never", text: "始终显示" },
+                            ] as UserSelectItem<NavBarHideMode>[],
                             init() {
                                 return navBarHideMode.get();
                             },
-                            event(e) {
-                                const newValue = (e.target as HTMLSelectElement).value as NavBarHideMode;
-                                navBarHideMode.set(newValue);
+                            event(hideMode: NavBarHideMode) {
+                                navBarHideMode.set(hideMode);
                             },
                         }],
                     },
@@ -301,17 +300,16 @@ export const getUserSettings = once((): UserSettings => ({
                         description: "从以下预设性能等级选择其一，将会自动对相关场景进行行为调整。",
                         widgets: [{
                             type: "select",
-                            content: {
-                                "默认": "default",
-                                "节能": "saver",
-                                "高性能": "performance",
-                            } as Record<string, PerfType>,
+                            content: [
+                                { value: "default", text: "默认" },
+                                { value: "saver", text: "节能" },
+                                { value: "performance", text: "高性能" },
+                            ] as UserSelectItem<PerfType>[],
                             init() {
                                 return perfProfile.get();
                             },
-                            event(e) {
-                                const newValue = (e.target as HTMLSelectElement).value as PerfType;
-                                perfProfile.set(newValue);
+                            event(perf: PerfType) {
+                                perfProfile.set(perf);
                             },
                         }],
                     },
@@ -447,18 +445,17 @@ export const getUserSettings = once((): UserSettings => ({
                             `发行信息追踪频率`,
                         widgets: [{
                             type: "select",
-                            content: {
-                                "1 小时": "1h",
-                                "3 小时": "3h",
-                                "6 小时": "6h",
-                                "从不": "never",
-                            } as { [props: string]: UpdateConfig["time"] },
+                            content: [
+                                { value: "1h", text: "1 小时" },
+                                { value: "3h", text: "3 小时" },
+                                { value: "6h", text: "6 小时" },
+                                { value: "never", text: "从不" },
+                            ] as UserSelectItem<UpdateConfig["time"]>[],
                             init() {
                                 return updateConfig.get().time;
                             },
-                            event(e: Event) {
-                                const newValue = (e.target as HTMLSelectElement).value;
-                                updateConfig.merge({ time: newValue as any });
+                            event(updateTime: UpdateConfig["time"]) {
+                                updateConfig.merge({ time: updateTime });
                             },
                         }],
                     },

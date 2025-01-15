@@ -59,19 +59,23 @@
                             {{ widget.content }}</UserButton>
 
                         <!-- Select -->
-                        <select v-if="widget.type === 'select' && isLiteralObject(widget.content)"
+                        <!-- <select v-if="widget.type === 'select' && isLiteralObject(widget.content)"
                             @change="widget.event">
                             <option v-for="(value, key) in widget.content" :value="value"
                                 :selected="widget.init && value === widget.init()">
                                 {{ key }}</option>
-                        </select>
+                        </select> -->
+                        <UserSelect v-if="widget.type === 'select' && Array.isArray(widget.content)"
+                            :data="widget.content as UserSelectItem[]" :default-value="widget.init?.()"
+                            @change="widget.event" />
 
                         <!-- SubTitle -->
                         <h4 v-if="widget.type === 'subTitle'" class="content-sub-title">{{ widget.content }}</h4>
 
                         <!-- Description -->
                         <div v-if="widget.type === 'desc'" class="content-desc">
-                            <div v-if="widget.content" v-for="line in widget.content.split('\n')" class="line">
+                            <div v-if="widget.content && typeof widget.content === 'string'"
+                                v-for="line in widget.content.split('\n')" class="line">
                                 {{ line }}
                             </div>
                         </div>
@@ -101,11 +105,11 @@
 <script lang="tsx" setup>
 import { SupportedComponent } from "@/ex";
 import { getUserSettings } from "@/lib/common/settings";
-import { isLiteralObject } from "@/lib/utils";
 import { debounce, find, includes } from "lodash-es";
 import { ref } from "vue";
 import UserCheck from "./user-check.vue";
 import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
+import UserSelect, { UserSelectItem } from "./user-select.vue";
 import UserButton from "./utils/user-button.vue";
 import UserTextbox from "./utils/user-textbox.vue";
 
@@ -138,7 +142,7 @@ export interface SettingContent {
         type: "toggle" | "icon" | "button" | "select" | "subTitle" | "desc" | "textbox" | "textarea" | "image" | "component";
         init?: (() => any);
         event?: ((e: any) => any);
-        content?: string | LiteralObject;
+        content?: string | LiteralObject | Array<unknown>;
         component?: SupportedComponent;
         placeHolder?: string;
         altContent?: string;
