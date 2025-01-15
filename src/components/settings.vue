@@ -273,25 +273,17 @@ $wrapper-padding: 16px;
         box-sizing: content-box;
 
         .main-key-selected {
-            position: relative;
             width: 0;
             height: 100%;
+            border-radius: 24px;
             margin-left: -12px;
-
-            &::after {
-                position: absolute;
-                top: 0;
-                width: 0;
-                height: 100%;
-                background-color: var(--tieba-theme-color);
-                content: "";
-            }
+            background-color: var(--tieba-theme-color);
         }
 
         &.selected {
             color: var(--tieba-theme-fore) !important;
 
-            .main-key-selected::after {
+            .main-key-selected {
                 width: 4px;
             }
 
