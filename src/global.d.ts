@@ -112,3 +112,10 @@ declare global {
 
     const globalThis: Global;
 }
+
+interface EventRecord {
+    target: EventTarget;
+    type: string;
+    callback: ((e: any) => void);
+    options?: EventListenerOptions | boolean;
+}
