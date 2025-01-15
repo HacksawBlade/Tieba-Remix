@@ -116,6 +116,6 @@ declare global {
 interface EventRecord {
     target: EventTarget;
     type: string;
-    callback: ((e: any) => void);
+    callback: ((e: any) => void) | EventListenerObject;
     options?: EventListenerOptions | boolean;
 }

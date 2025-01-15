@@ -24,6 +24,7 @@
 
 <script lang="ts" setup>
 import { dom, findParent } from "@/lib/elemental";
+import { EventProxy } from "@/lib/elemental/event-proxy";
 import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import { DialogOpts, scrollbarWidth } from "@/lib/render";
 import { isNil } from "lodash-es";
@@ -79,6 +80,8 @@ const props = withDefaults(defineProps<UserDialogOpts>(), {
 
 const emit = defineEmits<{ (e: "unload", payload?: any): void }>();
 
+const evproxy = new EventProxy();
+
 const dialogTrigger = ref(false);
 const dialogModal = ref<HTMLDivElement>();
 const userDialog = ref<HTMLDivElement>();
@@ -88,8 +91,6 @@ const currentPayload = ref(props.defaultPayload);
 let focusRelatedTarget: Maybe<HTMLElement> = undefined;
 /** 待归还焦点元素对应的对话框，作为上元素被移出文档时的备选 */
 let focusRelatedDialog: Maybe<HTMLDivElement> = undefined;
-/** 事件记录 */
-const eventRecords: EventRecord[] = [];
 
 onMounted(async function () {
     dialogTrigger.value = true;
@@ -99,31 +100,34 @@ onMounted(async function () {
     if (!userDialog.value) return;
 
     if (props.modal) {
-        userDialog.value.addEventListener("focusin", function (e) {
-            focusRelatedTarget = (e.relatedTarget as HTMLElement) ?? undefined;
-            if (focusRelatedTarget) focusRelatedDialog = findParent<"div">(focusRelatedTarget, "user-dialog");
-        }, { once: true });
+        evproxy.on(
+            userDialog.value,
+            "focusin",
+            (e: FocusEvent) => {
+                focusRelatedTarget = (e.relatedTarget as HTMLElement) ?? undefined;
+                if (focusRelatedTarget) focusRelatedDialog = findParent<"div">(focusRelatedTarget, "user-dialog");
+            },
+            { once: true }
+        );
         userDialog.value.focus();
 
-        const onFocusout = (e: FocusEvent) => {
-            const modalDialogs = dom(".user-dialog-modal", []);
-            if (!modalDialogs[modalDialogs.length - 1].contains(userDialog.value as Node)) return;
+        evproxy.on(
+            userDialog.value,
+            "focusout",
+            (e: FocusEvent) => {
+                const modalDialogs = dom(".user-dialog-modal", []);
+                if (!modalDialogs[modalDialogs.length - 1].contains(userDialog.value as Node)) return;
 
-            if (isNil(e.relatedTarget) || !userDialog.value?.contains(e.relatedTarget as Node)) {
-                userDialog.value?.focus();
-
-                // 存在模态框时，允许通过 tab 切换到页面之外，但焦点回归至页面时必须回到对话框内
-                window.addEventListener("focusin", function () {
+                if (isNil(e.relatedTarget) || !userDialog.value?.contains(e.relatedTarget as Node)) {
                     userDialog.value?.focus();
-                }, { once: true });
+
+                    // 存在模态框时，允许通过 tab 切换到页面之外，但焦点回归至页面时必须回到对话框内
+                    evproxy.on(window, "focusin", function () {
+                        userDialog.value?.focus();
+                    }, { once: true });
+                }
             }
-        };
-        userDialog.value.addEventListener("focusout", onFocusout);
-        eventRecords.push({
-            target: userDialog.value,
-            type: "focusout",
-            callback: onFocusout,
-        });
+        );
     }
 
     if (props.lockScroll) {
@@ -134,55 +138,49 @@ onMounted(async function () {
     if (props.force) {
         const FORCE_ALERT_CLASS = "force-alert" as const;
 
-        const onMousedown = (e: MouseEvent) => {
-            if (e.target !== dialogModal.value) return;
-            if (userDialog.value?.classList.contains(FORCE_ALERT_CLASS)) return;
+        evproxy.on(
+            dialogModal.value,
+            "mousedown",
+            (e: MouseEvent) => {
+                if (e.target !== dialogModal.value) return;
+                if (userDialog.value?.classList.contains(FORCE_ALERT_CLASS)) return;
 
-            userDialog.value?.classList.add(FORCE_ALERT_CLASS);
-            userDialog.value?.addEventListener("transitionend", function () {
-                userDialog.value?.classList.remove(FORCE_ALERT_CLASS);
-            }, { once: true });
-        };
-        dialogModal.value.addEventListener("mousedown", onMousedown);
-        eventRecords.push({
-            target: dialogModal.value,
-            type: "mousedown",
-            callback: onMousedown,
-        });
+                userDialog.value?.classList.add(FORCE_ALERT_CLASS);
+                if (userDialog.value) {
+                    evproxy.on(userDialog.value, "transitionend", function () {
+                        userDialog.value?.classList.remove(FORCE_ALERT_CLASS);
+                    }, { once: true });
+                }
+            }
+        );
     } else {
         if (props.clickModalToUnload) {
-            const onMousedown = (e: MouseEvent) => {
-                if (e.target !== dialogModal.value) return;
-                unload(props.defaultPayload);
-            };
-            dialogModal.value.addEventListener("mousedown", onMousedown);
-            eventRecords.push({
-                target: dialogModal.value,
-                type: "mousedown",
-                callback: onMousedown,
-            });
+            evproxy.on(
+                dialogModal.value,
+                "mousedown",
+                (e: MouseEvent) => {
+                    if (e.target !== dialogModal.value) return;
+                    unload(props.defaultPayload);
+                },
+            );
         }
 
         if (props.pressEscapeToUnload) {
-            const onKeydown = (e: KeyboardEvent) => {
-                if (e.key === "Escape") {
-                    unload(props.defaultPayload);
-                }
-            };
-            dialogModal.value.addEventListener("keydown", onKeydown);
-            eventRecords.push({
-                target: dialogModal.value,
-                type: "keydown",
-                callback: onKeydown,
-            });
+            evproxy.on(
+                dialogModal.value,
+                "keydown",
+                (e: KeyboardEvent) => {
+                    if (e.key === "Escape") {
+                        unload(props.defaultPayload);
+                    }
+                },
+            );
         }
     }
 });
 
 onBeforeUnmount(function () {
-    eventRecords.forEach(record => {
-        record.target.removeEventListener(record.type, record.callback, record.options);
-    });
+    evproxy.release();
 });
 
 function unload(payload?: any) {

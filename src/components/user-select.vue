@@ -16,6 +16,7 @@
 </template>
 
 <script lang="tsx" setup>
+import { EventProxy } from "@/lib/elemental/event-proxy";
 import { findIndex } from "lodash-es";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import ToggleButton from "./utils/toggle-button.vue";
@@ -40,7 +41,7 @@ defineModel<UserSelectItem["value"]>("value");
 
 const emit = defineEmits<{ (e: "change", value: ValueType): void }>();
 
-const eventRecords: EventRecord[] = [];
+const evproxy = new EventProxy();
 
 const selectToggle = ref<InstanceType<typeof ToggleButton>>();
 const selectContainer = ref<HTMLDivElement>();
@@ -52,18 +53,18 @@ const currentIndex = ref((function () {
 })());
 
 onMounted(function () {
-    const onBlur = (e: FocusEvent) => {
-        if (selectContainer.value?.contains(e.relatedTarget as Node)) return;
-        useSelect.value = false;
-    };
-    (selectToggle.value?.$el as HTMLButtonElement).addEventListener("blur", onBlur);
-    eventRecords.push({ target: selectToggle.value?.$el, type: "blur", callback: onBlur });
+    evproxy.on(
+        selectToggle.value?.$el as HTMLButtonElement,
+        "blur",
+        (e: FocusEvent) => {
+            if (selectContainer.value?.contains(e.relatedTarget as Node)) return;
+            useSelect.value = false;
+        }
+    );
 });
 
 onBeforeUnmount(function () {
-    eventRecords.forEach(({ target, type, callback, options }) => {
-        target.removeEventListener(type, callback, options);
-    });
+    evproxy.release();
 });
 
 watch(currentIndex, index => {
