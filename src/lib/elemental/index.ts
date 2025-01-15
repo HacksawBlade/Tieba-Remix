@@ -242,7 +242,7 @@ export function findParent<T extends keyof HTMLElementTagNameMap>(
     while (el.parentElement && !verifier(el.parentElement)) {
         el = el.parentElement;
     }
-    return el.parentElement as HTMLElementTagNameMap[T];
+    return el.parentElement ? el.parentElement as HTMLElementTagNameMap[T] : undefined;
 }
 
 /**
