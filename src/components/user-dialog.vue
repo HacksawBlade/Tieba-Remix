@@ -23,8 +23,10 @@
 </template>
 
 <script lang="ts" setup>
+import { dom, findParent } from "@/lib/elemental";
 import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import { DialogOpts, scrollbarWidth } from "@/lib/render";
+import { isNil } from "lodash-es";
 import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 import UserButton from "./utils/user-button.vue";
 
@@ -82,6 +84,11 @@ const dialogModal = ref<HTMLDivElement>();
 const userDialog = ref<HTMLDivElement>();
 const currentPayload = ref(props.defaultPayload);
 
+/** 待归还的焦点元素，用于在卸载时恢复焦点位置（如果有的话） */
+let focusRelatedTarget: Maybe<HTMLElement> = undefined;
+/** 待归还焦点元素对应的对话框，作为上元素被移出文档时的备选 */
+let focusRelatedDialog: Maybe<HTMLDivElement> = undefined;
+/** 事件记录 */
 const eventRecords: EventRecord[] = [];
 
 onMounted(async function () {
@@ -90,6 +97,34 @@ onMounted(async function () {
 
     if (!dialogModal.value) return;
     if (!userDialog.value) return;
+
+    if (props.modal) {
+        userDialog.value.addEventListener("focusin", function (e) {
+            focusRelatedTarget = (e.relatedTarget as HTMLElement) ?? undefined;
+            if (focusRelatedTarget) focusRelatedDialog = findParent<"div">(focusRelatedTarget, "user-dialog");
+        }, { once: true });
+        userDialog.value.focus();
+
+        const onFocusout = (e: FocusEvent) => {
+            const modalDialogs = dom(".user-dialog-modal", []);
+            if (!modalDialogs[modalDialogs.length - 1].contains(userDialog.value as Node)) return;
+
+            if (isNil(e.relatedTarget) || !userDialog.value?.contains(e.relatedTarget as Node)) {
+                userDialog.value?.focus();
+
+                // 存在模态框时，允许通过 tab 切换到页面之外，但焦点回归至页面时必须回到对话框内
+                window.addEventListener("focusin", function () {
+                    userDialog.value?.focus();
+                }, { once: true });
+            }
+        };
+        userDialog.value.addEventListener("focusout", onFocusout);
+        eventRecords.push({
+            target: userDialog.value,
+            type: "focusout",
+            callback: onFocusout,
+        });
+    }
 
     if (props.lockScroll) {
         document.body.setAttribute("no-scrollbar", "");
@@ -156,6 +191,15 @@ function unload(payload?: any) {
 }
 
 function unloadDialog() {
+    if (props.modal) {
+        if (focusRelatedTarget &&
+            document.body.contains(focusRelatedTarget)) {
+            focusRelatedTarget.focus();
+        } else if (focusRelatedDialog &&
+            document.body.contains(focusRelatedDialog)) {
+            focusRelatedDialog.focus();
+        }
+    }
     if (currentPayload.value) {
         emit("unload", currentPayload.value);
         return;
