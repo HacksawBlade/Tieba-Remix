@@ -59,12 +59,6 @@
                             {{ widget.content }}</UserButton>
 
                         <!-- Select -->
-                        <!-- <select v-if="widget.type === 'select' && isLiteralObject(widget.content)"
-                            @change="widget.event">
-                            <option v-for="(value, key) in widget.content" :value="value"
-                                :selected="widget.init && value === widget.init()">
-                                {{ key }}</option>
-                        </select> -->
                         <UserSelect v-if="widget.type === 'select' && Array.isArray(widget.content)"
                             :data="widget.content as UserSelectItem[]" :default-value="widget.init?.()"
                             @change="widget.event" />
@@ -253,7 +247,7 @@ $wrapper-padding: 16px;
         font-variation-settings: "FILL" 0, "wght" 300;
         transition:
             all var(--default-duration),
-            margin-left $fast-animation-duration ease-out;
+            margin-left var(--fast-duration) ease-out;
     }
 
     .key-info {
@@ -277,18 +271,33 @@ $wrapper-padding: 16px;
         box-sizing: content-box;
 
         .main-key-selected {
+            position: relative;
             width: 0;
             height: 100%;
             border-radius: 24px;
             margin-left: -12px;
             background-color: var(--tieba-theme-color);
+
+            &::after {
+                position: absolute;
+                top: 0;
+                width: 0;
+                height: 100%;
+                border-radius: 24px;
+                background-color: var(--tieba-theme-color);
+                content: "";
+            }
         }
 
         &.selected {
             color: var(--tieba-theme-fore) !important;
 
             .main-key-selected {
-                width: 4px;
+                padding-right: 4px;
+
+                &::after {
+                    width: 4px;
+                }
             }
 
             .icon {
