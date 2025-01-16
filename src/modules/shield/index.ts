@@ -4,7 +4,7 @@ import { TbObserver, forumThreadsObserver, legacyIndexFeedsObserver, threadComme
 import { join, map } from "lodash-es";
 import { markRaw } from "vue";
 import moduleShieldVue from "./module.shield.vue";
-import { ShieldRule, shieldList } from "./shield";
+import { ShieldRule, matchShield, shieldList } from "./shield";
 
 export default {
     id: "shield",
@@ -19,7 +19,7 @@ export default {
         "shield-controls": {
             title: "管理屏蔽规则",
             description:
-                `这些屏蔽规则将会在首页（旧版）、看贴页面生效，会自动隐藏所有符合匹配规则的贴子和楼层。`,
+                `这些屏蔽规则将会在首页、看贴页面生效，会自动隐藏所有符合匹配规则的贴子和楼层。`,
             widgets: [{
                 type: "component",
                 component: markRaw(moduleShieldVue),
@@ -29,51 +29,7 @@ export default {
     entry: main,
 } as UserModuleEx;
 
-/**
- * 匹配字符串是否和屏蔽对象规则符合
- * @param rule 屏蔽对象
- * @param str 需要匹配的字符串
- * @param scope 作用域，屏蔽规则作用于内容或用户
- * @returns 是否匹配成功
- */
-function matchShield(rule: ShieldRule, str: string, scope: ShieldRule["scope"]): boolean {
-    // 作用域不匹配，直接返回
-    if (rule.scope !== scope) return false;
-
-    // 可选参数
-    if (rule.ignoreCase === undefined) rule.ignoreCase = true;
-
-    // 字符串
-    if (rule.type === "string") {
-        // 忽略大小写，先转为小写
-        if (rule.ignoreCase) {
-            rule.content = rule.content.toLowerCase();
-            str = str.toLowerCase();
-        }
-
-        if (str.indexOf(rule.content) !== -1) {
-            return true;
-        }
-    }
-
-    // 正则
-    if (rule.type === "regex") {
-        let regex: RegExp;
-
-        // 忽略大小写
-        if (rule.ignoreCase) {
-            regex = new RegExp(rule.content, "i");
-        } else {
-            regex = new RegExp(rule.content);
-        }
-
-        if (regex.test(str)) {
-            return true;
-        }
-    }
-
-    return false;
-}
+export * from "./shield";
 
 /**
  * 通过选择器屏蔽元素

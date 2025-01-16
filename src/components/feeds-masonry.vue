@@ -13,11 +13,11 @@ import { FeedListResponse, parsePostsFromString, tiebaAPI } from "@/lib/api/tieb
 import { FlexMasonry } from "@/lib/render/layout/flex-masonry";
 import { toast } from "@/lib/render/toast";
 import { headerProgress, imagesViewer } from "@/lib/render/universal";
-import { requestInstance, spawnOffsetTS, waitUntil } from "@/lib/utils";
-import { debounce, throttle } from "lodash-es";
-import { ComponentPublicInstance, nextTick, onMounted, ref, watch } from "vue";
-
 import { unreadFeeds } from "@/lib/user-values";
+import { requestInstance, spawnOffsetTS, waitUntil } from "@/lib/utils";
+import { matchShield, shieldList } from "@/modules/shield";
+import { debounce, filter, throttle } from "lodash-es";
+import { ComponentPublicInstance, nextTick, onMounted, ref, watch } from "vue";
 import PostContainer from "./post-container.vue";
 
 interface Props {
@@ -99,11 +99,24 @@ async function addFeeds(newFeeds?: TiebaPost[]) {
         const response: FeedListResponse = await requestInstance(tiebaAPI.feedlist());
         if (response) {
             newFeeds = parsePostsFromString(response.data.html);
-            hasMoreFeeds.value = Boolean(response.data.has_more);
+            hasMoreFeeds.value = !!response.data.has_more;
+
+            // 屏蔽推送
+            const ruleList = shieldList.get();
+            newFeeds = filter(newFeeds, feed => {
+                for (const rule of ruleList) {
+                    if (matchShield(rule, feed.author.name, "users") ||
+                        matchShield(rule, feed.title, "posts") ||
+                        matchShield(rule, feed.content, "posts")) {
+                        return false;
+                    }
+                }
+                return true;
+            });
 
             // 展示进度
             if (props.showProgress) {
-                headerProgress({ calc: () => currentLoadedFeeds.length / response.data.total * 100 });
+                headerProgress({ calc: () => currentLoadedFeeds.length / (newFeeds?.length ?? 0) * 100 });
             }
         }
     }
