@@ -110,7 +110,7 @@ $select-gap: 4px;
         width: 100%;
         flex-direction: column;
         border: 1px solid var(--border-color);
-        border-radius: 8px;
+        border-radius: 6px;
         background-color: var(--default-background);
         box-shadow: 0 0 10px rgb(0 0 0 / 20%);
 

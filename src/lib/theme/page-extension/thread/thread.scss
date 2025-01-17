@@ -35,7 +35,7 @@ body.special_conf_skin {
     max-width: 100%;
     max-width: var(--content-max);
     box-sizing: border-box;
-    margin-top: 120px;
+    margin-top: 86px;
 
     .content {
         width: 100%;
@@ -249,7 +249,7 @@ body.special_conf_skin {
     box-sizing: border-box;
     align-items: flex-end;
     justify-content: space-between;
-    margin: 24px 0;
+    margin: 16px 0;
     gap: 8px;
 
     .shrink-view & {
