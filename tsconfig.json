@@ -21,7 +21,6 @@
         "alwaysStrict": true,
         "types": [
             "vite/client",
-            "element-plus/global"
         ],
         "noEmit": true,
         "baseUrl": "src",

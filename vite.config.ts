@@ -30,11 +30,6 @@ const scriptOptions: MonkeyOption = {
         ],
         "run-at": "document-start",
     },
-    build: {
-        externalResource: {
-            "element-plus/dist/index.css": cdn.jsdelivrFastly(),
-        },
-    },
 };
 
 const commonConfig = defineConfig({
@@ -59,13 +54,6 @@ const commonConfig = defineConfig({
     plugins: [
         vue(),
         vueJSX({}),
-        // AutoImport({
-        //     resolvers: [ElementPlusResolver()],
-        // }),
-        // Components({
-        //     resolvers: [ElementPlusResolver()],
-        // }),
-        // ElementPlus({}),
     ],
     resolve: {
         alias: [
@@ -111,7 +99,6 @@ const forkConfig = defineConfig({
             output: {
                 globals: {
                     "vue": "Vue",
-                    "element-plus": "ElementPlus",
                     "marked": "marked",
                 },
             },
@@ -126,7 +113,6 @@ const forkConfig = defineConfig({
                             `;window.Vue=Vue;`,
                         )}`,
                     ),
-                    "element-plus": cdn.jsdelivrFastly("ElementPlus", "dist/index.full.min.js"),
                     "marked": cdn.jsdelivrFastly("marked", "lib/marked.umd.min.js"),
                 },
             },

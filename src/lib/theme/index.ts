@@ -8,7 +8,6 @@ import { customBackground, monospaceFonts, themeColor, userFonts, wideScreen } f
 import { waitUntil } from "../utils";
 import { hexToRGBA, rgbaToHSLA } from "../utils/color";
 
-import "@/stylesheets/main/element-plus.scss";
 import "@/stylesheets/main/material-symbols.css";
 import "@/stylesheets/main/palette.scss";
 import "@/stylesheets/main/remixed-main.scss";
@@ -18,7 +17,6 @@ import "@/stylesheets/tieba/tieba-error.scss";
 import "@/stylesheets/tieba/tieba-home.scss";
 import "@/stylesheets/tieba/tieba-main.scss";
 import "@/stylesheets/tieba/tieba-thread.scss";
-import "element-plus/theme-chalk/dark/css-vars.css";
 
 export const darkPrefers = matchMedia("(prefers-color-scheme: dark)");
 

@@ -1,4 +1,3 @@
-import "element-plus/dist/index.css";
 import { isNil, throttle } from "lodash-es";
 import { checkUpdateAndNotify, currentPageType, setTheme } from "./lib/api/remixed";
 import { parseUserModules } from "./lib/common/packer";
