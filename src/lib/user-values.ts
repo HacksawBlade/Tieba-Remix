@@ -57,7 +57,10 @@ export class UserKey<T, LegacyType = unknown> {
             keys(value).length < keys(this.defaultValue).length) {
             value = merge(this.defaultValue, value);
         }
-        if (this.migration) value = this.migration(value);
+        if (this.migration) {
+            value = this.migration(value);
+            GM_setValue(this.key, value);
+        }
         this.dispatchEvent("getter", value);
         return value;
     }
