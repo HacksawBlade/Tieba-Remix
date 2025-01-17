@@ -8,9 +8,9 @@ export interface ShieldRule {
     /** 匹配规则，它可能是直接的屏蔽词，也可能是正则表达式 */
     content: string;
     /** 描述当前规则的类型 */
-    type: "string" | "regex";
+    type: "text" | "regex";
     /** 作用域，屏蔽规则作用于贴子或用户 */
-    scope: "posts" | "users";
+    scope: "content" | "username";
     /** 是否启用该规则 */
     toggle: boolean;
     /** 是否忽略大小写，默认忽略 */
@@ -50,7 +50,7 @@ export function matchShield(rule: ShieldRule, str: string, scope: ShieldRule["sc
     if (rule.ignoreCase === undefined) rule.ignoreCase = true;
 
     // 字符串
-    if (rule.type === "string") {
+    if (rule.type === "text") {
         // 忽略大小写，先转为小写
         if (rule.ignoreCase) {
             rule.content = rule.content.toLowerCase();
@@ -84,12 +84,19 @@ export function matchShield(rule: ShieldRule, str: string, scope: ShieldRule["sc
 export function shieldRuleMigration(rule: ShieldRule | ShieldRuleLegacy): ShieldRule {
     if (!has(rule, "rule")) return rule as ShieldRule;
     rule = rule as ShieldRuleLegacy;
-    return {
+
+    const newRule: ShieldRule = {
         content: rule.rule,
-        type: rule.type,
-        scope: rule.scope,
+        type: "text",
+        scope: "content",
         toggle: rule.switch,
         ignoreCase: rule.ignoreCase,
         matchHTML: rule.matchHTML,
     };
+
+    if (rule.type === "string") newRule.type = "text";
+    if (rule.scope === "posts") newRule.scope = "content";
+    if (rule.scope === "users") newRule.scope = "username";
+
+    return newRule;
 }

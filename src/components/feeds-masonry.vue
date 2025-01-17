@@ -26,7 +26,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    initFeeds: Array<any>,
+    initFeeds: () => [],
     showProgress: false,
 });
 
@@ -105,9 +105,9 @@ async function addFeeds(newFeeds?: TiebaPost[]) {
             const ruleList = shieldList.get();
             newFeeds = filter(newFeeds, feed => {
                 for (const rule of ruleList) {
-                    if (matchShield(rule, feed.author.name, "users") ||
-                        matchShield(rule, feed.title, "posts") ||
-                        matchShield(rule, feed.content, "posts")) {
+                    if (matchShield(rule, feed.author.name, "username") ||
+                        matchShield(rule, feed.title, "content") ||
+                        matchShield(rule, feed.content, "content")) {
                         return false;
                     }
                 }

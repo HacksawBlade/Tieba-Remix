@@ -64,14 +64,14 @@ function shieldBySelector(
 
 function main() {
     // 看贴页面
-    shieldBySelector(threadFloorsObserver, "posts", ".l_post_bright", ".d_post_content");
-    shieldBySelector(threadFloorsObserver, "users", ".l_post_bright", ".d_name a");
-    shieldBySelector(threadFloorsObserver, "users", ".l_post_bright", ".p_author_name");
-    shieldBySelector(threadCommentsObserver, "users", ".lzl_single_post", ".lzl_cnt .j_user_card");
+    shieldBySelector(threadFloorsObserver, "content", ".l_post_bright", ".d_post_content");
+    shieldBySelector(threadFloorsObserver, "username", ".l_post_bright", ".d_name a");
+    shieldBySelector(threadFloorsObserver, "username", ".l_post_bright", ".p_author_name");
+    shieldBySelector(threadCommentsObserver, "username", ".lzl_single_post", ".lzl_cnt .j_user_card");
     // 首页动态
-    shieldBySelector(legacyIndexFeedsObserver, "posts", ".j_feed_li", ".title, .n_txt");
-    shieldBySelector(legacyIndexFeedsObserver, "users", ".j_feed_li", ".post_author");
+    shieldBySelector(legacyIndexFeedsObserver, "content", ".j_feed_li", ".title, .n_txt");
+    shieldBySelector(legacyIndexFeedsObserver, "username", ".j_feed_li", ".post_author");
     // 进吧页面
-    shieldBySelector(forumThreadsObserver, "posts", ".j_thread_list", ".threadlist_title a");
-    shieldBySelector(forumThreadsObserver, "users", ".j_thread_list", ".frs-author-name-wrap");
+    shieldBySelector(forumThreadsObserver, "content", ".j_thread_list", ".threadlist_title a");
+    shieldBySelector(forumThreadsObserver, "username", ".j_thread_list", ".frs-author-name-wrap");
 }

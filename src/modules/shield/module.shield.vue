@@ -2,11 +2,11 @@
     <div class="shield-container">
         <div v-if="shieldListRef.length > 0" class="words-container">
             <UserButton v-for="(sh, index) in shieldListRef" class="shield-elem" :class="{
-                'content-scope': sh.scope === 'posts',
-                'user-scope': sh.scope === 'users',
+                'content-scope': sh.scope === 'content',
+                'user-scope': sh.scope === 'username',
                 'disabled': !sh.toggle,
             }" @click="editRule(sh, index)">
-                <div class="icon">{{ sh.scope === "posts" ? "chat" : "account_circle" }}</div>
+                <div class="icon">{{ sh.scope === "content" ? "chat" : "account_circle" }}</div>
                 <p class="content">{{ sh.content }}</p>
             </UserButton>
             <UserButton class="remove-all shield-elem icon" @click="removeAllWithConfirm">delete</UserButton>
@@ -83,8 +83,8 @@ function updateShieldList() {
 
     const rule: ShieldRule = {
         content: inputRule.value,
-        type: useRegex.value ? "regex" : "string",
-        scope: userScope.value ? "users" : "posts",
+        type: useRegex.value ? "regex" : "text",
+        scope: userScope.value ? "username" : "content",
         toggle: true,
     };
     shieldListRef.value.push(rule);

@@ -34,7 +34,7 @@ const props = defineProps<ShieldEditorOpts>();
 
 const dialog = ref<InstanceType<typeof UserDialog>>();
 const useRegex = ref(props.rule.type === "regex");
-const userScope = ref(props.rule.scope === "users");
+const userScope = ref(props.rule.scope === "username");
 
 const ruleRef = ref({ ...props.rule });
 
@@ -48,8 +48,8 @@ function keyPressHandler(e: KeyboardEvent) {
 function submit() {
     const newRule: ShieldRule = {
         ...ruleRef.value,
-        type: useRegex.value ? "regex" : "string",
-        scope: userScope.value ? "users" : "posts",
+        type: useRegex.value ? "regex" : "text",
+        scope: userScope.value ? "username" : "content",
     };
     dialog.value?.unload(newRule);
 }
