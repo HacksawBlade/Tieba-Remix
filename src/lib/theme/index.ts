@@ -4,7 +4,7 @@ import { currentPageType, getResource } from "../api/remixed";
 import { afterHead, domrd } from "../elemental";
 import { defaultStyle, injectCSSRule, parseMultiCSS, removeCSSRule } from "../elemental/styles";
 import { scrollbarWidth } from "../render";
-import { customBackground, monospaceFonts, themeColor, userFonts, wideScreen } from "../user-values";
+import { customBackground, customStyle, monospaceFonts, themeColor, userFonts, wideScreen } from "../user-values";
 import { waitUntil } from "../utils";
 import { hexToRGBA, rgbaToHSLA } from "../utils/color";
 
@@ -71,6 +71,9 @@ export async function loadDynamicCSS() {
             })
         );
     }, { once: true });
+
+    const customCSS = customStyle.get();
+    if (customCSS !== "") GM_addStyle(customCSS);
 }
 
 export async function loadTiebaCSS() {

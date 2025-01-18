@@ -4,7 +4,7 @@ import { MainSettingKey, SettingContent, SubSettingKey, UserSettings } from "@/c
 import { UserSelectItem } from "@/components/user-select.vue";
 import { backupUserConfigs, restoreUserConfigs } from "@/lib/api/remixed";
 import { messageBox } from "@/lib/render/message-box";
-import { PerfType, UpdateConfig, compactLayout, disabledModules, experimental, monospaceFonts, navBarHideMode, pageExtension, perfProfile, themeType, updateConfig, userFonts, wideScreen } from "@/lib/user-values";
+import { PerfType, UpdateConfig, compactLayout, customStyle, disabledModules, experimental, monospaceFonts, navBarHideMode, pageExtension, perfProfile, themeType, updateConfig, userFonts, wideScreen } from "@/lib/user-values";
 import { AllModules } from "@/lib/utils";
 import { forEach, includes, join, once, split } from "lodash-es";
 import { markRaw } from "vue";
@@ -393,6 +393,26 @@ export const getUserSettings = once((): UserSettings => ({
                             content: "恢复",
                             event() {
                                 restoreUserConfigs();
+                            },
+                        }],
+                    },
+                },
+            },
+
+            "custom-style": {
+                name: "自定义样式",
+                content: {
+                    "content": {
+                        title: "自定义样式",
+                        description:
+                            `你可以在这里添加一些自定义的CSS代码，用以覆盖脚本内置的一些样式。`,
+                        widgets: [{
+                            type: "textarea",
+                            init() {
+                                return customStyle.get();
+                            },
+                            event(e: Event) {
+                                customStyle.set((e.target as HTMLInputElement).value);
                             },
                         }],
                     },

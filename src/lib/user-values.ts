@@ -220,6 +220,8 @@ export const monospaceFonts = new UserKey<string[]>("monospaceFonts", [
 ]);
 /** 导航栏模式 */
 export const navBarHideMode = new UserKey<NavBarHideMode>("navBarHideMode", "fold");
+/** 自定义样式 */
+export const customStyle = new UserKey<string>("customStyle", "");
 
 export const SymbolFont = "Material Symbols";
 
