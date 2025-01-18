@@ -9,7 +9,7 @@
                     }" tabindex="-1">
                     <div v-if="title" class="dialog-title">{{ title }}</div>
                     <slot></slot>
-                    <div v-if="dialogButtons.length > 0" class="dialog-buttons">
+                    <div v-if="dialogButtons.length > 0" class="dialog-button-panel">
                         <UserButton v-for="button in dialogButtons" class="dialog-button" shadow-border
                             :theme-style="button.style === 'themed'" @click="button.event"
                             :class="{ 'icon': button.icon }">
@@ -214,6 +214,9 @@ defineExpose({
 @use "@/stylesheets/main/animations.scss" as *;
 @use "@/stylesheets/main/remixed-main.scss" as *;
 
+$dialog-padding: 16px;
+$dialog-radius: 12px;
+
 .user-dialog-modal {
     position: fixed;
     z-index: v-bind("$props.zIndex");
@@ -230,13 +233,12 @@ defineExpose({
         &.default {
             @include main-box-shadow;
             display: flex;
-            overflow: hidden;
             box-sizing: border-box;
             flex-direction: column;
-            padding: 16px;
+            padding: $dialog-padding;
             border: 1px solid var(--light-border-color);
-            border-radius: 12px;
-            margin: 16px;
+            border-radius: $dialog-radius;
+            margin: $dialog-padding;
             background-color: var(--default-background);
             font-size: 16px;
             transition: $default-animation-duration;
@@ -261,10 +263,12 @@ defineExpose({
             font-weight: bold;
         }
 
-        .dialog-buttons {
+        .dialog-button-panel {
+            $dialog-padding-nega: -$dialog-padding;
             display: flex;
-            padding: 16px;
-            margin: 16px -16px -16px;
+            padding: $dialog-padding;
+            border-radius: 0 0 $dialog-radius $dialog-radius;
+            margin: $dialog-padding $dialog-padding-nega $dialog-padding-nega;
             background-color: var(--deep-background);
             gap: 8px;
 

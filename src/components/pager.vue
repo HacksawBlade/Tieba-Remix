@@ -29,8 +29,8 @@
 
         <div v-if="showPagers && jumper" class="jumper-container">
             转到
-            <UserTextbox v-model="jumperValue" class="jumper" @update:model-value="emit('update:jumperValue', jumperValue)"
-                @keydown.enter="handleJumperEnter">
+            <UserTextbox v-model="jumperValue" class="jumper"
+                @update:model-value="emit('update:jumperValue', jumperValue)" @keydown.enter="handleJumperEnter">
             </UserTextbox>
             页
         </div>
@@ -155,18 +155,18 @@ function handleJumperEnter() {
     .pager-button-container {
         display: flex;
         align-items: center;
-        gap: 4px;
 
         .pager-button {
+            padding: 4px 10px;
             color: var(--default-fore);
-            font-family: var(--code-monospace);
+            font-family: var(--code-zh);
 
             &:not(:hover, :active, :focus) {
                 background-color: transparent;
             }
 
             &.fill:not(:hover, :active, :focus) {
-                background-color: var(--defualt-background);
+                background-color: var(--default-background);
             }
 
             &.curr-pager-button {
