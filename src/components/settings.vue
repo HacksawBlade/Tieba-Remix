@@ -60,8 +60,8 @@
 
                         <!-- Select -->
                         <UserSelect v-if="widget.type === 'select' && Array.isArray(widget.content)"
-                            :data="widget.content as UserSelectItem[]" :default-value="widget.init?.()"
-                            @change="widget.event" />
+                            class="settings-select" :data="widget.content as UserSelectItem[]"
+                            :default-value="widget.init?.()" @change="widget.event" />
 
                         <!-- SubTitle -->
                         <h4 v-if="widget.type === 'subTitle'" class="content-sub-title">{{ widget.content }}</h4>
@@ -466,6 +466,10 @@ $wrapper-padding: 16px;
                     margin-left: auto;
                     font-size: 64px;
                     font-variation-settings: "FILL" 1;
+                }
+
+                .settings-select {
+                    width: min(100%, 280px);
                 }
             }
         }

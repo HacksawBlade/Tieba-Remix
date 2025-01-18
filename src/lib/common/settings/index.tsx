@@ -29,9 +29,9 @@ export const getUserSettings = once((): UserSettings => ({
                         widgets: [{
                             type: "select",
                             content: [
-                                { value: "auto", text: "自动", desc: "根据系统设置自动切换主题" },
-                                { value: "dark", text: "深色", desc: "使用深色主题" },
-                                { value: "light", text: "浅色", desc: "使用浅色主题" },
+                                { value: "auto", text: "自动", desc: "根据系统设置自动切换主题。" },
+                                { value: "dark", text: "深色", desc: "使用深色主题。" },
+                                { value: "light", text: "浅色", desc: "使用浅色主题。" },
                             ] as UserSelectItem<ReturnType<typeof themeType.get>>[],
                             init() {
                                 return themeType.get();
@@ -218,11 +218,11 @@ export const getUserSettings = once((): UserSettings => ({
                         widgets: [{
                             type: "select",
                             content: [
-                                { value: "fold", text: "滚动折叠" },
-                                { value: "alwaysFold", text: "始终折叠" },
-                                { value: "hideWhenScroll", text: "滚动隐藏" },
-                                { value: "fixedOnTop", text: "顶部固定" },
-                                { value: "never", text: "始终显示" },
+                                { value: "fold", text: "滚动折叠", desc: "当页面以一定速度向下滚动时，会将导航栏折叠，只会占据很小的屏幕空间，但能更方便地重新访问导航栏。" },
+                                { value: "alwaysFold", text: "始终折叠", desc: "导航栏始终保持折叠状态。" },
+                                { value: "hideWhenScroll", text: "滚动隐藏", desc: "当页面以一定速度向下滚动时，彻底隐藏导航栏，重新访问导航栏则需要以一定速度向上滚动页面。" },
+                                { value: "fixedOnTop", text: "顶部固定", desc: "导航栏不会在视图上跟随移动，仅在页面最顶部固定。" },
+                                { value: "never", text: "始终显示", desc: "始终显示完整的导航栏。" },
                             ] as UserSelectItem<NavBarHideMode>[],
                             init() {
                                 return navBarHideMode.get();
