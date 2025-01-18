@@ -42,7 +42,7 @@ const unreadTTL = 2;
 let currentLoadedFeeds: Element[] = [];
 let isFetchingFeeds = false;
 
-const debAddFeeds = debounce(addFeeds, 1000, { leading: true });
+const debAddFeeds = debounce(addFeeds, 2000, { leading: true });
 
 let flexMasonry: FlexMasonry;
 
