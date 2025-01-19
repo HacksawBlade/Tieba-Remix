@@ -30,6 +30,13 @@ const scriptOptions: MonkeyOption = {
         ],
         "run-at": "document-start",
     },
+    build: {
+        externalGlobals: {
+            "vue": cdn.jsdelivrFastly("Vue", "dist/vue.global.prod.js"),
+            "marked": cdn.jsdelivrFastly("marked", "lib/marked.umd.min.js"),
+            "lodash": cdn.jsdelivrFastly("_", "lodash.min.js"),
+        },
+    },
 };
 
 const commonConfig = defineConfig({
@@ -43,6 +50,15 @@ const commonConfig = defineConfig({
         outDir: "build",
         reportCompressedSize: false,
         cssCodeSplit: false,
+        rollupOptions: {
+            output: {
+                globals: {
+                    "vue": "Vue",
+                    "marked": "marked",
+                    "lodash": "_",
+                },
+            },
+        },
     },
     css: {
         postcss: {
@@ -95,28 +111,9 @@ const forkConfig = defineConfig({
     build: {
         minify: false,
         cssMinify: false,
-        rollupOptions: {
-            output: {
-                globals: {
-                    "vue": "Vue",
-                    "marked": "marked",
-                },
-            },
-        },
     },
     plugins: [
-        monkey(deepmerge(scriptOptions, {
-            build: {
-                externalGlobals: {
-                    "vue": cdn.jsdelivrFastly("Vue", "dist/vue.global.prod.js").concat(
-                        `data:application/javascript,${encodeURIComponent(
-                            `;window.Vue=Vue;`,
-                        )}`,
-                    ),
-                    "marked": cdn.jsdelivrFastly("marked", "lib/marked.umd.min.js"),
-                },
-            },
-        })),
+        monkey(scriptOptions),
     ],
 });
 
