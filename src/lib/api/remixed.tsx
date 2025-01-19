@@ -100,6 +100,7 @@ export function checkUpdateAndNotify(showLatest = false) {
                         text: "安装",
                         event() {
                             installFromRelease(latestRelease);
+                            return true;
                         },
                         style: "themed",
                     },
@@ -107,12 +108,14 @@ export function checkUpdateAndNotify(showLatest = false) {
                         text: "今日不再提醒",
                         event() {
                             showUpdateToday.set(false);
+                            return true;
                         },
                     },
                     {
                         text: "跳过该版本",
                         event() {
                             ignoredTag.set(latestRelease.tag_name);
+                            return true;
                         },
                     },
                 ],

@@ -11,7 +11,7 @@
                     <slot></slot>
                     <div v-if="dialogButtons.length > 0" class="dialog-button-panel">
                         <UserButton v-for="button in dialogButtons" class="dialog-button" shadow-border
-                            :theme-style="button.style === 'themed'" @click="button.event"
+                            :theme-style="button.style === 'themed'" @click="handleButtonEvent(button.event)"
                             :class="{ 'icon': button.icon }">
                             {{ button.icon ? button.icon : button.text }}
                         </UserButton>
@@ -35,7 +35,8 @@ export interface UserDialogButton {
     text?: string;
     style?: "normal" | "themed";
     icon?: string;
-    event?: () => void;
+    /** 按钮事件。返回值为 `true` 时将会卸载对话框 */
+    event?: () => boolean | void;
 }
 
 export interface UserDialogOpts<PayloadType = any> extends DialogOpts {
@@ -203,6 +204,12 @@ function unloadDialog() {
         return;
     }
     emit("unload");
+}
+
+function handleButtonEvent(eventfn: UserDialogButton["event"]) {
+    if (eventfn?.()) {
+        unload();
+    }
 }
 
 defineExpose({
