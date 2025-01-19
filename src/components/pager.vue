@@ -173,7 +173,6 @@ function handleJumperEnter() {
                 border-radius: 0;
                 box-shadow: 0 3px 0 var(--tieba-theme-color);
                 color: var(--tieba-theme-color);
-                font-weight: bold;
             }
 
             &.icon {
