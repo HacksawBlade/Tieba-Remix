@@ -1,6 +1,6 @@
 import { dom } from "@/lib/elemental";
 import { TiebaForum } from "@/lib/tieba-components/forum";
-import { defaults, map } from "lodash-es";
+import _ from "lodash";
 
 export interface ThreadContent {
     post: HTMLDivElement;
@@ -86,10 +86,10 @@ export function threadParser(): TiebaThread {
 
     const replyButtons = dom<"a">(".lzl_link_unfold", []);
 
-    const locations = map(dom<"span">(".post-tail-wrap span:first-child, .ip-location", []), el => el.innerText);
-    const platforms = map(dom<"a">(".tail-info a, .p_tail_wap", []), el => el.innerText);
-    const floors = map(dom<"span">(".j_jb_ele + .tail-info + .tail-info, .p_tail li:first-child span", []), el => el.innerText);
-    const times = map(dom<"span">(".post-tail-wrap span:nth-last-child(2), .p_tail li:last-child span", []), el => el.innerText);
+    const locations = _.map(dom<"span">(".post-tail-wrap span:first-child, .ip-location", []), el => el.innerText);
+    const platforms = _.map(dom<"a">(".tail-info a, .p_tail_wap", []), el => el.innerText);
+    const floors = _.map(dom<"span">(".j_jb_ele + .tail-info + .tail-info, .p_tail li:first-child span", []), el => el.innerText);
+    const times = _.map(dom<"span">(".post-tail-wrap span:nth-last-child(2), .p_tail li:last-child span", []), el => el.innerText);
 
     const threadContents: ThreadContent[] = [];
 
@@ -101,7 +101,7 @@ export function threadParser(): TiebaThread {
         threadContents.push({
             post: contents[i],
             replyButton: replyButtons[i],
-            dataField: defaults(postWrappers[i].getAttribute("data-field"), ""),
+            dataField: _.defaults(postWrappers[i].getAttribute("data-field"), ""),
             isLouzhu: !!dom(".louzhubiaoshi_wrap", dAuthors[i]),
 
             profile: {

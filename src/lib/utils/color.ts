@@ -1,4 +1,4 @@
-import { chunk, join, repeat, round, startsWith, trimStart } from "lodash-es";
+import _ from "lodash";
 
 export interface RGBA {
     r: number;
@@ -32,12 +32,12 @@ export function colorToRGBA(color: string): Maybe<RGBA> {
 }
 
 export function hexToRGBA(hex: string): RGBA {
-    const hexValue = startsWith(hex, "#") ? trimStart(hex, "#") : hex;
+    const hexValue = _.startsWith(hex, "#") ? _.trimStart(hex, "#") : hex;
     const tokenConverter = hexValue.length <= 4
-        ? (chunk: string[]) => parseInt(repeat(chunk[0], 2), 16)
-        : (chunk: string[]) => parseInt(join(chunk, ""), 16);
+        ? (chunk: string[]) => parseInt(_.repeat(chunk[0], 2), 16)
+        : (chunk: string[]) => parseInt(_.join(chunk, ""), 16);
     const chunkSize = hexValue.length <= 4 ? 1 : 2;
-    const chunks = chunk(hexValue, chunkSize);
+    const chunks = _.chunk(hexValue, chunkSize);
     return {
         r: tokenConverter(chunks[0]),
         g: tokenConverter(chunks[1]),
@@ -81,9 +81,9 @@ export function rgbaToHSLA(rgba: RGBA): HSLA {
     }
 
     return {
-        h: round(hue, 2),
-        s: `${round(saturation * 100)}%`,
-        l: `${round(lightness * 100)}%`,
+        h: _.round(hue, 2),
+        s: `${_.round(saturation * 100)}%`,
+        l: `${_.round(lightness * 100)}%`,
         a: rgba.a,
     };
 }

@@ -1,4 +1,4 @@
-import { isNil, throttle } from "lodash-es";
+import _ from "lodash";
 import { checkUpdateAndNotify, currentPageType, setTheme } from "./lib/api/remixed";
 import { parseUserModules } from "./lib/common/packer";
 import { forumThreadsObserver, legacyIndexFeedsObserver, threadCommentsObserver, threadFloorsObserver } from "./lib/observers";
@@ -46,11 +46,11 @@ window.addEventListener("load", function () {
 });
 
 // 收缩视图检测
-waitUntil(() => !isNil(document.body)).then(function () {
+waitUntil(() => !_.isNil(document.body)).then(function () {
     if (wideScreen.get().noLimit) {
         document.body.classList.add("shrink-view");
     } else {
-        const shrinkListener = throttle(function () {
+        const shrinkListener = _.throttle(function () {
             if (window.innerWidth <= wideScreen.get().maxWidth) {
                 document.body.classList.add("shrink-view");
             } else {

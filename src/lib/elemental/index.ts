@@ -1,5 +1,5 @@
 import { isLiteralObject, waitUntil } from "@/lib/utils";
-import { forEach, forOwn, isNil, merge } from "lodash-es";
+import _ from "lodash";
 
 export const fadeInElems: string[] = [];
 const fadeInClass = "fade-in-elem";
@@ -72,7 +72,7 @@ export async function asyncdom<T extends DOMTagNames = "default">(
     parent?: Element,
     timeout = Infinity
 ) {
-    return waitUntil(() => !isNil(dom<T>(selector, parent)), timeout)
+    return waitUntil(() => !_.isNil(dom<T>(selector, parent)), timeout)
         .then(() => dom<T>(selector, parent));
 }
 
@@ -147,7 +147,7 @@ export function getNodeAttrsDeeply(node: HTMLElement) {
 export function mergeNodeAttrs<T extends HTMLElement>(
     node: T, attrs: LiteralObject,
 ) {
-    forOwn(attrs, (value, key) => {
+    _.forOwn(attrs, (value, key) => {
         if (value !== node.getAttribute(key)) {
             if (isLiteralObject(value)) {
                 node.setAttribute(key, JSON.stringify(attrs[key]));
@@ -168,7 +168,7 @@ export function mergeNodeAttrsDeeply<T extends HTMLElement>(
     node: T, attrs: LiteralObject,
 ) {
     const src = getNodeAttrsDeeply(node);
-    const des = merge(src, attrs);
+    const des = _.merge(src, attrs);
     mergeNodeAttrs(node, des);
 }
 
@@ -192,7 +192,7 @@ export function domrd<T extends keyof HTMLElementTagNameMap>(
     if (typeof children === "string") {
         elem.appendChild(document.createTextNode(children));
     } else {
-        forEach(children, child => {
+        _.forEach(children, child => {
             if (typeof child === "string") {
                 elem.appendChild(document.createTextNode(child));
             } else {

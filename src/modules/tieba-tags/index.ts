@@ -1,7 +1,7 @@
 import { dom, domrd, findParent } from "@/lib/elemental";
 import { injectCSSList } from "@/lib/elemental/styles";
 import { threadCommentsObserver } from "@/lib/observers";
-import { forEach, indexOf, split } from "lodash-es";
+import _ from "lodash";
 import tagCSS from "./stylesheet.css?inline";
 
 export default {
@@ -59,7 +59,7 @@ function main(): void {
                 const dataAttr = targetFloor.getAttribute("data-field");
                 if (dataAttr) {
                     const dataField = JSON.parse(dataAttr);
-                    return split(dataField.author.portrait, "?")[0];
+                    return _.split(dataField.author.portrait, "?")[0];
                 }
             }
         }
@@ -67,7 +67,7 @@ function main(): void {
     }
 
     function createTagsAll() {
-        forEach(dom(".lzl_cnt .at", []), (elem) => {
+        _.forEach(dom(".lzl_cnt .at", []), (elem) => {
             if (elem.classList.contains(TAGGED)) return;
             elem.classList.add(TAGGED);
 
@@ -110,7 +110,7 @@ function main(): void {
             function userClassify(un: string, portrait?: string): boolean {
                 if (username === un && un !== "") {
                     return true;
-                } else if (indexOf(["", " "], username) !== -1) {
+                } else if (_.indexOf(["", " "], username) !== -1) {
                     // 无法正常获取到 username 和 dataField
                     const targetPortrait = elem.getAttribute("portrait");
                     if (targetPortrait && portrait) {

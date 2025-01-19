@@ -46,7 +46,7 @@ import { messageBox } from "@/lib/render/message-box";
 import { toast } from "@/lib/render/toast";
 import { experimental, GiteeRepo, GithubRepo, navBarHideMode } from "@/lib/user-values";
 import { waitUntil } from "@/lib/utils";
-import { forEach, throttle } from "lodash-es";
+import _ from "lodash";
 import { onMounted, ref } from "vue";
 import Settings from "./settings.vue";
 import DropdownMenu from "./utils/dropdown-menu.vue";
@@ -90,7 +90,7 @@ async function init() {
 
     const navBarElement = dom("#nav-bar");
     if (navBarElement) {
-        forEach(dom<"button">(".menu-trigger", navBarElement, []), el => {
+        _.forEach(dom<"button">(".menu-trigger", navBarElement, []), el => {
             el.addEventListener("mousemove", function (e) {
                 e.stopPropagation();
                 const menu = el.lastElementChild as HTMLElement;
@@ -114,7 +114,7 @@ async function init() {
             const threshold = 50, timeout = 1000;
             let lastScrollY = window.scrollY;
             let timer = -1;
-            const handle = throttle(function () {
+            const handle = _.throttle(function () {
                 if (window.scrollY > lastScrollY + threshold) {
                     navBar.value?.classList.add(modeClass);
                     teiggerHide.value = true;

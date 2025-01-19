@@ -1,5 +1,5 @@
 import { GM_addStyle } from "$";
-import { findIndex, isNil, join } from "lodash-es";
+import _ from "lodash";
 import { currentPageType, getResource } from "../api/remixed";
 import { afterHead, domrd } from "../elemental";
 import { defaultStyle, injectCSSRule, parseMultiCSS, removeCSSRule } from "../elemental/styles";
@@ -21,7 +21,7 @@ import "@/stylesheets/tieba/tieba-thread.scss";
 export const darkPrefers = matchMedia("(prefers-color-scheme: dark)");
 
 const dynCSSRules = {
-    customBackground: () => findIndex(Array.from(defaultStyle.sheet?.cssRules ?? { length: 0 }), rule => (rule as CSSStyleRule).selectorText === "body.custom-background"),
+    customBackground: () => _.findIndex(Array.from(defaultStyle.sheet?.cssRules ?? { length: 0 }), rule => (rule as CSSStyleRule).selectorText === "body.custom-background"),
 };
 
 /** 动态样式 */
@@ -37,8 +37,8 @@ export async function loadDynamicCSS() {
             "--content-max": wideScreen.get().noLimit
                 ? "100vw"
                 : `${wideScreen.get().maxWidth}px`,
-            "--code-zh": `${join(userFonts.get(), ",")}`,
-            "--code-monospace": `${join(monospaceFonts.get(), ",")}`,
+            "--code-zh": `${_.join(userFonts.get(), ",")}`,
+            "--code-monospace": `${_.join(monospaceFonts.get(), ",")}`,
         },
 
         "html.dark-theme": {
@@ -102,7 +102,7 @@ export async function setCustomBackground() {
             backgroundSize: "cover !important",
         }) ?? -1;
 
-        waitUntil(() => !isNil(document.body)).then(function () {
+        waitUntil(() => !_.isNil(document.body)).then(function () {
             if (customBackground.get()) {
                 document.body.classList.add("custom-background");
             } else {

@@ -27,7 +27,7 @@ import { dom, findParent } from "@/lib/elemental";
 import { EventProxy } from "@/lib/elemental/event-proxy";
 import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import { DialogOpts, scrollbarWidth } from "@/lib/render";
-import { isNil } from "lodash-es";
+import _ from "lodash";
 import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 import UserButton from "./utils/user-button.vue";
 
@@ -118,7 +118,7 @@ onMounted(async function () {
                 const modalDialogs = dom(".user-dialog-modal", []);
                 if (!modalDialogs[modalDialogs.length - 1].contains(userDialog.value as Node)) return;
 
-                if (isNil(e.relatedTarget) || !userDialog.value?.contains(e.relatedTarget as Node)) {
+                if (_.isNil(e.relatedTarget) || !userDialog.value?.contains(e.relatedTarget as Node)) {
                     userDialog.value?.focus();
 
                     // 存在模态框时，允许通过 tab 切换到页面之外，但焦点回归至页面时必须回到对话框内

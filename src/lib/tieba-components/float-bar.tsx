@@ -1,4 +1,4 @@
-import { findKey } from "lodash-es";
+import _ from "lodash";
 import { TiebaAbstract, TiebaComponent } from "../api/abstract";
 import { dom, domrd } from "../elemental";
 
@@ -29,8 +29,7 @@ export class FloatBar extends TiebaComponent<"ul"> {
                     const cls = el.classList[i];
                     if (!cls.includes("tbui_fbar_")) continue;
 
-                    // 这类型用的可能是有点魔怔了
-                    const key = findKey(floatButtonMap, (value) => value === cls);
+                    const key = _.findKey(floatButtonMap, (value) => value === cls);
                     if (key) {
                         return key as FloatButtonKey;
                     }

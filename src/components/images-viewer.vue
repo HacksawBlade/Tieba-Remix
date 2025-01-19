@@ -16,7 +16,7 @@
                 <UserButton class="zoom-out head-btn icon" title="放大" @click="zoomImage(-0.5)">
                     zoom_out
                 </UserButton>
-                <span class="zoom-size">{{ round(scale * 100) + "%" }}</span>
+                <span class="zoom-size">{{ _.round(scale * 100) + "%" }}</span>
                 <span>|</span>
                 <UserButton class="turn-left head-btn icon" title="逆时针旋转" @click="rotateImage(-90)">
                     undo
@@ -52,7 +52,7 @@
 <script setup lang="ts">
 import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import { messageBox } from "@/lib/render/message-box";
-import { map, round } from "lodash-es";
+import _ from "lodash";
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
 import ToggleButton from "./utils/toggle-button.vue";
@@ -73,7 +73,7 @@ if (typeof props.content === "string") {
 } else if (Array.isArray(props.content)) {
     imageArray.push(...props.content);
 } else {
-    map(props.content.images, (value) => {
+    _.map(props.content.images, (value) => {
         imageArray.push(value.original);
     });
 }

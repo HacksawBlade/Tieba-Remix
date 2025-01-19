@@ -4,7 +4,7 @@ import { tiebaAPI } from "@/lib/api/tieba";
 import { dom, findParent } from "@/lib/elemental";
 import { threadCommentsObserver, threadFloorsObserver } from "@/lib/observers";
 import { UserKey } from "@/lib/user-values";
-import { forEach } from "lodash-es";
+import _ from "lodash";
 
 export default {
     id: "toolkit",
@@ -52,7 +52,7 @@ const toolkitFeatures = {
     /** 自动展开长图 */
     autoExpand() {
         threadFloorsObserver.addEvent(() => {
-            forEach(dom<"div">(".replace_tip", []), (el) => {
+            _.forEach(dom<"div">(".replace_tip", []), (el) => {
                 el.click();
             });
         });
@@ -61,7 +61,7 @@ const toolkitFeatures = {
     /** 重新加载错误头像 */
     reloadAvatars() {
         const observer = new IntersectionObserver(function (entries) {
-            forEach(entries, entry => {
+            _.forEach(entries, entry => {
                 if (entry.isIntersecting) {
                     const avatar = entry.target as HTMLImageElement;
                     if (!avatar.complete) return;

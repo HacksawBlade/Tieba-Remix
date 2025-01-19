@@ -1,4 +1,4 @@
-import { forEach } from "lodash-es";
+import _ from "lodash";
 import { currentPageType } from "../api/remixed";
 import { afterHead } from "../elemental";
 import { disabledModules } from "../user-values";
@@ -15,7 +15,7 @@ export function parseUserModules(
 ): UserModule[] {
     const modules: UserModule[] = [];
 
-    forEach(glob, async moduleExport => {
+    _.forEach(glob, async moduleExport => {
         const currentModule = (await moduleExport()).default as UserModule;
         const disabledSet = new Set(disabledModules.get());
 

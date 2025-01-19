@@ -1,6 +1,6 @@
 import { GM_deleteValue, GM_getValue, GM_setValue } from "$";
 import { NavBarHideMode } from "@/components/nav-bar.vue";
-import { forEach, keys, merge } from "lodash-es";
+import _ from "lodash";
 import { setTheme } from "./api/remixed";
 import { setPerfAttr } from "./perf";
 import { setCustomBackground } from "./theme";
@@ -48,14 +48,14 @@ export class UserKey<T, LegacyType = unknown> {
     }
 
     protected dispatchEvent(event: UserKeyEvent, value: T) {
-        forEach(this.listeners[event], listener => listener(value));
+        _.forEach(this.listeners[event], listener => listener(value));
     }
 
     public get() {
         let value = GM_getValue<T>(this.key, this.defaultValue);
         if (isLiteralObject(value) &&
-            keys(value).length < keys(this.defaultValue).length) {
-            value = merge(this.defaultValue, value);
+            _.keys(value).length < _.keys(this.defaultValue).length) {
+            value = _.merge(this.defaultValue, value);
         }
         if (this.migration) {
             value = this.migration(value);
@@ -84,7 +84,7 @@ export class UserKey<T, LegacyType = unknown> {
 
     public mergeDeeply(value: Partial<T>) {
         if (isLiteralObject(value)) {
-            const merged = merge(this.get(), value);
+            const merged = _.merge(this.get(), value);
             this.set(merged);
             this.dispatchEvent("setter", merged);
         }
@@ -108,8 +108,8 @@ export class UserKeyTS<T, LegacyType = unknown> extends UserKey<T, LegacyType> {
     public get() {
         let value = getUserValueTS<T>(this.key, this.defaultValue);
         if (isLiteralObject(value) &&
-            keys(value).length < keys(this.defaultValue).length) {
-            value = merge(this.defaultValue, value);
+            _.keys(value).length < _.keys(this.defaultValue).length) {
+            value = _.merge(this.defaultValue, value);
         }
         if (this.migration) value = this.migration(value);
         this.dispatchEvent("getter", value);
@@ -136,7 +136,7 @@ export class UserKeyTS<T, LegacyType = unknown> extends UserKey<T, LegacyType> {
 
     public mergeDeeply(value: Partial<T>, invalidTime?: number) {
         if (isLiteralObject(value)) {
-            const merged = merge(this.get(), value);
+            const merged = _.merge(this.get(), value);
             this.set(merged, invalidTime ? invalidTime : this.defaultInvalid());
             this.dispatchEvent("setter", merged);
         }

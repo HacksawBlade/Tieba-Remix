@@ -16,7 +16,7 @@ import { headerProgress, imagesViewer } from "@/lib/render/universal";
 import { unreadFeeds } from "@/lib/user-values";
 import { requestInstance, spawnOffsetTS, waitUntil } from "@/lib/utils";
 import { matchShield, shieldList } from "@/modules/shield";
-import { debounce, filter, throttle } from "lodash-es";
+import _ from "lodash";
 import { ComponentPublicInstance, nextTick, onMounted, ref, watch } from "vue";
 import PostContainer from "./post-container.vue";
 
@@ -42,12 +42,12 @@ const unreadTTL = 2;
 let currentLoadedFeeds: Element[] = [];
 let isFetchingFeeds = false;
 
-const debAddFeeds = debounce(addFeeds, 2000, { leading: true });
+const debAddFeeds = _.debounce(addFeeds, 2000, { leading: true });
 
 let flexMasonry: FlexMasonry;
 
 // 根据视图宽度修改布局
-window.addEventListener("resize", throttle(function () {
+window.addEventListener("resize", _.throttle(function () {
     flexMasonry.adjustWidth();
     if (flexMasonry.columns !== flexMasonry.calcColumns()) flexMasonry.exec();
 }, 100), { passive: true });
@@ -103,7 +103,7 @@ async function addFeeds(newFeeds?: TiebaPost[]) {
 
             // 屏蔽推送
             const ruleList = shieldList.get();
-            newFeeds = filter(newFeeds, feed => {
+            newFeeds = _.filter(newFeeds, feed => {
                 for (const rule of ruleList) {
                     if (matchShield(rule, feed.author.name, "username") ||
                         matchShield(rule, feed.title, "content") ||

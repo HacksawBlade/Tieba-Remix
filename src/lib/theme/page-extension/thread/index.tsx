@@ -14,7 +14,7 @@ import { floatBar } from "@/lib/tieba-components/float-bar";
 import { pager } from "@/lib/tieba-components/pager";
 import { compactLayout, experimental, pageExtension, perfProfile } from "@/lib/user-values";
 import { waitUntil } from "@/lib/utils";
-import { find, forEach, isNil, some } from "lodash-es";
+import _ from "lodash";
 import { VNode } from "vue";
 import compactCSS from "./compact.scss?inline";
 import { threadParser } from "./parser";
@@ -27,14 +27,14 @@ export default async function () {
     injectCSSList(threadCSS);
     injectCSSList(compactCSS);
 
-    await waitUntil(() => !isNil(document.body)).then(function () {
+    await waitUntil(() => !_.isNil(document.body)).then(function () {
         // document.body.insertBefore(mainWrapper, document.body.firstChild);
         if (compactLayout.get()) {
             document.body.toggleAttribute("compact-layout");
         }
     });
 
-    waitUntil(() => !isNil(floatBar.get())).then(function () {
+    waitUntil(() => !_.isNil(floatBar.get())).then(function () {
         floatBar.add("other", function () {
             renderDialog<TogglePanelProps>(TogglePanel, {
                 toggles: [
@@ -124,13 +124,13 @@ export default async function () {
 
             // TODO: performance
             thread = threadParser();
-            forEach(dom(".d_post_content_main", threadList, []), (floor, i) => {
+            _.forEach(dom(".d_post_content_main", threadList, []), (floor, i) => {
                 const authorContainer = createAuthorContainer(i);
                 floor.insertBefore(authorContainer, floor.firstChild);
             });
 
             // 去除左侧用户栏
-            forEach(dom(".d_author", []), el => el.remove());
+            _.forEach(dom(".d_author", []), el => el.remove());
         });
 
         function createAuthorContainer(index: number) {
@@ -159,7 +159,7 @@ export default async function () {
 
         // 头像 lazy load
         const avatarObserver = new IntersectionObserver(function (entries, observer) {
-            forEach(entries, function (entry) {
+            _.forEach(entries, function (entry) {
                 if (entry.isIntersecting) {
                     const avatar = entry.target.children[0] as HTMLImageElement;
                     const lazyLink = avatar.getAttribute("data-tb-lazyload");
@@ -180,7 +180,7 @@ export default async function () {
             threshold: 0.5,
         });
 
-        forEach(thread.cotents, content => {
+        _.forEach(thread.cotents, content => {
             avatarObserver.observe(content.profile.avatar);
         });
 
@@ -223,8 +223,8 @@ export default async function () {
 
         // 去除楼中楼用户发言的冒号
         threadCommentsObserver.addEvent(() => {
-            forEach(dom(".lzl_cnt", []), el => {
-                forEach(el.childNodes, node => {
+            _.forEach(dom(".lzl_cnt", []), el => {
+                _.forEach(el.childNodes, node => {
                     if (node)
                         node.nodeType === 3 ? node.remove() : undefined;
                 });
@@ -252,7 +252,7 @@ export default async function () {
                     showPagers={PageData.pager.total_page > 1}
                     pagerChange={function (page) {
                         pager.jumpTo(page);
-                        forEach(pagerVNodes, pagerVNode => {
+                        _.forEach(pagerVNodes, pagerVNode => {
                             // @ts-ignore
                             pagerVNode.component.exposeProxy.current = page;
                         });
@@ -277,14 +277,14 @@ export default async function () {
 
     createTextbox();
     async function createTextbox() {
-        await waitUntil(() => !isNil(floatBar.get()));
-        await waitUntil(() => !isNil(dom("#ueditor_replace")));
+        await waitUntil(() => !_.isNil(floatBar.get()));
+        await waitUntil(() => !_.isNil(dom("#ueditor_replace")));
 
-        if (!some(floatBar.buttons(), { type: "post" })) {
+        if (!_.some(floatBar.buttons(), { type: "post" })) {
             floatBar.add("post", showEditor, undefined, undefined, 2);
         }
 
-        const postButton = find(floatBar.buttons(), button => {
+        const postButton = _.find(floatBar.buttons(), button => {
             return button.type === "post";
         });
         postButton?.el.addEventListener("click", showEditor);

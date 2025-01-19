@@ -93,7 +93,7 @@
                 </div>
 
                 <div class="block-container topic-list">
-                    <UserButton v-for="topic in take(topicList, 10)" :is-anchor="true" class="topic-btn"
+                    <UserButton v-for="topic in _.take(topicList, 10)" :is-anchor="true" class="topic-btn"
                         :shadow-border="true" :href="topic.topic_url" target="_blank">
                         <img class="topic-img" :src="topic.topic_pic">
                         <div class="topic-content">
@@ -144,7 +144,7 @@ import {
     tiebaAPI,
 } from "@/lib/api/tieba";
 
-import { debounce, forEach, map, take } from "lodash-es";
+import _ from "lodash";
 import { onMounted, ref } from "vue";
 
 import { findParent } from "@/lib/elemental";
@@ -315,7 +315,7 @@ async function loadSuggestions(query?: string) {
             if (!query || query === "") {
                 const topicList = value.hottopic_list.search_data;
                 if (topicList)
-                    suggestions.value = map(topicList, (topic) => ({
+                    suggestions.value = _.map(topicList, (topic) => ({
                         image: topic.topic_pic,
                         title: topic.topic_name,
                         desc: topic.topic_desc,
@@ -324,7 +324,7 @@ async function loadSuggestions(query?: string) {
             } else {
                 const matchList = value.query_match.search_data;
                 if (matchList)
-                    suggestions.value = map(matchList, (match) => ({
+                    suggestions.value = _.map(matchList, (match) => ({
                         image: match.fpic,
                         title: match.fname,
                         desc: match.forum_desc,
@@ -350,7 +350,7 @@ function searchTextChange() {
     loadSuggestions(searchText.value);
 }
 
-const searchMatch = debounce(searchTextChange, 500);
+const searchMatch = _.debounce(searchTextChange, 500);
 
 // function showImages(images: string[], index: number) {
 //     postImages.value = images;
@@ -369,7 +369,7 @@ function getFollowedInstance() {
             followed.value = response.data;
 
             // 已签到计数
-            forEach(followed.value.like_forum, forum => {
+            _.forEach(followed.value.like_forum, forum => {
                 if (forum.is_sign === 1) signedForums++;
             });
             // 排序关注吧

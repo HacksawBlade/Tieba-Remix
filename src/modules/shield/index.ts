@@ -1,7 +1,7 @@
 import { UserModuleEx } from "@/ex";
 import { dom } from "@/lib/elemental";
 import { TbObserver, forumThreadsObserver, legacyIndexFeedsObserver, threadCommentsObserver, threadFloorsObserver } from "@/lib/observers";
-import { join, map } from "lodash-es";
+import _ from "lodash";
 import { markRaw } from "vue";
 import moduleShieldVue from "./module.shield.vue";
 import { ShieldRule, matchShield, shieldList } from "./shield";
@@ -46,7 +46,7 @@ function shieldBySelector(
     observer.addEvent(() => {
         dom(parentSelector, []).forEach(elem => {
             let isMatch = false;
-            const content = join(map(dom(subSelector, elem, []), el => el.textContent ?? ""), "\n");
+            const content = _.join(_.map(dom(subSelector, elem, []), el => el.textContent ?? ""), "\n");
 
             for (const rule of shieldList.get()) {
                 if (matchShield(rule, content, scope)) {

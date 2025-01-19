@@ -1,4 +1,4 @@
-import { forEach } from "lodash-es";
+import _ from "lodash";
 import { dom } from "./elemental";
 
 export class TbObserver {
@@ -33,7 +33,7 @@ export class TbObserver {
     }
 
     public addEvent(...events: (() => void)[]) {
-        forEach(events, event => {
+        _.forEach(events, event => {
             if (this.events.includes(event)) return;
             if (typeof this.initEvent === "undefined") {
                 event();

@@ -1,4 +1,4 @@
-import { forEach } from "lodash-es";
+import _ from "lodash";
 import { RendererElement, RendererNode, VNode, createVNode, render } from "vue";
 import { JSX } from "vue/jsx-runtime";
 import { domrd } from "../elemental";
@@ -17,7 +17,7 @@ export function renderJSX<T extends Element>(jsxel: JSX.Element, parent: Element
 export function insertJSX<T extends Element>(jsxel: JSX.Element, parent: Element, position?: Node) {
     const tempContainer = domrd("div");
     const vnode = renderJSX<T>(jsxel, parent.appendChild(tempContainer));
-    forEach(tempContainer.children, el => {
+    _.forEach(tempContainer.children, el => {
         parent.insertBefore(el, position ?? null);
     });
     tempContainer.remove();
@@ -27,7 +27,7 @@ export function insertJSX<T extends Element>(jsxel: JSX.Element, parent: Element
 export function appendJSX<T extends Element>(jsxel: JSX.Element, parent: Element) {
     const tempContainer = domrd("div");
     const vnode = renderJSX<T>(jsxel, parent.appendChild(tempContainer));
-    forEach(tempContainer.children, el => {
+    _.forEach(tempContainer.children, el => {
         parent.appendChild(el);
     });
     tempContainer.remove();

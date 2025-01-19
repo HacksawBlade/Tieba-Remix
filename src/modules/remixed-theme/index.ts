@@ -6,7 +6,7 @@
 import { dom, fadeInElems, fadeInLoad } from "@/lib/elemental";
 import { injectCSSList, injectCSSRule } from "@/lib/elemental/styles";
 import { threadFloorsObserver } from "@/lib/observers";
-import { defaults } from "lodash-es";
+import _ from "lodash";
 
 import floatMessageCSS from "@/stylesheets/components/float-message.scss?inline";
 import userButtonCSS from "@/stylesheets/components/user-button.scss?inline";
@@ -100,7 +100,7 @@ function main(): void {
             ).forEach(elem => {
                 if (elem.className.indexOf(lvlClassHead) !== -1) return;
 
-                const lvl = parseInt(defaults(elem.textContent, "0"));
+                const lvl = parseInt(_.defaults(elem.textContent, "0"));
                 if (lvl >= 1 && lvl <= 3) {
                     elem.classList.add(lvlGreen);
                 } else if (lvl >= 4 && lvl <= 9) {

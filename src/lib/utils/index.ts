@@ -1,6 +1,6 @@
 import { GM_info } from "$";
 import { toast } from "@/lib/render/toast";
-import { every, find, forEach, forOwn } from "lodash-es";
+import _ from "lodash";
 
 export function cookies(): LiteralObject;
 export function cookies(key: string): string | undefined;
@@ -9,11 +9,11 @@ export function cookies(key?: string) {
     const cookieArray = document.cookie.split(";");
 
     if (key) {
-        return find(cookieArray, (cookie) => cookie.trim().startsWith(`${key}=`));
+        return _.find(cookieArray, (cookie) => cookie.trim().startsWith(`${key}=`));
     } else {
         const result: LiteralObject = {};
 
-        forEach(cookieArray, (cookie) => {
+        _.forEach(cookieArray, (cookie) => {
             const [key, value] = cookie.split("=");
             result[key.trim()] = value.trim();
         });
@@ -100,7 +100,7 @@ export function spawnOffsetTS(
  */
 export function requestBody(body: LiteralObject) {
     let reqBody = "";
-    forOwn(body, (value, key) => {
+    _.forOwn(body, (value, key) => {
         if (!value) value = "";
         reqBody += `${key}=${value}&`;
     });
@@ -200,5 +200,5 @@ export async function selectLocalFile<T extends Maybe<string | ArrayBuffer>>(
  * @returns 若 参数 1 为 参数 2 的超集，返回 `true`
  */
 export function isSuperset<T>(superset: Set<T>, subset: Set<T>) {
-    return every([...subset], element => superset.has(element));
+    return _.every([...subset], element => superset.has(element));
 }

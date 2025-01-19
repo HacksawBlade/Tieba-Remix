@@ -9,7 +9,7 @@
                 keyboard_double_arrow_left
             </UserButton>
 
-            <UserButton v-for="(displayNumber, i) in range(pagerStart, pagerEnd)" :key="i" class="pager-button"
+            <UserButton v-for="(displayNumber, i) in _.range(pagerStart, pagerEnd)" :key="i" class="pager-button"
                 :class="{ 'fill': fill, 'curr-pager-button': displayNumber === current }"
                 @click="pagerChange('page', displayNumber)" no-border="all" :disabled="displayNumber === current">
                 {{ displayNumber }}
@@ -43,7 +43,7 @@
 
 <script lang="ts" setup>
 import { PagerType } from "@/lib/tieba-components/pager";
-import { range } from "lodash-es";
+import _ from "lodash";
 import { computed, ref } from "vue";
 import UserButton from "./utils/user-button.vue";
 import UserTextbox from "./utils/user-textbox.vue";

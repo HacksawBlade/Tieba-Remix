@@ -1,4 +1,4 @@
-import { forEach, startsWith } from "lodash-es";
+import _ from "lodash";
 import { currentPageType } from "./api/remixed";
 import { threadFloorsObserver } from "./observers";
 import { PerfType, perfProfile } from "./user-values";
@@ -19,8 +19,8 @@ export function setPerfAttr() {
         performance: "perf-performance",
     };
 
-    forEach(document.documentElement.attributes, attr => {
-        if (startsWith(attr.name, "perf-")) {
+    _.forEach(document.documentElement.attributes, attr => {
+        if (_.startsWith(attr.name, "perf-")) {
             document.documentElement.removeAttribute(attr.name);
         }
     });

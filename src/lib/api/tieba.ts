@@ -1,6 +1,6 @@
 import { dom } from "@/lib/elemental";
 import { requestBody, requestInstance } from "@/lib/utils";
-import { defaultTo, forEach, join, split } from "lodash-es";
+import _ from "lodash";
 
 /** 贴吧 API */
 export const tiebaAPI = {
@@ -396,30 +396,30 @@ export function parsePostFromElement(elem: Element): TiebaPost {
     // 图片
     const imgArray = <TiebaPost["images"]>[];
     if (imgs.length > 0) {
-        forEach(imgs, (img) => {
+        _.forEach(imgs, (img) => {
             imgArray.push({
                 thumb: img.src,
-                original: defaultTo(img.getAttribute("original"), ""),
+                original: _.defaultTo(img.getAttribute("original"), ""),
             });
         });
     }
 
     return {
-        id: defaultTo(elem.getAttribute("data-thread-id"), ""),
+        id: _.defaultTo(elem.getAttribute("data-thread-id"), ""),
         forum: {
-            id: defaultTo(elem.getAttribute("data-forum-id"), ""),
+            id: _.defaultTo(elem.getAttribute("data-forum-id"), ""),
             name: titleTagWrapperAnch?.title ?? "",
             href: titleTagWrapperAnch?.href ?? "",
         },
         author: {
-            portrait: split(nReplyAnch.href, /(\?id=)|&/)[2],
+            portrait: _.split(nReplyAnch.href, /(\?id=)|&/)[2],
             name: transEmojiFromDOMString(nReplyAnch.innerHTML),
             href: nReplyAnch.href,
         },
-        time: defaultTo(elem.getElementsByClassName("time")[0].textContent, ""),
+        time: _.defaultTo(elem.getElementsByClassName("time")[0].textContent, ""),
         title: threadNameWrapperAnch.title,
-        content: defaultTo(elem.getElementsByClassName("n_txt")[0].textContent, ""),
-        replies: defaultTo(listPostNum?.getAttribute("data-num"), 0),
+        content: _.defaultTo(elem.getElementsByClassName("n_txt")[0].textContent, ""),
+        replies: _.defaultTo(listPostNum?.getAttribute("data-num"), 0),
         images: imgArray,
     };
 }
@@ -434,7 +434,7 @@ export function parsePostsFromString(
     const undesired = "home-place-item";
     // console.log("🚀 ~ file: api/tieba.ts:57 ~ awaitresponse.json ~ threads:", threads);
 
-    forEach(threads, (thread) => {
+    _.forEach(threads, (thread) => {
         if (thread.classList.contains(undesired)) return;
         const post = parsePostFromElement(thread);
         if (callbackfn) callbackfn(post);
@@ -448,7 +448,7 @@ export function parsePostsFromString(
  * 请求一次当前用户贴吧推荐列表，一般能获取到 10 个
  * @param callbackfn 回调函数
  * ```
- * callbackfn(thread: TiebaPost)
+ * callbackfn(thread: TiebaPost)_.
  * ```
  * 会在每个贴子被解析为 `TiebaPost` 对象时执行一次，并携带该对象作为参数
  * @returns 本次请求获取到的所有推荐贴子
@@ -557,10 +557,10 @@ export function transEmojiFromDOMString(str: string) {
     const arrIndex = str.match(indexRegex);
     arrIndex?.forEach(index => {
         const emoji = emojis[transformed.indexOf(`${index}.png`)];
-        const arrInner = split(str, RegExp(
+        const arrInner = _.split(str, RegExp(
             `<img[^>]*?${index}.png` + `(?:[^>]*?)*>`, "g"
         ));
-        str = join(arrInner, decodeURIComponent(emoji));
+        str = _.join(arrInner, decodeURIComponent(emoji));
     });
     return str;
 }

@@ -3,7 +3,7 @@ import { messageBox } from "@/lib/render/message-box";
 import { toast } from "@/lib/render/toast";
 import { GiteeRelease, GiteeReleaseNotFound, GiteeRepo, Owner, RepoName, ignoredTag, latestRelease, showUpdateToday, themeType, updateConfig } from "@/lib/user-values";
 import { outputFile, selectLocalFile, spawnOffsetTS } from "@/lib/utils";
-import { filter, forEach, includes, map, zipObject } from "lodash-es";
+import _ from "lodash";
 import { marked } from "marked";
 import { userDialog } from "../render";
 import { darkPrefers } from "../theme";
@@ -38,7 +38,7 @@ export function currentPageType(): PageType {
 
     const pathname = location.pathname.toLocaleLowerCase();
 
-    if (includes(["/", "/index.html"], pathname)) return "index";
+    if (_.includes(["/", "/index.html"], pathname)) return "index";
     if (/\/p\/\d+/.test(pathname)) return "thread";
     if (pathname === "/f") return "forum";
     if (pathname === "/home/main") return "user";
@@ -196,17 +196,17 @@ export function setTheme(theme: ReturnType<typeof themeType.get>) {
 
 export function backupUserConfigs() {
     const excluded = ["unreadFeeds", "latestRelease", "showUpdateToday"];
-    const userKeys = filter(GM_listValues(), key => !includes(excluded, key));
-    const userValues = map(userKeys, key => {
+    const userKeys = _.filter(GM_listValues(), key => !_.includes(excluded, key));
+    const userValues = _.map(userKeys, key => {
         return GM_getValue(key);
     });
-    const configs = zipObject(userKeys, userValues);
+    const configs = _.zipObject(userKeys, userValues);
     outputFile(`tieba-remix-backup@${new Date().getTime()}.json`, JSON.stringify(configs));
 }
 
 export async function restoreUserConfigs() {
     const backupData = JSON.parse(await selectLocalFile());
-    forEach(Object.entries(backupData), ([key, value]) => {
+    _.forEach(Object.entries(backupData), ([key, value]) => {
         GM_setValue(key, value);
     });
 }

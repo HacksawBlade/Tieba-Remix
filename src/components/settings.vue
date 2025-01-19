@@ -75,7 +75,7 @@
                         </div>
 
                         <!-- Textbox & TextArea -->
-                        <UserTextbox v-if="includes(['textbox', 'textarea'], widget.type)" class="content-textbox"
+                        <UserTextbox v-if="_.includes(['textbox', 'textarea'], widget.type)" class="content-textbox"
                             :class="{ 'textarea': widget.type === 'textarea' }"
                             :value="widget.init ? widget.init() : ''" :muti-lines="widget.type === 'textarea'"
                             :placeholder="widget.placeHolder" @change="widget.event">
@@ -99,7 +99,7 @@
 <script lang="tsx" setup>
 import { SupportedComponent } from "@/ex";
 import { getUserSettings } from "@/lib/common/settings";
-import { debounce, find, includes } from "lodash-es";
+import _ from "lodash";
 import { ref } from "vue";
 import UserCheck from "./user-check.vue";
 import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
@@ -191,8 +191,8 @@ function searchKey() {
         return;
     }
 
-    if (!find(userSettings, (mainKey) => {
-        if (find(mainKey.sub, (subKey) => {
+    if (!_.find(userSettings, (mainKey) => {
+        if (_.find(mainKey.sub, (subKey) => {
             if (subKey.name.toLowerCase().includes(searchText.value.toLowerCase())) {
                 selectedKey.value = mainKey;
                 selectedSubKey.value = subKey;
@@ -205,7 +205,7 @@ function searchKey() {
     })) clearSelections();
 }
 
-const debSearchKey = debounce(searchKey, 500);
+const debSearchKey = _.debounce(searchKey, 500);
 
 defineExpose({
     dialogOpts,

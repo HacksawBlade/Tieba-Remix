@@ -1,4 +1,4 @@
-import { assign, flatMapDeep, forOwn, kebabCase, startsWith } from "lodash-es";
+import _ from "lodash";
 import { afterHead, mergeNodeAttrs } from ".";
 
 export const defaultStyle = document.createElement("style");  // 默认默认样式
@@ -17,10 +17,10 @@ afterHead(() => {
  * @param cssObject 描述 CSS 选择器 + 规则 的对象
  */
 export function parseMultiCSS(cssObject: CSSObject) {
-    return flatMapDeep(cssObject, (value, key) => {
+    return _.flatMapDeep(cssObject, (value, key) => {
         return [
             `${key} {`,
-            ...flatMapDeep(value, (v, k) => `${startsWith(k, "--") ? k : kebabCase(k)}: ${v};`),
+            ..._.flatMapDeep(value, (v, k) => `${_.startsWith(k, "--") ? k : _.kebabCase(k)}: ${v};`),
             "}",
             "",
         ];
@@ -29,8 +29,8 @@ export function parseMultiCSS(cssObject: CSSObject) {
 
 export function parseCSSRule(cssRule: CSSRule): string {
     let css = "";
-    forOwn(cssRule, (value, key) => {
-        css += `${kebabCase(key)}:${value};`;
+    _.forOwn(cssRule, (value, key) => {
+        css += `${_.kebabCase(key)}:${value};`;
     });
     return css;
 }
@@ -96,5 +96,5 @@ export function removeCSSRule(index: number) {
  * @param cssRule CSS 规则
  */
 export function assignCSSRule(el: Element, cssRule: CSSRule) {
-    assign((el as HTMLElement).style, cssRule);
+    _.assign((el as HTMLElement).style, cssRule);
 }

@@ -21,7 +21,7 @@
 </template>
 
 <script lang="tsx" setup>
-import { findIndex } from "lodash-es";
+import _ from "lodash";
 import { ref, watch } from "vue";
 import ToggleButton from "./utils/toggle-button.vue";
 import UserButton from "./utils/user-button.vue";
@@ -50,7 +50,7 @@ const selectContainer = ref<HTMLDivElement>();
 const useSelect = ref(false);
 const currentIndex = ref((function () {
     if (!props.defaultValue) return 0;
-    const index = findIndex(props.data, (d) => d.value === props.defaultValue);
+    const index = _.findIndex(props.data, (d) => d.value === props.defaultValue);
     return index === -1 ? 0 : index;
 })());
 const hoverIndex = ref(currentIndex.value);

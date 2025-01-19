@@ -6,14 +6,14 @@ import { backupUserConfigs, restoreUserConfigs } from "@/lib/api/remixed";
 import { messageBox } from "@/lib/render/message-box";
 import { PerfType, UpdateConfig, compactLayout, customStyle, disabledModules, experimental, monospaceFonts, navBarHideMode, pageExtension, perfProfile, themeType, updateConfig, userFonts, wideScreen } from "@/lib/user-values";
 import { AllModules } from "@/lib/utils";
-import { forEach, includes, join, once, split } from "lodash-es";
+import _ from "lodash";
 import { markRaw } from "vue";
 import AboutDetail from "./setting-widgets/about.detail.vue";
 import AboutUpdate from "./setting-widgets/about.update.vue";
 import LayoutCustomBack from "./setting-widgets/layout.custom-back.vue";
 import ThemeColor from "./setting-widgets/theme.color.vue";
 
-export const getUserSettings = once((): UserSettings => ({
+export const getUserSettings = _.once((): UserSettings => ({
     "visibility": {
         name: "显示",
         icon: "visibility",
@@ -181,11 +181,11 @@ export const getUserSettings = once((): UserSettings => ({
                             type: "textarea",
                             placeHolder: "写入字体名，以换行分隔。若需要中英文混排，需将英文字体写在中文字体之前。",
                             init() {
-                                return join(userFonts.get(), "\n");
+                                return _.join(userFonts.get(), "\n");
                             },
                             event(e) {
-                                userFonts.set(split((e.target as HTMLInputElement).value, "\n"));
-                                return join(userFonts.get(), "\n");
+                                userFonts.set(_.split((e.target as HTMLInputElement).value, "\n"));
+                                return _.join(userFonts.get(), "\n");
                             },
                         }],
                     },
@@ -197,11 +197,11 @@ export const getUserSettings = once((): UserSettings => ({
                             type: "textarea",
                             placeHolder: "写入字体名，以换行分隔。建议在此处写入等宽字体。",
                             init() {
-                                return join(monospaceFonts.get(), "\n");
+                                return _.join(monospaceFonts.get(), "\n");
                             },
                             event(e) {
-                                monospaceFonts.set(split((e.target as HTMLInputElement).value, "\n"));
-                                return join(monospaceFonts.get(), "\n");
+                                monospaceFonts.set(_.split((e.target as HTMLInputElement).value, "\n"));
+                                return _.join(monospaceFonts.get(), "\n");
                             },
                         }],
                     },
@@ -255,10 +255,10 @@ export const getUserSettings = once((): UserSettings => ({
                                 type: "toggle",
                                 content: module.description,
                                 init() {
-                                    return includes(disabledModules.get(), module.id) ? false : true;
+                                    return _.includes(disabledModules.get(), module.id) ? false : true;
                                 },
                                 event() {
-                                    if (includes(disabledModules.get(), module.id)) {
+                                    if (_.includes(disabledModules.get(), module.id)) {
                                         const newSet = new Set(disabledModules.get());
                                         newSet.delete(module.id);
                                         disabledModules.set([...newSet]);
@@ -438,7 +438,7 @@ export const getUserSettings = once((): UserSettings => ({
                                     content: "该操作是不可逆的，请做最后一次确认。",
                                     type: "forceTrueFalse",
                                 }) === "positive") {
-                                    forEach(GM_listValues(), (key) => {
+                                    _.forEach(GM_listValues(), (key) => {
                                         GM_deleteValue(key);
                                     });
                                     location.reload();

@@ -2,7 +2,7 @@ import UserDialog, { UserDialogOpts } from "@/components/user-dialog.vue";
 import { SupportedComponent } from "@/ex";
 import { dom, domrd } from "@/lib/elemental";
 import { assignCSSRule, CSSRule, injectCSSRule, parseCSSRule } from "@/lib/elemental/styles";
-import { forEach, includes, isNil, once } from "lodash-es";
+import _ from "lodash";
 import { App, Component, ComponentPublicInstance, createApp, h } from "vue";
 
 export interface RenderedComponent<T extends Element = Element> {
@@ -22,7 +22,7 @@ export function renderComponent<T extends LiteralObject>(
 }
 
 /** 获取垂直滚动条的宽度。对应的 CSS 变量为 `--scrollbar-width` */
-export const scrollbarWidth = once(function () {
+export const scrollbarWidth = _.once(function () {
     const temp = domrd("div");
     assignCSSRule(temp, {
         width: "100px",
@@ -62,7 +62,7 @@ export function renderPage(root: Component, rootProps?: LiteralObject) {
 export function createRenderWrapper(id: string, style?: CSSRule) {
     let wrapper = dom<"div">(`#${id}`);
     return () => {
-        if (isNil(wrapper)) {
+        if (_.isNil(wrapper)) {
             wrapper = document.body.appendChild(domrd("div", {
                 id,
                 style: parseCSSRule(style ?? {} as CSSRule),
@@ -148,21 +148,21 @@ export function userDialog<ContentOpts extends LiteralObject>(
 }
 
 export function removeDefault() {
-    forEach(document.head.children, (el) => {
+    _.forEach(document.head.children, (el) => {
         if (el && el.tagName.toUpperCase() === "LINK"
-            && includes(el.getAttribute("href"), "static-common/style")) {
+            && _.includes(el.getAttribute("href"), "static-common/style")) {
             el.remove();
         }
 
         if (el && el.tagName.toUpperCase() === "SCRIPT"
-            && includes(el.getAttribute("src"), "static-common/lib")) {
+            && _.includes(el.getAttribute("src"), "static-common/lib")) {
             el.remove();
         }
     });
 
     // document.getElementById("com_userbar")?.remove();
 
-    forEach(document.body.children, (el) => {
+    _.forEach(document.body.children, (el) => {
         if (el && el.tagName.toUpperCase() === "STYLE") {
             el.remove();
         }
@@ -175,11 +175,11 @@ export function removeDefault() {
             el.remove();
         }
 
-        if (el && includes(el.className, "translatorExtension")) {
+        if (el && _.includes(el.className, "translatorExtension")) {
             el.remove();
         }
 
-        if (el && includes(el.className, "dialogJ")) {
+        if (el && _.includes(el.className, "dialogJ")) {
             el.remove();
         }
     });

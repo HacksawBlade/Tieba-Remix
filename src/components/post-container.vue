@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import { tiebaAPI } from "@/lib/api/tieba";
-import { map } from "lodash-es";
+import _ from "lodash";
 import { onMounted, ref } from "vue";
 import UserButton from "./utils/user-button.vue";
 
@@ -83,7 +83,7 @@ function showImage(e: MouseEvent, index: number) {
     e.preventDefault();
     emit("clickImage", (() => {
         const output: string[] = [];
-        map(props.post.images, (value) => {
+        _.map(props.post.images, (value) => {
             output.push(value.original);
         });
         return output;
