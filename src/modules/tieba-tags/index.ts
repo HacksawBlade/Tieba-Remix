@@ -1,8 +1,7 @@
 import { dom, domrd, findParent } from "@/lib/elemental";
-import { injectCSSList } from "@/lib/elemental/styles";
 import { threadCommentsObserver } from "@/lib/observers";
 import _ from "lodash";
-import tagCSS from "./stylesheet.css?inline";
+import "./stylesheet.css";
 
 export default {
     id: "tieba-tags",
@@ -28,8 +27,6 @@ function main(): void {
     const myUserName = PageData.user.user_name;
 
     let louzhuPortrait = getLouzhuPortrait(document);
-
-    injectCSSList(tagCSS);
 
     // 预处理
     (async () => {

@@ -1,28 +1,25 @@
 import { GM_addStyle } from "$";
 import _ from "lodash";
-import { currentPageType, getResource } from "../api/remixed";
-import { afterHead, domrd } from "../elemental";
-import { defaultStyle, injectCSSRule, parseMultiCSS, removeCSSRule } from "../elemental/styles";
+import { getResource } from "../api/remixed";
+import { domrd } from "../elemental";
+import { injectCSSRule, overwriteCSS, parseMultiCSS } from "../elemental/styles";
 import { scrollbarWidth } from "../render";
 import { customBackground, customStyle, monospaceFonts, themeColor, userFonts, wideScreen } from "../user-values";
 import { waitUntil } from "../utils";
 import { hexToRGBA, rgbaToHSLA } from "../utils/color";
 
-import "@/stylesheets/main/material-symbols.css";
-import "@/stylesheets/main/palette.scss";
-import "@/stylesheets/main/remixed-main.scss";
-import "@/stylesheets/main/util-classes.scss";
-import "@/stylesheets/main/variables.scss";
-import "@/stylesheets/tieba/tieba-error.scss";
-import "@/stylesheets/tieba/tieba-home.scss";
-import "@/stylesheets/tieba/tieba-main.scss";
-import "@/stylesheets/tieba/tieba-thread.scss";
+import iconFontStyle from "@/stylesheets/main/material-symbols.css?inline";
+import paletteStyle from "@/stylesheets/main/palette.scss?inline";
+import mainStyle from "@/stylesheets/main/remixed-main.scss?inline";
+import utilStyle from "@/stylesheets/main/util-classes.scss?inline";
+import varStyle from "@/stylesheets/main/variables.scss?inline";
+import tiebaErrorStyle from "@/stylesheets/tieba/tieba-error.scss?inline";
+import tiebaForumStyle from "@/stylesheets/tieba/tieba-forum.scss?inline";
+import tiebaHomeStyle from "@/stylesheets/tieba/tieba-home.scss?inline";
+import tiebaMainStyle from "@/stylesheets/tieba/tieba-main.scss?inline";
+import tiebaThreadStyle from "@/stylesheets/tieba/tieba-thread.scss?inline";
 
 export const darkPrefers = matchMedia("(prefers-color-scheme: dark)");
-
-const dynCSSRules = {
-    customBackground: () => _.findIndex(Array.from(defaultStyle.sheet?.cssRules ?? { length: 0 }), rule => (rule as CSSStyleRule).selectorText === "body.custom-background"),
-};
 
 /** 动态样式 */
 export async function loadDynamicCSS() {
@@ -77,37 +74,46 @@ export async function loadDynamicCSS() {
 }
 
 export async function loadTiebaCSS() {
-    switch (currentPageType()) {
-        case "forum":
-            import("@/stylesheets/tieba/tieba-forum.scss");
-            break;
-    }
+    overwriteCSS(
+        iconFontStyle,
+        paletteStyle,
+        mainStyle,
+        utilStyle,
+        varStyle,
+        tiebaErrorStyle,
+        tiebaForumStyle,
+        tiebaHomeStyle,
+        tiebaMainStyle,
+        tiebaThreadStyle,
+    );
 
-    document.head.appendChild(domrd("link", {
-        type: "image/icon",
-        rel: "shortcut icon",
-        href: getResource("/assets/images/main/favicon32.ico"),
-    }));
+    document.addEventListener("DOMContentLoaded", function () {
+        document.head.appendChild(domrd("link", {
+            type: "image/icon",
+            rel: "shortcut icon",
+            href: getResource("/assets/images/main/favicon32.ico"),
+        }));
+    }, { once: true });
 }
 
-export async function setCustomBackground() {
-    afterHead(function () {
-        if (dynCSSRules.customBackground() !== -1) {
-            removeCSSRule(dynCSSRules.customBackground());
-        }
-        injectCSSRule("body.custom-background", {
-            backgroundImage: `url('${customBackground.get()}') !important`,
-            backgroundRepeat: "no-repeat !important",
-            backgroundAttachment: "fixed !important",
-            backgroundSize: "cover !important",
-        }) ?? -1;
+let customBackgroundElement: Maybe<HTMLStyleElement> = undefined;
 
-        waitUntil(() => !_.isNil(document.body)).then(function () {
-            if (customBackground.get()) {
-                document.body.classList.add("custom-background");
-            } else {
-                document.body.classList.remove("custom-background");
-            }
-        });
+export async function setCustomBackground() {
+    if (customBackgroundElement) {
+        document.head.removeChild(customBackgroundElement);
+    }
+    customBackgroundElement = injectCSSRule("body.custom-background", {
+        backgroundImage: `url('${customBackground.get()}') !important`,
+        backgroundRepeat: "no-repeat !important",
+        backgroundAttachment: "fixed !important",
+        backgroundSize: "cover !important",
+    });
+
+    waitUntil(() => !_.isNil(document.body)).then(function () {
+        if (customBackground.get()) {
+            document.body.classList.add("custom-background");
+        } else {
+            document.body.classList.remove("custom-background");
+        }
     });
 }

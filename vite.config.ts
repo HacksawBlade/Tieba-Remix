@@ -20,7 +20,7 @@ const scriptOptions: MonkeyOption = {
         icon: "https://gitee.com/HacksawBlade/Tieba-Remix/raw/master/assets/images/main/icon16.png",
         icon64: "https://gitee.com/HacksawBlade/Tieba-Remix/raw/master/assets/images/main/icon64.png",
         match: [
-            "*://tieba.baidu.com",
+            "*://tieba.baidu.com/",
             "*://tieba.baidu.com/index.*",
             "*://tieba.baidu.com/?*",
             "*://tieba.baidu.com/p/*",

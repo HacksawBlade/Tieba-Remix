@@ -1,21 +1,12 @@
-/**
- * Tieba Remix 主题
- * @HacksawBlade
-*/
-
 import { dom, fadeInElems, fadeInLoad } from "@/lib/elemental";
-import { injectCSSList, injectCSSRule } from "@/lib/elemental/styles";
+import { injectCSSRule, overwriteCSS } from "@/lib/elemental/styles";
 import { threadFloorsObserver } from "@/lib/observers";
-import _ from "lodash";
-
-import floatMessageCSS from "@/stylesheets/components/float-message.scss?inline";
-import userButtonCSS from "@/stylesheets/components/user-button.scss?inline";
-import floatBarCSS from "./tieba-components/float-bar.scss?inline";
-
-import _navBar from "./tieba-components/nav-bar";
-_navBar();
-
 import { setCustomBackground } from "@/lib/theme";
+import "@/stylesheets/components/float-message.scss";
+import "@/stylesheets/components/user-button.scss";
+import _ from "lodash";
+import floatBarStyle from "./tieba-components/float-bar.scss?inline";
+import _navBar from "./tieba-components/nav-bar";
 
 export default {
     id: "remixed-theme",
@@ -29,19 +20,9 @@ export default {
     entry: main,
 } as UserModule;
 
-const themeSheets: HTMLStyleElement[] = [];
-
 function main(): void {
-    // 全局加载
-    // themeSheets.push(injectCSSList(mainCSS));
-    // themeSheets.push(injectCSSList(postsCSS));
-    // themeSheets.push(injectCSSList(homeCSS));
-    // themeSheets.push(injectCSSList(errorCSS));
-
-    // 组件
-    themeSheets.push(injectCSSList(userButtonCSS));
-    themeSheets.push(injectCSSList(floatBarCSS));
-    themeSheets.push(injectCSSList(floatMessageCSS));
+    _navBar();
+    overwriteCSS(floatBarStyle);
 
     // 耗时加载元素
     fadeInElems.push(".tbui_aside_float_bar .svg-container");
@@ -55,11 +36,6 @@ function main(): void {
     });
 
     setCustomBackground();
-
-    // 进吧页面
-    // if (location.href.indexOf("kw=") !== -1) {
-    //     themeSheets.push(injectCSSList(barCSS));
-    // }
 
     document.addEventListener("DOMContentLoaded", () => {
         // 修改元素
@@ -114,11 +90,6 @@ function main(): void {
 
             // 等级图标延迟
             fadeInLoad(".d_badge_bright .d_badge_lv, .user_level .badge_index");
-        });
-
-        // 移动所有样式表到head底部，防止自定义样式表提前被加载导致冲突
-        themeSheets.forEach(sheet => {
-            document.head.appendChild(sheet);
         });
     });
 }

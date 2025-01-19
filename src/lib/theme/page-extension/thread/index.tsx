@@ -5,7 +5,7 @@ import UserButton from "@/components/utils/user-button.vue";
 import { currentPageType } from "@/lib/api/remixed";
 import { levelToClass } from "@/lib/api/tieba";
 import { asyncdom, dom, domrd } from "@/lib/elemental";
-import { CSSRule, injectCSSList, parseCSSRule } from "@/lib/elemental/styles";
+import { CSSRule, overwriteCSS, parseCSSRule } from "@/lib/elemental/styles";
 import { threadCommentsObserver, threadFloorsObserver } from "@/lib/observers";
 import { renderDialog } from "@/lib/render";
 import { appendJSX, insertJSX } from "@/lib/render/jsx-extension";
@@ -16,16 +16,16 @@ import { compactLayout, experimental, pageExtension, perfProfile } from "@/lib/u
 import { waitUntil } from "@/lib/utils";
 import _ from "lodash";
 import { VNode } from "vue";
-import compactCSS from "./compact.scss?inline";
+import compactStyle from "./compact.scss?inline";
 import { threadParser } from "./parser";
-import threadCSS from "./thread.scss?inline";
+import threadStyle from "./thread.scss?inline";
 
 export default async function () {
     if (!pageExtension.get().thread) return;
     if (currentPageType() !== "thread") return;
 
-    injectCSSList(threadCSS);
-    injectCSSList(compactCSS);
+    overwriteCSS(threadStyle);
+    overwriteCSS(compactStyle);
 
     await waitUntil(() => !_.isNil(document.body)).then(function () {
         // document.body.insertBefore(mainWrapper, document.body.firstChild);

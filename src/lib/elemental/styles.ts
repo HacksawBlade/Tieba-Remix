@@ -1,16 +1,9 @@
+import { GM_addStyle } from "$";
 import _ from "lodash";
-import { afterHead, mergeNodeAttrs } from ".";
-
-export const defaultStyle = document.createElement("style");  // 默认默认样式
-defaultStyle.id = "default-stylesheet";
+import { waitUntil } from "../utils";
 
 export type CSSRule = Partial<CSSStyleDeclaration> | Record<string, string>;
 export type CSSObject = Record<string, CSSRule>;
-
-// 插入默认元素
-afterHead(() => {
-    document.head.appendChild(defaultStyle);
-});
 
 /**
  * 将多组 CSS 规则解析为样式字符串
@@ -36,58 +29,13 @@ export function parseCSSRule(cssRule: CSSRule): string {
 }
 
 /**
- * 将 CSS 字符串作为 `style` 标签注入 `head`
- * @param css CSS 字符串
- * @returns 被注入的 `style` 元素
- */
-export function injectCSSList(css: string): HTMLStyleElement {
-    const cssElem = document.createElement("style");
-    cssElem.textContent = css;
-    afterHead(() => {
-        document.head.appendChild(cssElem);
-    });
-    return cssElem;
-}
-
-/**
- * 将 CSS 路径作为 `link` 标签注入 `head`
- * @param css CSS 文件路径
- * @returns 被注入的 `link` 元素
- */
-export function injectCSSFile(filename: string): HTMLLinkElement {
-    const linkElem = document.createElement("link");
-    mergeNodeAttrs(linkElem, {
-        rel: "stylesheet",
-        href: filename,
-    });
-    afterHead(() => {
-        document.head.appendChild(linkElem);
-    });
-    return linkElem;
-}
-
-/**
- * 
+ * 注入 CSS 规则
  * @param selector 选择器
- * @param cssRule 包含 CSS 规则的对象，属性默认使用驼峰命名法
- * @returns 该规则的 index 或 `undefined`
+ * @param cssRule 包含 CSS 规则的对象
+ * @returns 对应的 `style` 元素
  */
 export function injectCSSRule(selector: string, cssRule: CSSRule) {
-    if (selector === "") return;
-    if (cssRule.length === 0) return;
-    if (!defaultStyle.sheet) return;
-
-    const css = `${selector}{${parseCSSRule(cssRule)}}`;
-    return defaultStyle.sheet.insertRule(css);
-}
-
-/**
- * 删除一个自定义 CSS 规则
- * @param index 需要删除的规则对应的 index
- */
-export function removeCSSRule(index: number) {
-    if (!defaultStyle.sheet) return;
-    defaultStyle.sheet.deleteRule(index);
+    return GM_addStyle(`${selector}{${parseCSSRule(cssRule)}}`);
 }
 
 /**
@@ -97,4 +45,31 @@ export function removeCSSRule(index: number) {
  */
 export function assignCSSRule(el: Element, cssRule: CSSRule) {
     _.assign((el as HTMLElement).style, cssRule);
+}
+
+/**
+ * 将样式字符串插入到页面中
+ * @param style 样式字符串
+ * @returns 对应的 `style` 元素
+ */
+export function insertCSS(style: string) {
+    return GM_addStyle(style);
+}
+
+/**
+ * 将多个样式字符串插入页面，并能够以较高优先级应用样式，用于覆写原有样式
+ * @param style 样式字符串
+ * @returns 对应的 `style` 元素
+ */
+export function overwriteCSS(...style: string[]) {
+    const styles: HTMLStyleElement[] = [];
+    _.forEach(style, styleElement => {
+        styles.push(insertCSS(styleElement));
+    });
+    waitUntil(() => !_.isNil(document.body)).then(() => {
+        _.forEach(styles, styleElement => {
+            document.body.appendChild(styleElement);
+        });
+    });
+    return styles;
 }
