@@ -127,6 +127,7 @@ $select-gap: 4px;
         border-radius: 6px;
         background-color: var(--default-background);
         box-shadow: 0 0 10px rgb(0 0 0 / 20%);
+        transform-origin: top;
 
         &.select-enter-active,
         &.select-leave-active {
@@ -136,7 +137,7 @@ $select-gap: 4px;
         &.select-enter-from,
         &.select-leave-to {
             opacity: 0;
-            transform: scale(0.95) translateY(-10%);
+            transform: scale(0.95) translateY(-1 * $select-gap);
         }
 
         .select-button {
