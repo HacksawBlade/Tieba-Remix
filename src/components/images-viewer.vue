@@ -51,7 +51,6 @@
 
 <script setup lang="ts">
 import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
-import { messageBox } from "@/lib/render/message-box";
 import _ from "lodash";
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
@@ -240,10 +239,6 @@ function listBack() {
 /** 下一张照片 */
 function listForward() {
     if (curr.value < imageArray.length - 1) curr.value++;
-    messageBox({
-        content: "hello world",
-        type: "forceTrueFalse",
-    });
 }
 
 /** 缩放图片 */
