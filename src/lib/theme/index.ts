@@ -1,4 +1,14 @@
 import { GM_addStyle } from "$";
+import "@/stylesheets/main/material-symbols.css";
+import "@/stylesheets/main/palette.scss";
+import mainStyle from "@/stylesheets/main/remixed-main.scss?inline";
+import utilStyle from "@/stylesheets/main/util-classes.scss?inline";
+import "@/stylesheets/main/variables.scss";
+import tiebaErrorStyle from "@/stylesheets/tieba/tieba-error.scss?inline";
+import tiebaForumStyle from "@/stylesheets/tieba/tieba-forum.scss?inline";
+import tiebaHomeStyle from "@/stylesheets/tieba/tieba-home.scss?inline";
+import tiebaMainStyle from "@/stylesheets/tieba/tieba-main.scss?inline";
+import tiebaThreadStyle from "@/stylesheets/tieba/tieba-thread.scss?inline";
 import _ from "lodash";
 import { getResource } from "../api/remixed";
 import { domrd } from "../elemental";
@@ -7,17 +17,6 @@ import { scrollbarWidth } from "../render";
 import { customBackground, customStyle, monospaceFonts, themeColor, userFonts, wideScreen } from "../user-values";
 import { waitUntil } from "../utils";
 import { hexToRGBA, rgbaToHSLA } from "../utils/color";
-
-import iconFontStyle from "@/stylesheets/main/material-symbols.css?inline";
-import paletteStyle from "@/stylesheets/main/palette.scss?inline";
-import mainStyle from "@/stylesheets/main/remixed-main.scss?inline";
-import utilStyle from "@/stylesheets/main/util-classes.scss?inline";
-import varStyle from "@/stylesheets/main/variables.scss?inline";
-import tiebaErrorStyle from "@/stylesheets/tieba/tieba-error.scss?inline";
-import tiebaForumStyle from "@/stylesheets/tieba/tieba-forum.scss?inline";
-import tiebaHomeStyle from "@/stylesheets/tieba/tieba-home.scss?inline";
-import tiebaMainStyle from "@/stylesheets/tieba/tieba-main.scss?inline";
-import tiebaThreadStyle from "@/stylesheets/tieba/tieba-thread.scss?inline";
 
 export const darkPrefers = matchMedia("(prefers-color-scheme: dark)");
 
@@ -75,11 +74,8 @@ export async function loadDynamicCSS() {
 
 export async function loadTiebaCSS() {
     overwriteCSS(
-        iconFontStyle,
-        paletteStyle,
         mainStyle,
         utilStyle,
-        varStyle,
         tiebaErrorStyle,
         tiebaForumStyle,
         tiebaHomeStyle,

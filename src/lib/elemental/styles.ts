@@ -68,7 +68,7 @@ export function overwriteCSS(...style: string[]) {
     });
     waitUntil(() => !_.isNil(document.body)).then(() => {
         _.forEach(styles, styleElement => {
-            document.body.appendChild(styleElement);
+            document.head.appendChild(styleElement);
         });
     });
     return styles;
