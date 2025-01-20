@@ -7,15 +7,19 @@
                         'default': !shadowMode,
                         'shadow': shadowMode,
                     }" tabindex="-1">
-                    <div v-if="title" class="dialog-title">{{ title }}</div>
-                    <slot></slot>
-                    <div v-if="dialogButtons.length > 0" class="dialog-button-panel">
+                    <header v-if="title" class="dialog-title">{{ title }}</header>
+
+                    <div class="dialog-content">
+                        <slot></slot>
+                    </div>
+
+                    <footer v-if="dialogButtons.length > 0" class="dialog-button-panel">
                         <UserButton v-for="button in dialogButtons" class="dialog-button" shadow-border
                             :theme-style="button.style === 'themed'" @click="handleButtonEvent(button.event)"
                             :class="{ 'icon': button.icon }">
                             {{ button.icon ? button.icon : button.text }}
                         </UserButton>
-                    </div>
+                    </footer>
                 </div>
             </Transition>
         </div>
@@ -222,6 +226,7 @@ defineExpose({
 @use "@/stylesheets/main/remixed-main.scss" as *;
 
 $dialog-padding: 16px;
+$dialog-padding-nega: -$dialog-padding;
 $dialog-radius: 12px;
 
 .user-dialog-modal {
@@ -240,9 +245,9 @@ $dialog-radius: 12px;
         &.default {
             @include main-box-shadow;
             display: flex;
+            max-height: calc(100% - 2 * $dialog-padding);
             box-sizing: border-box;
             flex-direction: column;
-            padding: $dialog-padding;
             border: 1px solid var(--light-border-color);
             border-radius: $dialog-radius;
             margin: $dialog-padding;
@@ -264,18 +269,22 @@ $dialog-radius: 12px;
         }
 
         .dialog-title {
-            margin-bottom: 8px;
+            padding: $dialog-padding $dialog-padding 0 $dialog-padding;
             color: var(--highlight-fore);
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
         }
 
+        .dialog-content {
+            flex-grow: 1;
+            padding: $dialog-padding;
+            overflow-y: auto;
+        }
+
         .dialog-button-panel {
-            $dialog-padding-nega: -$dialog-padding;
             display: flex;
             padding: $dialog-padding;
             border-radius: 0 0 $dialog-radius $dialog-radius;
-            margin: $dialog-padding $dialog-padding-nega $dialog-padding-nega;
             background-color: var(--deep-background);
             gap: 8px;
 
