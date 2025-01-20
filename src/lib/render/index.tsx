@@ -73,20 +73,6 @@ export function createRenderWrapper(id: string, style?: CSSRule) {
     };
 }
 
-/** 对话框选项 */
-export interface DialogOpts {
-    /** 是否渲染为模态 */
-    modal?: boolean;
-    /** 强制使用自定义事件关闭 */
-    force?: boolean;
-    /** 是否锁定滚动 */
-    lockScroll?: boolean;
-    /** 使用默认动画 */
-    animation?: boolean;
-    /** 是否开启对背景模糊效果。对话框背景只有在模态下可见 */
-    blurEffect?: boolean;
-}
-
 export interface DialogEvents<PayloadType = any> {
     beforeRender(): void,
     rendered(rendered: RenderedComponent): void,

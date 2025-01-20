@@ -30,7 +30,7 @@
 import { dom, findParent } from "@/lib/elemental";
 import { EventProxy } from "@/lib/elemental/event-proxy";
 import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
-import { DialogOpts, scrollbarWidth } from "@/lib/render";
+import { scrollbarWidth } from "@/lib/render";
 import _ from "lodash";
 import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 import UserButton from "./utils/user-button.vue";
@@ -43,7 +43,17 @@ export interface UserDialogButton {
     event?: () => boolean | void;
 }
 
-export interface UserDialogOpts<PayloadType = any> extends DialogOpts {
+export interface UserDialogOpts<PayloadType = any> {
+    /** 是否渲染为模态 */
+    modal?: boolean;
+    /** 强制使用自定义事件关闭 */
+    force?: boolean;
+    /** 是否锁定滚动 */
+    lockScroll?: boolean;
+    /** 使用默认动画 */
+    animation?: boolean;
+    /** 是否开启对背景模糊效果。对话框背景只有在模态下可见 */
+    blurEffect?: boolean;
     /** 对话框标题 */
     title?: string;
     /** 使用默认交互按钮 */
