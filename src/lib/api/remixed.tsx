@@ -5,6 +5,7 @@ import { GiteeRelease, GiteeReleaseNotFound, GiteeRepo, Owner, RepoName, ignored
 import { outputFile, selectLocalFile, spawnOffsetTS } from "@/lib/utils";
 import _ from "lodash";
 import { marked } from "marked";
+import { parseCSSRule } from "../elemental/styles";
 import { userDialog } from "../render";
 import { darkPrefers } from "../theme";
 
@@ -93,33 +94,37 @@ export function checkUpdateAndNotify(showLatest = false) {
             // 忽略当前版本
             if (ignoredTag.get() === latestRelease.tag_name) return;
 
-            userDialog(<div class="markdown" v-html={marked(latestRelease.body)} />, {
-                title: latestRelease.name,
-                dialogButtons: [
-                    {
-                        text: "安装",
-                        event() {
-                            installFromRelease(latestRelease);
-                            return true;
+            userDialog(
+                <div class="markdown"
+                    v-html={marked(latestRelease.body)}
+                    style={parseCSSRule({ maxWidth: "600px" })} />,
+                {
+                    title: latestRelease.name,
+                    dialogButtons: [
+                        {
+                            text: "安装",
+                            event() {
+                                installFromRelease(latestRelease);
+                                return true;
+                            },
+                            style: "themed",
                         },
-                        style: "themed",
-                    },
-                    {
-                        text: "今日不再提醒",
-                        event() {
-                            showUpdateToday.set(false);
-                            return true;
+                        {
+                            text: "今日不再提醒",
+                            event() {
+                                showUpdateToday.set(false);
+                                return true;
+                            },
                         },
-                    },
-                    {
-                        text: "跳过该版本",
-                        event() {
-                            ignoredTag.set(latestRelease.tag_name);
-                            return true;
+                        {
+                            text: "跳过该版本",
+                            event() {
+                                ignoredTag.set(latestRelease.tag_name);
+                                return true;
+                            },
                         },
-                    },
-                ],
-            });
+                    ],
+                });
         } else {
             if (showLatest)
                 messageBox({
