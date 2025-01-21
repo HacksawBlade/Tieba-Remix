@@ -65,8 +65,8 @@ function shieldBySelector(
 function main() {
     // 看贴页面
     shieldBySelector(threadFloorsObserver, "content", ".l_post_bright", ".d_post_content");
-    shieldBySelector(threadFloorsObserver, "username", ".l_post_bright", ".d_name a");
     shieldBySelector(threadFloorsObserver, "username", ".l_post_bright", ".p_author_name");
+    shieldBySelector(threadCommentsObserver, "content", ".lzl_single_post", ".lzl_content_main");
     shieldBySelector(threadCommentsObserver, "username", ".lzl_single_post", ".lzl_cnt .j_user_card");
     // 首页动态
     shieldBySelector(legacyIndexFeedsObserver, "content", ".j_feed_li", ".title, .n_txt");
