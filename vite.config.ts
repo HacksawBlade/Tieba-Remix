@@ -61,6 +61,13 @@ const commonConfig = defineConfig({
         },
     },
     css: {
+        preprocessorOptions: {
+            scss: {
+                additionalData: `
+                @use "@/stylesheets/modules/common" as *;
+                @use "@/stylesheets/modules/animation-exports" as *;`,
+            },
+        },
         postcss: {
             plugins: [
                 postcssPresetEnv(),
