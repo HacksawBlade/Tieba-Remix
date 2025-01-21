@@ -280,7 +280,7 @@ function loadNavMenuContent() {
         },
         {
             title: "切换至 GreasyFork",
-            href: "https://greasyfork.org/zh-CN/scripts/460113",
+            href: "https://greasyfork.org/zh-CN/scripts/486367",
         },
     ];
 }
