@@ -115,8 +115,6 @@ async function unload() {
 </script>
 
 <style lang="scss" scoped>
-@use "@/stylesheets/main/animations.scss" as *;
-
 #thread-editor {
     display: flex;
     width: 100%;
@@ -175,8 +173,6 @@ async function unload() {
 </style>
 
 <style lang="scss">
-@use "@/stylesheets/main/remixed-main" as *;
-
 body {
     overflow: hidden scroll;
 }
@@ -353,7 +349,6 @@ body {
 </style>
 
 <style lang="scss">
-@use "@/stylesheets/main/remixed-main" as *;
 @use "@/stylesheets/components/user-button" as *;
 
 .edui-dialog-container {
@@ -475,8 +470,6 @@ body {
 </style>
 
 <style lang="scss">
-@use "@/stylesheets/main/animations" as *;
-@use "@/stylesheets/main/remixed-main" as *;
 @use "@/stylesheets/components/user-button" as *;
 
 #thread-editor {
@@ -542,7 +535,7 @@ body {
                     .s_tab_btnbg {
                         border-radius: 4px;
                         background: none;
-                        transition: $default-animation-duration;
+                        transition: var(--default-duration);
                     }
                 }
 

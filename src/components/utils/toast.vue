@@ -54,10 +54,6 @@ function chooseIcon() {
 </script>
 
 <style scoped lang="scss">
-@use "@/stylesheets/main/remixed-main" as *;
-@use "@/stylesheets/main/animations" as *;
-@use "sass:color";
-
 @keyframes stretch {
     0% {
         padding: 0 12px;
@@ -105,8 +101,7 @@ function chooseIcon() {
     gap: 6px;
     text-overflow: ellipsis;
     transform: translateX(-50%);
-
-    @include default-transition(all ease);
+    transition: var(--default-transition);
 
     .toast-icon {
         font-size: 18px;
@@ -141,8 +136,7 @@ function chooseIcon() {
 }
 
 .blur-effect {
-    background-color: var(--trans-default-background);
-
     @include blur-effect;
+    background-color: var(--trans-default-background);
 }
 </style>

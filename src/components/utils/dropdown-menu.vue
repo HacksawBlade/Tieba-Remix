@@ -52,9 +52,6 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-@use "@/stylesheets/main/remixed-main" as *;
-@use "@/stylesheets/main/animations" as *;
-
 $menu-padding: 4px;
 $item-padding: 4px 14px;
 
@@ -86,7 +83,7 @@ a {
     background-color: var(--default-background);
     box-shadow: 0 0 20px rgb(0 0 0 / 8%);
 
-    @include fade-in($fast-animation-duration);
+    @include fade-in(var(--fast-duration));
     font-size: 14px;
 
     .menu-item {
@@ -96,7 +93,7 @@ a {
         padding: $item-padding;
         border: none;
         border-radius: 6px;
-        animation: stretch $fast-animation-duration cubic-bezier(0.22, 0.61, 0.36, 1);
+        animation: stretch var(--fast-duration) cubic-bezier(0.22, 0.61, 0.36, 1);
         background: none;
         color: var(--default-fore);
         font-size: 14px;

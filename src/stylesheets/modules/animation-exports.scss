@@ -1,0 +1,23 @@
+@mixin fade-in($time: var(--default-duration)) {
+    animation: kf-fade-in $time;
+}
+
+@mixin fade-out($time: var(--default-duration)) {
+    animation: kf-fade-out $time;
+}
+
+@mixin dialog-in($time: var(--default-duration)) {
+    animation: kf-dialog-in $time;
+}
+
+@mixin dialog-out($time: var(--default-duration)) {
+    animation: kf-dialog-out $time;
+}
+
+@mixin bounce-zoom-in($duration: var(--default-duration)) {
+    animation: kf-zoom-in $duration cubic-bezier(0.18, 0.89, 0.32, 1.2);
+}
+
+@mixin fade-zoom-in($duration: var(--default-duration)) {
+    animation: kf-fade-zoom-in $duration;
+}

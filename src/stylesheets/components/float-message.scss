@@ -1,6 +1,3 @@
-@use "@/stylesheets/main/animations" as *;
-@use "@/stylesheets/main/remixed-main" as *;
-
 .float-message {
     position: fixed;
     z-index: 99999;
@@ -14,7 +11,7 @@
     font-size: 14px;
 
     @include main-box-shadow;
-    @include fade-in($fast-animation-duration);
+    @include fade-in(var(--fast-duration));
 
     .float-content {
         display: flex;

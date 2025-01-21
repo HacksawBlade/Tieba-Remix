@@ -1,59 +1,3 @@
-@use "./animations.scss" as *;
-@use "sass:color";
-
-$blur-radius: 24px;
-
-html {
-    padding: 0;
-    margin: 0;
-    text-align: justify;
-}
-
-body {
-    overflow: hidden scroll;
-    padding: 0;
-    margin: 0;
-    font-family: var(--code-zh);
-
-    &[no-scrollbar] {
-        overflow: hidden;
-    }
-}
-
-div,
-p {
-    margin: 0;
-}
-
-select {
-    padding: 1px 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-option {
-    cursor: pointer;
-}
-
-option:checked {
-    background-color: var(--tieba-theme-color);
-    color: var(--default-background);
-}
-
-a {
-    color: unset;
-    text-decoration: none;
-    word-break: break-all;
-}
-
-.dialogJ {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%);
-}
-
 // 图标
 %icon,
 %outline-icon {
@@ -81,7 +25,7 @@ a {
     color: var(--tieba-theme-fore);
     cursor: pointer;
     text-decoration: none;
-    transition: $default-animation-duration;
+    transition: var(--default-duration);
 }
 
 %anchor-underline {
@@ -108,7 +52,7 @@ a {
     object-fit: contain;
 }
 
-@mixin blur-effect($radius: $blur-radius) {
+@mixin blur-effect($radius: 24px) {
     html:not([perf-saver]) & {
         backdrop-filter: blur($radius);
     }

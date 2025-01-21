@@ -1,6 +1,3 @@
-@use "@/stylesheets/main/animations" as *;
-@use "@/stylesheets/main/remixed-main" as *;
-
 $float-bar-width: 40px;
 $float-bar-layout-margin: 20px;
 $float-bar-default-left: calc(50% + var(--content-max) / 2 + $float-bar-layout-margin);
@@ -36,7 +33,7 @@ $float-bar-default-left: calc(50% + var(--content-max) / 2 + $float-bar-layout-m
         border-radius: 0;
         margin: 0 !important;
         background-color: var(--default-background);
-        transition: $default-animation-duration;
+        transition: var(--default-duration);
 
         a {
             border-radius: 0;

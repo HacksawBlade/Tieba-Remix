@@ -279,9 +279,6 @@ function clickModal(e: MouseEvent) {
 </script>
 
 <style scoped lang="scss">
-@use "@/stylesheets/main/animations" as *;
-@use "@/stylesheets/main/remixed-main" as *;
-
 $panel-margin: 16px;
 $panel-radius: 12px;
 
@@ -294,7 +291,7 @@ $panel-radius: 12px;
     align-items: center;
     justify-content: center;
     inset: 0;
-    transition: $default-animation-duration;
+    transition: var(--default-duration);
 
     .icon {
         color: var(--light-fore);
@@ -315,7 +312,7 @@ $panel-radius: 12px;
     .head-controls {
         top: $panel-margin;
         margin-bottom: auto;
-        transition: $default-animation-duration;
+        transition: var(--default-duration);
 
         &.hide {
             box-shadow: none;
@@ -419,7 +416,7 @@ $panel-radius: 12px;
         display: flex;
         margin-top: auto;
         gap: 4px;
-        transition: $default-animation-duration;
+        transition: var(--default-duration);
 
         &.hide {
             box-shadow: none;
@@ -434,8 +431,7 @@ $panel-radius: 12px;
             border: none;
             border-radius: $panel-radius - 2;
             background-color: var(--trans-default-background);
-
-            @include transition-prototype(all linear, 0.1s);
+            transition: linear var(--xfast-duration);
 
             .image-list {
                 width: 100%;

@@ -31,8 +31,6 @@ const emit = defineEmits<{ (e: "change", value: boolean): void }>();
 </script>
 
 <style lang="scss" scoped>
-@use "@/stylesheets/main/animations.scss" as *;
-
 .user-check {
     display: flex;
     align-items: center;

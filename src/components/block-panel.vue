@@ -7,8 +7,6 @@
 <script lang="ts" setup></script>
 
 <style lang="scss">
-@use "@/stylesheets/main/remixed-main" as *;
-
 .block-panel {
     display: flex;
     min-width: 30px;
@@ -17,7 +15,6 @@
     justify-content: center;
     padding: 2px 8px;
     border-radius: 24px;
-    margin: auto;
     background-color: var(--trans-light-background);
     font-size: 14px;
     text-align: center;

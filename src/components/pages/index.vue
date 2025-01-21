@@ -402,9 +402,6 @@ async function oneKeySignInstance() {
 </script>
 
 <style scoped lang="scss">
-@use "@/stylesheets/main/animations" as *;
-@use "@/stylesheets/main/remixed-main" as *;
-
 $menu-margin: 24px;
 $menu-button-size: 32px;
 

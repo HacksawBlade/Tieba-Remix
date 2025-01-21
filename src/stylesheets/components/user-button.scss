@@ -1,5 +1,3 @@
-@use "@/stylesheets/main/animations" as *;
-
 %user-button {
     box-sizing: border-box;
     padding: 4px 12px;
@@ -10,7 +8,7 @@
     box-shadow: 0 0 0 1px var(--border-color);
     color: var(--default-fore);
     cursor: pointer;
-    transition: $default-animation-duration;
+    transition: var(--default-duration);
 
     &:hover:not([disabled]) {
         background-color: var(--default-hover);

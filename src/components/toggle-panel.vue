@@ -37,8 +37,6 @@ const dialogOpts: UserDialogOpts = {
 </script>
 
 <style lang="scss" scoped>
-@use "@/stylesheets/main/remixed-main" as *;
-
 .toggle-panel {
     display: flex;
     flex-wrap: wrap;

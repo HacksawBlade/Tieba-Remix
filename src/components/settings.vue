@@ -213,9 +213,6 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-@use "@/stylesheets/main/animations" as *;
-@use "@/stylesheets/main/remixed-main" as *;
-
 $wrapper-padding: 16px;
 
 @keyframes content-in {

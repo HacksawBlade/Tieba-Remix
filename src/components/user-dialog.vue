@@ -232,9 +232,6 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-@use "@/stylesheets/main/animations.scss" as *;
-@use "@/stylesheets/main/remixed-main.scss" as *;
-
 $dialog-padding: 16px;
 $dialog-padding-nega: -$dialog-padding;
 $dialog-radius: 12px;
@@ -263,7 +260,7 @@ $dialog-radius: 12px;
             margin: $dialog-padding;
             background-color: var(--default-background);
             font-size: 16px;
-            transition: $default-animation-duration;
+            transition: var(--default-duration);
         }
 
         &.dialog-enter-active {

@@ -287,9 +287,6 @@ function loadNavMenuContent() {
 </script>
 
 <style lang="scss" scoped>
-@use "@/stylesheets/main/animations" as *;
-@use "@/stylesheets/main/remixed-main" as *;
-
 $nav-height: 48px;
 $nav-fold-height: 16px;
 $fold-bar-height: 3px;
@@ -306,7 +303,7 @@ $fold-bar-height: 3px;
     justify-content: center;
     border-bottom: 1px solid var(--border-color);
     background-color: var(--trans-page-background);
-    transition: all $default-animation-duration, width 0s;
+    transition: all var(--default-duration), width 0s;
 
     @include main-box-shadow(0, 10px);
 

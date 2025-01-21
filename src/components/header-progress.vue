@@ -30,8 +30,6 @@ function calcValue() {
 </script>
 
 <style lang="scss" scoped>
-@use "@/stylesheets/main/animations" as *;
-
 #header-progress {
     position: fixed;
     z-index: 99999;
@@ -42,7 +40,7 @@ function calcValue() {
     transition: 0.4s;
 
     &.complete {
-        animation: kf-fade-out $xslow-animation-duration forwards;
+        animation: kf-fade-out var(--xslow-duration) forwards;
     }
 }
 </style>

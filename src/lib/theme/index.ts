@@ -1,8 +1,9 @@
 import { GM_addStyle } from "$";
+import "@/stylesheets/main/animations.scss";
+import baseStyle from "@/stylesheets/main/base.scss?inline";
 import "@/stylesheets/main/material-symbols.css";
 import "@/stylesheets/main/palette.scss";
-import mainStyle from "@/stylesheets/main/remixed-main.scss?inline";
-import utilStyle from "@/stylesheets/main/util-classes.scss?inline";
+import universalStyle from "@/stylesheets/main/universal.scss?inline";
 import "@/stylesheets/main/variables.scss";
 import tiebaErrorStyle from "@/stylesheets/tieba/tieba-error.scss?inline";
 import tiebaForumStyle from "@/stylesheets/tieba/tieba-forum.scss?inline";
@@ -72,10 +73,10 @@ export async function loadDynamicCSS() {
     if (customCSS !== "") GM_addStyle(customCSS);
 }
 
-export async function loadTiebaCSS() {
+export async function loadMainCSS() {
     overwriteCSS(
-        mainStyle,
-        utilStyle,
+        baseStyle,
+        universalStyle,
         tiebaErrorStyle,
         tiebaForumStyle,
         tiebaHomeStyle,

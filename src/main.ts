@@ -3,7 +3,7 @@ import { checkUpdateAndNotify, currentPageType, setTheme } from "./lib/api/remix
 import { parseUserModules } from "./lib/common/packer";
 import { forumThreadsObserver, legacyIndexFeedsObserver, threadCommentsObserver, threadFloorsObserver } from "./lib/observers";
 import { loadPerf } from "./lib/perf";
-import { darkPrefers, loadDynamicCSS, loadTiebaCSS } from "./lib/theme";
+import { darkPrefers, loadDynamicCSS, loadMainCSS } from "./lib/theme";
 import index from "./lib/theme/page-extension/index";
 import thread from "./lib/theme/page-extension/thread";
 import { REMIXED, pageExtension, themeType, wideScreen } from "./lib/user-values";
@@ -15,7 +15,7 @@ darkPrefers.addEventListener("change", () => setTheme(themeType.get()));
 
 Promise.all([
     loadDynamicCSS(),
-    loadTiebaCSS(),
+    loadMainCSS(),
     index(),
     thread(),
     parseUserModules(

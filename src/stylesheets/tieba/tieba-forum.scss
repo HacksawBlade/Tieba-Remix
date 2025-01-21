@@ -1,5 +1,3 @@
-@use "@/stylesheets/main/remixed-main" as *;
-@use "@/stylesheets/main/animations" as *;
 @use "@/stylesheets/components/user-button" as *;
 
 #head {
@@ -73,7 +71,7 @@
     border: 2px solid var(--border-color) !important;
     background-color: var(--default-background) !important;
     color: var(--default-fore) !important;
-    transition: $default-animation-duration;
+    transition: var(--default-duration);
 
     &:hover {
         border-color: var(--light-background) !important;
@@ -93,7 +91,7 @@
     box-shadow: none !important;
     color: var(--default-fore) !important;
     line-height: 40px !important;
-    transition: $default-animation-duration;
+    transition: var(--default-duration);
 
     &:hover {
         filter: brightness(1.1);

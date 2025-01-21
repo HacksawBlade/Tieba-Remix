@@ -141,8 +141,6 @@ function handleJumperEnter() {
 </script>
 
 <style lang="scss" scoped>
-@use "@/stylesheets/main/remixed-main" as *;
-
 .pager-wrapper {
     display: flex;
     width: fit-content;

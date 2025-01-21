@@ -91,8 +91,6 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-@use "@/stylesheets/main/remixed-main" as *;
-
 .message-wrapper {
     display: flex;
     overflow: hidden auto;
