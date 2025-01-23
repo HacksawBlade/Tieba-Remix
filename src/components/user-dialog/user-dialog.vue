@@ -1,12 +1,13 @@
 <template>
     <Teleport to="body">
-        <div ref="dialogModal" aria-modal class="user-dialog-modal" :style="parseCSSRule(modalStyle)">
+        <div ref="dialogModal" v-if="!_.some(abnormal)" aria-modal class="user-dialog-modal"
+            :style="parseCSSRule(modalStyle)">
             <Transition name="dialog" type="animation" @after-leave="unloadDialog">
                 <div ref="userDialog" v-show="dialogTrigger" class="user-dialog remove-default"
                     :style="parseCSSRule(contentStyle)" :class="{
                         'default': !shadowMode,
                         'shadow': shadowMode,
-                    }" tabindex="-1">
+                    }" tabindex="-1" :data-unique="uniqueName">
                     <header v-if="title" class="dialog-title">{{ title }}</header>
 
                     <div class="dialog-content">
@@ -32,8 +33,9 @@ import { EventProxy } from "@/lib/elemental/event-proxy";
 import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import { scrollbarWidth } from "@/lib/render";
 import _ from "lodash";
-import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
-import UserButton from "./utils/user-button.vue";
+import { nextTick, onBeforeMount, onBeforeUnmount, onMounted, ref } from "vue";
+import UserButton from "../utils/user-button.vue";
+import { USER_DIALOG_ABNORMAL_TYPES } from "./constants";
 
 export interface UserDialogButton {
     text?: string;
@@ -76,7 +78,11 @@ export interface UserDialogOpts<PayloadType = any> {
     renderAnimation?: string;
     /** 替换卸载动画 */
     unloadAnimation?: string;
+    /** 唯一实例名称。该对话框组件在已有未卸载的实例时不得重复渲染 */
+    uniqueName?: string;
 }
+
+export type UserDialogAbnormal = typeof USER_DIALOG_ABNORMAL_TYPES[number];
 
 const props = withDefaults(defineProps<UserDialogOpts>(), {
     modal: true,
@@ -93,7 +99,10 @@ const props = withDefaults(defineProps<UserDialogOpts>(), {
     unloadAnimation: "kf-dialog-out var(--default-duration)",
 });
 
-const emit = defineEmits<{ (e: "unload", payload?: any): void }>();
+const emit = defineEmits<{
+    (e: "unload", payload?: any): void,
+    (e: "abnormalUnload", abnormal: UserDialogAbnormal): void,
+}>();
 
 const evproxy = new EventProxy();
 
@@ -102,47 +111,53 @@ const dialogModal = ref<HTMLDivElement>();
 const userDialog = ref<HTMLDivElement>();
 const currentPayload = ref(props.defaultPayload);
 
+const abnormal = _.zipObject(
+    USER_DIALOG_ABNORMAL_TYPES,
+    _.fill(Array(USER_DIALOG_ABNORMAL_TYPES.length), false)
+) as Record<UserDialogAbnormal, boolean>;
 /** 待归还的焦点元素，用于在卸载时恢复焦点位置（如果有的话） */
 let focusRelatedTarget: Maybe<HTMLElement> = undefined;
 /** 待归还焦点元素对应的对话框，作为上元素被移出文档时的备选 */
 let focusRelatedDialog: Maybe<HTMLDivElement> = undefined;
 
+onBeforeMount(function () {
+    if (props.uniqueName) {
+        abnormal.duplicate = !!dom(`.user-dialog[data-unique="${props.uniqueName}"]`);
+    }
+});
+
 onMounted(async function () {
     dialogTrigger.value = true;
     await nextTick();
+
+    if (_.some(abnormal)) {
+        abnormalUnload(_.findKey(abnormal, val => val === true) as UserDialogAbnormal);
+        return;
+    }
 
     if (!dialogModal.value) return;
     if (!userDialog.value) return;
 
     if (props.modal) {
-        evproxy.on(
-            userDialog.value,
-            "focusin",
-            (e: FocusEvent) => {
-                focusRelatedTarget = (e.relatedTarget as HTMLElement) ?? undefined;
-                if (focusRelatedTarget) focusRelatedDialog = findParent<"div">(focusRelatedTarget, "user-dialog");
-            },
-            { once: true }
-        );
+        evproxy.on(userDialog.value, "focusin", (e: FocusEvent) => {
+            focusRelatedTarget = (e.relatedTarget as HTMLElement) ?? undefined;
+            if (focusRelatedTarget) focusRelatedDialog = findParent<"div">(focusRelatedTarget, "user-dialog");
+        }, { once: true });
         userDialog.value.focus();
 
-        evproxy.on(
-            userDialog.value,
-            "focusout",
-            (e: FocusEvent) => {
-                const modalDialogs = dom(".user-dialog-modal", []);
-                if (!modalDialogs[modalDialogs.length - 1].contains(userDialog.value as Node)) return;
+        evproxy.on(userDialog.value, "focusout", (e: FocusEvent) => {
+            const modalDialogs = dom(".user-dialog-modal", []);
+            if (!modalDialogs[modalDialogs.length - 1].contains(userDialog.value as Node)) return;
 
-                if (_.isNil(e.relatedTarget) || !userDialog.value?.contains(e.relatedTarget as Node)) {
+            if (_.isNil(e.relatedTarget) || !userDialog.value?.contains(e.relatedTarget as Node)) {
+                userDialog.value?.focus();
+
+                // 存在模态框时，允许通过 tab 切换到页面之外，但焦点回归至页面时必须回到对话框内
+                evproxy.on(window, "focusin", function () {
                     userDialog.value?.focus();
-
-                    // 存在模态框时，允许通过 tab 切换到页面之外，但焦点回归至页面时必须回到对话框内
-                    evproxy.on(window, "focusin", function () {
-                        userDialog.value?.focus();
-                    }, { once: true });
-                }
+                }, { once: true });
             }
-        );
+        });
     }
 
     if (props.lockScroll) {
@@ -153,43 +168,31 @@ onMounted(async function () {
     if (props.force) {
         const FORCE_ALERT_CLASS = "force-alert" as const;
 
-        evproxy.on(
-            dialogModal.value,
-            "mousedown",
-            (e: MouseEvent) => {
-                if (e.target !== dialogModal.value) return;
-                if (userDialog.value?.classList.contains(FORCE_ALERT_CLASS)) return;
+        evproxy.on(dialogModal.value, "mousedown", (e: MouseEvent) => {
+            if (e.target !== dialogModal.value) return;
+            if (userDialog.value?.classList.contains(FORCE_ALERT_CLASS)) return;
 
-                userDialog.value?.classList.add(FORCE_ALERT_CLASS);
-                if (userDialog.value) {
-                    evproxy.on(userDialog.value, "transitionend", function () {
-                        userDialog.value?.classList.remove(FORCE_ALERT_CLASS);
-                    }, { once: true });
-                }
+            userDialog.value?.classList.add(FORCE_ALERT_CLASS);
+            if (userDialog.value) {
+                evproxy.on(userDialog.value, "transitionend", function () {
+                    userDialog.value?.classList.remove(FORCE_ALERT_CLASS);
+                }, { once: true });
             }
-        );
+        });
     } else {
         if (props.clickModalToUnload) {
-            evproxy.on(
-                dialogModal.value,
-                "mousedown",
-                (e: MouseEvent) => {
-                    if (e.target !== dialogModal.value) return;
-                    unload(props.defaultPayload);
-                },
-            );
+            evproxy.on(dialogModal.value, "mousedown", (e: MouseEvent) => {
+                if (e.target !== dialogModal.value) return;
+                unload(props.defaultPayload);
+            });
         }
 
         if (props.pressEscapeToUnload) {
-            evproxy.on(
-                dialogModal.value,
-                "keydown",
-                (e: KeyboardEvent) => {
-                    if (e.key === "Escape") {
-                        unload(props.defaultPayload);
-                    }
-                },
-            );
+            evproxy.on(dialogModal.value, "keydown", (e: KeyboardEvent) => {
+                if (e.key === "Escape") {
+                    unload(props.defaultPayload);
+                }
+            });
         }
     }
 });
@@ -226,8 +229,13 @@ function handleButtonEvent(eventfn: UserDialogButton["event"]) {
     }
 }
 
+function abnormalUnload(abnormal: UserDialogAbnormal) {
+    emit("abnormalUnload", abnormal);
+}
+
 defineExpose({
     unload,
+    abnormalUnload,
 });
 </script>
 
