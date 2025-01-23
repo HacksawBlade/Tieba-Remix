@@ -17,7 +17,7 @@
 <script lang="tsx" setup>
 import { asyncdom } from "@/lib/elemental";
 import { nextTick, onMounted, ref } from "vue";
-import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
+import UserDialog, { UserDialogOpts } from "./user-dialog";
 import UserButton from "./utils/user-button.vue";
 import UserTextbox from "./utils/user-textbox.vue";
 

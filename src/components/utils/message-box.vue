@@ -15,7 +15,7 @@
 <script setup lang="tsx">
 import { SupportedComponent } from "@/ex";
 import { ref } from "vue";
-import UserDialog, { UserDialogButton, UserDialogOpts } from "../user-dialog.vue";
+import UserDialog, { UserDialogButton, UserDialogOpts } from "../user-dialog";
 
 export type MessageBoxType = "okOnly" | "okCancel" | "forceTrueFalse";
 export type MessageBoxResponse = "positive" | "negative" | "cancel";

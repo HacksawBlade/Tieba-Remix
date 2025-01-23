@@ -1,4 +1,4 @@
-import UserDialog, { UserDialogOpts } from "@/components/user-dialog.vue";
+import UserDialog, { UserDialogAbnormal, UserDialogOpts } from "@/components/user-dialog";
 import { SupportedComponent } from "@/ex";
 import { dom, domrd } from "@/lib/elemental";
 import { assignCSSRule, CSSRule, injectCSSRule, parseCSSRule } from "@/lib/elemental/styles";
@@ -78,6 +78,7 @@ export interface DialogEvents<PayloadType = any> {
     rendered(rendered: RenderedComponent): void,
     beforeUnload(rendered: RenderedComponent): void,
     unloaded(payload: PayloadType): void,
+    abnormalUnload(abnormal: UserDialogAbnormal): void,
 }
 
 /**
@@ -104,15 +105,12 @@ export function renderDialog<
         ...opts,
         onUnload(payload: PayloadType) {
             events?.beforeUnload?.(rendered);
-
-            dialogApp.unmount();
-            if (dom("[aria-modal]", []).length === 0) {
-                document.body.removeAttribute("no-scrollbar");
-                document.body.style.paddingRight = "";
-            }
-            dialogWrapper.remove();
-
+            _unload();
             events?.unloaded?.(payload);
+        },
+        onAbnormalUnload(abnormal: UserDialogAbnormal) {
+            _unload();
+            events?.abnormalUnload?.(abnormal);
         },
     });
 
@@ -123,6 +121,15 @@ export function renderDialog<
 
     events?.rendered?.(rendered);
     return rendered;
+
+    function _unload() {
+        dialogApp.unmount();
+        if (dom("[aria-modal]", []).length === 0) {
+            document.body.removeAttribute("no-scrollbar");
+            document.body.style.paddingRight = "";
+        }
+        dialogWrapper.remove();
+    }
 }
 
 export function userDialog<ContentOpts extends LiteralObject>(

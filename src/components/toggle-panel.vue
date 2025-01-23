@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
+import UserDialog, { UserDialogOpts } from "./user-dialog";
 import ToggleButton from "./utils/toggle-button.vue";
 
 interface Toggle {

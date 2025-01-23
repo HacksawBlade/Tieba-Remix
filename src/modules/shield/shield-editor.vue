@@ -20,7 +20,7 @@
 
 <script lang="tsx" setup>
 import UserCheck from "@/components/user-check.vue";
-import UserDialog from "@/components/user-dialog.vue";
+import UserDialog from "@/components/user-dialog";
 import UserButton from "@/components/utils/user-button.vue";
 import UserTextbox from "@/components/utils/user-textbox.vue";
 import { ref } from "vue";
