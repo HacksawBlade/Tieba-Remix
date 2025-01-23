@@ -6,7 +6,7 @@
                     :style="parseCSSRule(imageStyle)">
             </div>
 
-            <div class="control-panel head-controls" :class="{ 'hide': !showControls }">
+            <div class="control-panel head-controls" :class="{ 'hide': !showControls.top }">
                 <ToggleButton class="vli-mode head-btn icon" title="长图模式" v-model="vliMode">chrome_reader_mode
                 </ToggleButton>
                 <span>|</span>
@@ -30,16 +30,16 @@
                 </UserButton>
             </div>
 
-            <UserButton v-if="imageArray.length > 1" class="control-panel back icon" :class="{ 'hide': !showControls }"
-                title="上一张" @click="listBack">
+            <UserButton v-if="imageArray.length > 1" class="control-panel back icon"
+                :class="{ 'hide': !showControls.left }" title="上一张" @click="listBack">
                 chevron_left
             </UserButton>
             <UserButton v-if="imageArray.length > 1" class="control-panel forward icon"
-                :class="{ 'hide': !showControls }" title="下一张" @click="listForward">
+                :class="{ 'hide': !showControls.right }" title="下一张" @click="listForward">
                 chevron_right
             </UserButton>
 
-            <div class="control-panel bottom-controls" :class="{ 'hide': !showControls }">
+            <div class="control-panel bottom-controls" :class="{ 'hide': !showControls.bottom }">
                 <UserButton v-for="image, index in imageArray" class="bottom-btn"
                     :class="{ 'selected': index === curr }" no-border="all">
                     <img class="image-list" :src="image" alt="" @click="curr = index">
@@ -50,10 +50,11 @@
 </template>
 
 <script setup lang="ts">
+import { EventProxy } from "@/lib/elemental/event-proxy";
 import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import _ from "lodash";
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
-import UserDialog, { UserDialogOpts } from "./user-dialog.vue";
+import UserDialog, { UserDialogOpts } from "./user-dialog";
 import ToggleButton from "./utils/toggle-button.vue";
 import UserButton from "./utils/user-button.vue";
 
@@ -86,7 +87,12 @@ const scale = ref(1.0);
 const deg = ref(0);
 const imageLeft = ref<Maybe<number>>(undefined);
 const imageTop = ref<Maybe<number>>(undefined);
-const showControls = ref(true);
+const showControls = ref({
+    left: true,
+    right: true,
+    top: true,
+    bottom: true,
+});
 const vliMode = ref(false);
 
 const imageStyle = computed<CSSRule>(() => {
@@ -127,14 +133,64 @@ const MAX_SIZE = 8.0 as const;
 // VLI = very long image
 const VLI_THRESHOLD = 5 as const;
 const VLI_WIDTH_SCALE = 2 as const;
+const DEFAULT_HIDE_CONTROLS_DELAY = 1000 as const;
+const SHOW_CONTROLS_THRESHOLD_X = 180 as const;
+const SHOW_CONTROLS_THRESHOLD_Y = 140 as const;
+
+const evproxy = new EventProxy();
 
 onMounted(async () => {
     await nextTick();
     let offsetX = 0, offsetY = 0;
 
-    imagesViewer.value?.addEventListener("wheel", imageWheel, { passive: true });
+    const showControlsBefore = {
+        left: false,
+        right: false,
+        top: false,
+        bottom: false,
+    };
+    let beforeDefaultHide = true;
 
-    currImage.value?.addEventListener("mousedown", (e: MouseEvent) => {
+    evproxy.on(window, "mousemove", _.throttle(function (e: MouseEvent) {
+        const { clientX, clientY } = e;
+
+        const distanceToLeft = clientX;
+        const distanceToRight = window.innerWidth - clientX;
+        const distanceToTop = clientY;
+        const distanceToBottom = window.innerHeight - clientY;
+
+        const dataRef = beforeDefaultHide ? showControlsBefore : showControls.value;
+
+        distanceToLeft <= SHOW_CONTROLS_THRESHOLD_X
+            ? dataRef.left = true
+            : dataRef.left = false;
+        distanceToRight <= SHOW_CONTROLS_THRESHOLD_X
+            ? dataRef.right = true
+            : dataRef.right = false;
+        distanceToTop <= SHOW_CONTROLS_THRESHOLD_Y
+            ? dataRef.top = true
+            : dataRef.top = false;
+        distanceToBottom <= SHOW_CONTROLS_THRESHOLD_Y
+            ? dataRef.bottom = true
+            : dataRef.bottom = false;
+    }, 100, { leading: true }));
+
+    setTimeout(() => {
+        showControls.value = {
+            ...{
+                left: false,
+                right: false,
+                top: false,
+                bottom: false,
+            },
+            ...showControlsBefore,
+        };
+        beforeDefaultHide = false;
+    }, DEFAULT_HIDE_CONTROLS_DELAY);
+
+    evproxy.on(imagesViewer.value, "wheel", imageWheel, { passive: true });
+
+    evproxy.on(currImage.value, "mousedown", (e: MouseEvent) => {
         if (!currImage.value) return;
         e.preventDefault();
         if (vliMode.value) return;
@@ -144,12 +200,12 @@ onMounted(async () => {
         document.addEventListener("mousemove", moveHandler);
     });
 
-    document.addEventListener("mouseup", (e: MouseEvent) => {
+    evproxy.on(document, "mouseup", (e: MouseEvent) => {
         e.preventDefault();
         document.removeEventListener("mousemove", moveHandler);
     });
 
-    currImage.value?.addEventListener("load", function () {
+    evproxy.on(currImage.value, "load", function () {
         if (!currImage.value) return;
         vliMode.value = false;
 
@@ -177,7 +233,7 @@ onMounted(async () => {
         currImage.value.classList.remove("changing");
     });
 
-    currImage.value?.addEventListener("transitionend", function () {
+    evproxy.on(currImage.value, "transitionend", function () {
         if (Math.abs(deg.value) >= 360) {
             currImage.value?.classList.add("changing");
             deg.value = Math.abs(deg.value) % 360;
@@ -194,7 +250,7 @@ onMounted(async () => {
 });
 
 onUnmounted(function () {
-    imagesViewer.value?.removeEventListener("wheel", imageWheel);
+    evproxy.release();
 });
 
 watch(curr, function () {
@@ -263,11 +319,9 @@ function imageWheel(e: WheelEvent) {
 
     if (!vliMode.value) {
         zoomImage(-e.deltaY / 1000);
-        showControls.value = e.deltaY > 0;
     } else {
         if (!imageTop.value) imageTop.value = 0;
         imageTop.value += -e.deltaY / 1000 * window.innerHeight;
-        showControls.value = e.deltaY < 0;
     }
 }
 
@@ -316,7 +370,7 @@ $panel-radius: 12px;
 
         &.hide {
             box-shadow: none;
-            transform: translateY(calc(-100% - $panel-margin));
+            transform: translateY(calc(-100% - $panel-margin)) scale(0.85);
         }
 
         .head-btn {
@@ -370,7 +424,7 @@ $panel-radius: 12px;
 
         &.hide {
             box-shadow: none;
-            transform: translateX(calc(-100% - #{$panel-margin * 2}));
+            transform: translateX(calc(-100% - #{$panel-margin * 2})) scale(0.85);
         }
     }
 
@@ -379,7 +433,7 @@ $panel-radius: 12px;
 
         &.hide {
             box-shadow: none;
-            transform: translateX(calc(100% + #{$panel-margin * 2}));
+            transform: translateX(calc(100% + #{$panel-margin * 2})) scale(0.85);
         }
     }
 
@@ -420,7 +474,7 @@ $panel-radius: 12px;
 
         &.hide {
             box-shadow: none;
-            transform: translateY(calc(100% + $panel-margin));
+            transform: translateY(calc(100% + $panel-margin)) scale(0.85);
         }
 
         .bottom-btn {
