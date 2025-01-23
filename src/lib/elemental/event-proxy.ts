@@ -12,11 +12,12 @@ export class EventProxy {
      * @param options 选项
      */
     public on<E extends Event>(
-        target: EventTarget,
+        target: Maybe<EventTarget>,
         type: string,
         callback: ((e: E) => void) | EventListenerObject,
         options?: AddEventListenerOptions | boolean,
     ) {
+        if (!target) return;
         target.addEventListener(type, callback as EventListener, options);
         this.records.push({ target, type, callback, options });
     }
