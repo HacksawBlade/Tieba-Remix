@@ -1,35 +1,36 @@
-import _ from "lodash";
-import { RendererElement, RendererNode, VNode, createVNode, render } from "vue";
+import { VNode, render } from "vue";
 import { JSX } from "vue/jsx-runtime";
 import { domrd } from "../elemental";
 
 export interface RenderedJSX<T extends Element = Element> {
-    el: T;
-    vnode: VNode<RendererNode, RendererElement, LiteralObject>;
+    root: T;
+    vnode: VNode;
+    remove(): void;
 }
 
 export function renderJSX<T extends Element>(jsxel: JSX.Element, parent: Element): RenderedJSX<T> {
-    const vnode = createVNode(jsxel);
-    render(vnode, parent);
-    return { el: parent.firstChild as T, vnode: vnode };
+    render(jsxel, parent);
+    const root = parent.firstChild as T;
+    return {
+        root,
+        vnode: jsxel,
+        remove() {
+            render(null, parent);
+            if (root.parentNode) root.remove();
+        },
+    };
+}
+
+function createJSXWrapper() {
+    return domrd("div", { class: "jsx-wrapper" });
 }
 
 export function insertJSX<T extends Element>(jsxel: JSX.Element, parent: Element, position?: Node) {
-    const tempContainer = domrd("div");
-    const vnode = renderJSX<T>(jsxel, parent.appendChild(tempContainer));
-    _.forEach(tempContainer.children, el => {
-        parent.insertBefore(el, position ?? null);
-    });
-    tempContainer.remove();
-    return vnode;
+    const jsxWrapper = createJSXWrapper();
+    return renderJSX<T>(jsxel, parent.insertBefore(jsxWrapper, position ?? null));
 }
 
 export function appendJSX<T extends Element>(jsxel: JSX.Element, parent: Element) {
-    const tempContainer = domrd("div");
-    const vnode = renderJSX<T>(jsxel, parent.appendChild(tempContainer));
-    _.forEach(tempContainer.children, el => {
-        parent.appendChild(el);
-    });
-    tempContainer.remove();
-    return vnode;
+    const jsxWrapper = createJSXWrapper();
+    return renderJSX<T>(jsxel, parent.appendChild(jsxWrapper));
 }
