@@ -1,3 +1,4 @@
+import { floatMessage } from "@/components/float-message";
 import Pager from "@/components/pager.vue";
 import ThreadEditor from "@/components/thread-editor.vue";
 import TogglePanel, { TogglePanelProps } from "@/components/toggle-panel.vue";
@@ -9,13 +10,13 @@ import { CSSRule, overwriteCSS, parseCSSRule } from "@/lib/elemental/styles";
 import { threadCommentsObserver, threadFloorsObserver } from "@/lib/observers";
 import { renderDialog } from "@/lib/render";
 import { appendJSX, insertJSX } from "@/lib/render/jsx-extension";
-import { bindFloatMessage } from "@/lib/render/universal";
 import { floatBar } from "@/lib/tieba-components/float-bar";
 import { pager } from "@/lib/tieba-components/pager";
 import { compactLayout, experimental, pageExtension, perfProfile } from "@/lib/user-values";
 import { waitUntil } from "@/lib/utils";
 import _ from "lodash";
 import { VNode } from "vue";
+import commentsStyle from "./comments.scss?inline";
 import compactStyle from "./compact.scss?inline";
 import { threadParser } from "./parser";
 import threadStyle from "./thread.scss?inline";
@@ -24,8 +25,11 @@ export default async function () {
     if (!pageExtension.get().thread) return;
     if (currentPageType() !== "thread") return;
 
-    overwriteCSS(threadStyle);
-    overwriteCSS(compactStyle);
+    overwriteCSS(
+        threadStyle,
+        compactStyle,
+        commentsStyle,
+    );
 
     await waitUntil(() => !_.isNil(document.body)).then(function () {
         // document.body.insertBefore(mainWrapper, document.body.firstChild);
@@ -110,8 +114,10 @@ export default async function () {
             </div>, content, pbContent);
 
         // 绑定事件
-        bindFloatMessage(await asyncdom<"button">(".forum-wrapper-button"),
-            `关注 ${PageData.forum.member_count}，帖子 ${PageData.forum.post_num}`);
+        floatMessage({
+            target: await asyncdom<"button">(".forum-wrapper-button"),
+            content: `关注 ${PageData.forum.member_count}, 帖子 ${PageData.forum.post_num}`,
+        });
         dom(".add-forum-button")?.addEventListener("click", function () {
             dom<"button">("#j_head_focus_btn")?.click();
         });
@@ -149,10 +155,10 @@ export default async function () {
                 <div class={`floor-badge level-${levelToClass(thread.cotents[index].profile.level)}`}>
                     <div class="badge-level">{thread.cotents[index].profile.level}</div>
                     <div class="badge-title">{thread.cotents[index].profile.badgeTitle}</div>
-                </div>, badgeContainer.el);
+                </div>, badgeContainer.root);
 
             if (thread.cotents[index].isLouzhu)
-                appendJSX(<div class="floor-badge">楼主</div>, badgeContainer.el);
+                appendJSX(<div class="floor-badge">楼主</div>, badgeContainer.root);
 
             return authorContainer;
         }

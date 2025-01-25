@@ -1,0 +1,20 @@
+.float-message {
+    @include main-box-shadow;
+    position: fixed;
+    z-index: 99999;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 4px 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--default-background);
+    font-size: 14px;
+
+    &.float-message-enter-active {
+        @include fade-in(var(--fast-duration));
+    }
+
+    &.float-message-leave-active {
+        @include fade-out(var(--fast-duration));
+    }
+}
