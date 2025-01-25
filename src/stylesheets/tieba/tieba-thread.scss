@@ -254,7 +254,7 @@
 
 span.tP {
     /* 强调字 */
-    color: var(--highlight-fore) !important;
+    color: var(--tieba-theme-fore);
 }
 
 .thread_theme_5 {
@@ -523,7 +523,7 @@ span.tP {
 
 .post-tail-wrap .tail-info {
     /* 楼层超链接 */
-    color: var(--minimal-fore);
+    color: var(--light-fore);
 }
 
 .j_jb_ele .tail-info {
@@ -613,10 +613,6 @@ span.tP {
     border-top: unset;
 }
 
-.core_reply_content li.first_no_border {
-    margin-top: 6px;
-}
-
 .lzl_content_main {
     /* 回复文字 */
     color: var(--default-fore);
@@ -629,14 +625,13 @@ span.tP {
     background: none;
 }
 
+/* 收起回复 */
 .lzl_link_fold {
-    /* 收起回复 */
-    display: none !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: 8px 8px 0 0;
-    border-bottom: none !important;
-    background-color: var(--very-light-background) !important;
-    color: var(--tieba-theme-fore);
+    width: auto;
+    height: auto;
+    border: none;
+    background: none;
+    color: var(--minimal-fore);
 }
 
 .core_reply div.hideLzl {
@@ -671,7 +666,7 @@ span.tP {
 }
 
 .lzl_cnt .lzl_time {
-    color: var(--minimal-fore);
+    color: var(--light-fore);
 }
 
 .lzl_jb_in,
@@ -825,13 +820,11 @@ span.tP {
 /* TODO: 隐藏用户3天 */
 .user-hide-post-down,
 .user-hide-post-up {
+    display: none !important;
     background-color: var(--light-fore);
     background-position: center;
     background-repeat: no-repeat;
     background-size: 16px;
-    mask: var(--svg-arrow-down-circle);
-    /* filter: drop-shadow(var(--minimal-fore) 0 -9999px);
-    transform: translateY(9999px); */
     opacity: 0;
 }
 

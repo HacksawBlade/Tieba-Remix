@@ -73,7 +73,7 @@
 }
 
 @mixin main-box-shadow($offset-x: 0, $offset-y: 0) {
-    box-shadow: $offset-x $offset-y 10px rgba($color: #000, $alpha: 1%);
+    box-shadow: $offset-x $offset-y 10px rgba($color: #000, $alpha: 10%);
 
     html.dark-theme & {
         box-shadow: $offset-x $offset-y 16px rgba($color: #000, $alpha: 20%);
