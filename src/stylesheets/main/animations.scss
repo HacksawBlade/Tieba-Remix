@@ -32,6 +32,20 @@
     }
 }
 
+@keyframes kf-slide-zoom-in {
+    0% {
+        opacity: 0;
+        transform: translateY(20%) scale(0.85);
+    }
+}
+
+@keyframes kf-slide-zoom-out {
+    100% {
+        opacity: 0;
+        transform: translateY(20%) scale(0.85);
+    }
+}
+
 @keyframes kf-dialog-in {
     0% {
         opacity: 0;
