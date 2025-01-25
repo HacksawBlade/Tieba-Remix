@@ -12,12 +12,13 @@
 import { FeedListResponse, parsePostsFromString, tiebaAPI } from "@/lib/api/tieba";
 import { FlexMasonry } from "@/lib/render/layout/flex-masonry";
 import { toast } from "@/lib/render/toast";
-import { headerProgress, imagesViewer } from "@/lib/render/universal";
+import { headerProgress } from "@/lib/render/universal";
 import { unreadFeeds } from "@/lib/user-values";
 import { requestInstance, spawnOffsetTS, waitUntil } from "@/lib/utils";
 import { matchShield, shieldList } from "@/modules/shield";
 import _ from "lodash";
 import { ComponentPublicInstance, nextTick, onMounted, ref, watch } from "vue";
+import { imagesViewer } from "./images-viewer";
 import PostContainer from "./post-container.vue";
 
 interface Props {

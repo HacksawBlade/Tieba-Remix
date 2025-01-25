@@ -2,7 +2,6 @@ import { dom, fadeInElems, fadeInLoad } from "@/lib/elemental";
 import { injectCSSRule, overwriteCSS } from "@/lib/elemental/styles";
 import { threadFloorsObserver } from "@/lib/observers";
 import { setCustomBackground } from "@/lib/theme";
-import "@/stylesheets/components/float-message.scss";
 import "@/stylesheets/components/user-button.scss";
 import _ from "lodash";
 import floatBarStyle from "./tieba-components/float-bar.scss?inline";

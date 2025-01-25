@@ -1,9 +1,9 @@
 import { GM_deleteValue, GM_listValues } from "$";
+import { messageBox } from "@/components/message-box";
 import { NavBarHideMode } from "@/components/nav-bar.vue";
 import { MainSettingKey, SettingContent, SubSettingKey, UserSettings } from "@/components/settings.vue";
 import { UserSelectItem } from "@/components/user-select.vue";
 import { backupUserConfigs, restoreUserConfigs } from "@/lib/api/remixed";
-import { messageBox } from "@/lib/render/message-box";
 import { PerfType, UpdateConfig, compactLayout, customStyle, disabledModules, experimental, monospaceFonts, navBarHideMode, pageExtension, perfProfile, themeType, updateConfig, userFonts, wideScreen } from "@/lib/user-values";
 import { AllModules } from "@/lib/utils";
 import _ from "lodash";

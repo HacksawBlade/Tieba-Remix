@@ -54,9 +54,9 @@ import { EventProxy } from "@/lib/elemental/event-proxy";
 import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import _ from "lodash";
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
-import UserDialog, { UserDialogOpts } from "./user-dialog";
-import ToggleButton from "./utils/toggle-button.vue";
-import UserButton from "./utils/user-button.vue";
+import UserDialog, { UserDialogOpts } from "../user-dialog";
+import ToggleButton from "../utils/toggle-button.vue";
+import UserButton from "../utils/user-button.vue";
 
 export interface ImagesViewerOpts {
     content: string | string[] | TiebaPost;

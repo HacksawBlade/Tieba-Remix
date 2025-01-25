@@ -1,5 +1,5 @@
 import { GM_getValue, GM_info, GM_listValues, GM_openInTab, GM_setValue } from "$";
-import { messageBox } from "@/lib/render/message-box";
+import { messageBox } from "@/components/message-box";
 import { toast } from "@/lib/render/toast";
 import { GiteeRelease, GiteeReleaseNotFound, GiteeRepo, Owner, RepoName, ignoredTag, latestRelease, showUpdateToday, themeType, updateConfig } from "@/lib/user-values";
 import { outputFile, selectLocalFile, spawnOffsetTS } from "@/lib/utils";

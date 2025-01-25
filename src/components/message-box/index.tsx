@@ -1,5 +1,8 @@
-import MessageBox, { MessageBoxOpts, MessageBoxResponse } from "@/components/utils/message-box.vue";
-import { renderDialog } from ".";
+import { renderDialog } from "@/lib/render";
+import MessageBox, { MessageBoxOpts, MessageBoxResponse } from "./message-box.vue";
+
+export default MessageBox;
+export * from "./message-box.vue";
 
 /**
  * 渲染标准消息对话框

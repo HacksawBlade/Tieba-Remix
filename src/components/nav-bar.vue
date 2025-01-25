@@ -37,12 +37,12 @@
 </template>
 
 <script lang="ts" setup>
+import { messageBox } from "@/components/message-box";
 import { checkUpdateAndNotify, getResource } from "@/lib/api/remixed";
 import { tiebaAPI } from "@/lib/api/tieba";
 import { dom } from "@/lib/elemental";
 import { renderDialog } from "@/lib/render";
 import { getFloatCoord } from "@/lib/render/layout/float";
-import { messageBox } from "@/lib/render/message-box";
 import { toast } from "@/lib/render/toast";
 import { experimental, GiteeRepo, GithubRepo, navBarHideMode } from "@/lib/user-values";
 import { waitUntil } from "@/lib/utils";
@@ -303,9 +303,8 @@ $fold-bar-height: 3px;
     justify-content: center;
     border-bottom: 1px solid var(--border-color);
     background-color: var(--trans-page-background);
+    box-shadow: 0 0 10px rgb(0 0 0 / 10%);
     transition: all var(--default-duration), width 0s;
-
-    @include main-box-shadow(0, 10px);
 
     &.fold {
         transform: translateY(calc(-1 * $nav-height + $nav-fold-height));

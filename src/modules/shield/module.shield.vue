@@ -29,11 +29,11 @@
 </template>
 
 <script lang="tsx" setup>
+import { messageBox } from "@/components/message-box";
 import UserCheck from "@/components/user-check.vue";
 import UserButton from "@/components/utils/user-button.vue";
 import UserTextbox from "@/components/utils/user-textbox.vue";
 import { renderDialog } from "@/lib/render";
-import { messageBox } from "@/lib/render/message-box";
 import { ref } from "vue";
 import { ShieldRule, shieldList } from "./shield";
 import ShieldEditor from "./shield-editor.vue";

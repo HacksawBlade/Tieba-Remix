@@ -147,9 +147,9 @@ import {
 import _ from "lodash";
 import { onMounted, ref } from "vue";
 
+import { messageBox } from "@/components/message-box";
 import { findParent } from "@/lib/elemental";
 import { renderDialog } from "@/lib/render";
-import { messageBox } from "@/lib/render/message-box";
 import { toast } from "@/lib/render/toast";
 import { errorMessage, requestInstance } from "@/lib/utils";
 
