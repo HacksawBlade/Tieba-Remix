@@ -1,6 +1,6 @@
 .float-message {
     @include main-box-shadow;
-    position: fixed;
+    position: absolute;
     z-index: 99999;
     overflow: hidden;
     box-sizing: border-box;
