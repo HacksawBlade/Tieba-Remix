@@ -1,7 +1,7 @@
 import UserDialog, { UserDialogAbnormal, UserDialogOpts } from "@/components/user-dialog";
 import { SupportedComponent } from "@/ex";
 import { dom, domrd } from "@/lib/elemental";
-import { assignCSSRule, CSSRule, injectCSSRule, parseCSSRule } from "@/lib/elemental/styles";
+import { CSSRule, injectCSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import _ from "lodash";
 import { App, Component, ComponentPublicInstance, createApp, h } from "vue";
 
@@ -23,19 +23,8 @@ export function renderComponent<T extends LiteralObject>(
 
 /** 获取垂直滚动条的宽度。对应的 CSS 变量为 `--scrollbar-width` */
 export const scrollbarWidth = _.once(function () {
-    const temp = domrd("div");
-    assignCSSRule(temp, {
-        width: "100px",
-        height: "100px",
-        overflow: "scroll",
-        position: "absolute",
-        top: "-9999px",
-    });
-
-    document.body.appendChild(temp);
-    const scrollbarWidth = temp.offsetWidth - temp.clientWidth;
-    document.body.removeChild(temp);
-    return scrollbarWidth;
+    // 仅在文档宽度不超过窗口宽度（或文档 overflow: hidden）时是正确的
+    return window.innerWidth - document.documentElement.clientWidth;
 });
 
 export function renderPage(root: Component, rootProps?: LiteralObject) {
