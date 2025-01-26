@@ -107,8 +107,11 @@ export default async function () {
                     <a class="forum-name" href={`/f?kw=${PageData.forum.name_url}`} target="_blank">{PageData.forum.forum_name} 吧</a>
 
                     <div class="button-container">
-                        <UserButton class="icon forum-button add-forum-button" noBorder>{PageData.user.is_like ? "check" : "add"}</UserButton>
-                        {/* {PageData.user.is_like ? <UserButton class="outline-icon forum-button sign-in-button" shadow-border>{PageData.is_sign_in ? "assignment_turned_in" : "assignment"}</UserButton> : null} */}
+                        <UserButton
+                            class="icon forum-button add-forum-button"
+                            noBorder>
+                            {PageData.user.is_like ? "check" : "add"}
+                        </UserButton>
                     </div>
                 </UserButton>
             </div>, content, pbContent);
@@ -124,6 +127,20 @@ export default async function () {
         dom<"button">(".sign-in-button")?.addEventListener("click", function () {
             dom<"button">(".j_signbtn")?.click();
         });
+
+        // 楼层举报按钮相关
+        // 楼层举报按钮的文本只在刷新帖子时才会出现，翻页时不会出现
+        // 缺少文本时手动插入
+        // 由于一些动态加载行为，在 DOMContentLoaded 后判断举报按钮中的文字节点是否存在更为妥当
+        document.addEventListener("DOMContentLoaded", function () {
+            threadFloorsObserver.addEvent(function () {
+                _.forEach(dom<"a">(".j_jb_ele a", []), el => {
+                    if (el.lastChild?.nodeType !== Node.TEXT_NODE) {
+                        el.appendChild(new Text("举报"));
+                    }
+                });
+            });
+        }, { once: true });
 
         threadFloorsObserver.addEvent(function () {
             if (dom(".d_author", []).length === 0) return;
