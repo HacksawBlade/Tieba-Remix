@@ -100,7 +100,7 @@ export default async function () {
 
         insertJSX(
             <div id="title-wrapper">
-                <h3 class="thread-title">{PageData.thread.title}</h3>
+                <h3 class="thread-title">{_.unescape(PageData.thread.title)}</h3>
 
                 <UserButton class="forum-wrapper-button" noBorder>
                     <img class="forum-icon" src={forumIconLink} alt="" />
