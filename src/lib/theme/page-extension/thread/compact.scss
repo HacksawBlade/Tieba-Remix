@@ -6,4 +6,9 @@ body[compact-layout] {
     .core_reply_content li.first_no_border {
         margin-top: -4px;
     }
+
+    // 楼中楼单个回复
+    .core_reply .core_reply_wrapper .core_reply_content .lzl_single_post {
+        margin-bottom: 0;
+    }
 }

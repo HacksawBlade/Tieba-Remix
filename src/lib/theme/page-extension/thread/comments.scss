@@ -1,0 +1,149 @@
+// 楼层尾巴 + 楼中楼
+.core_reply {
+    margin-right: unset;
+
+    // 楼中楼包装（包括 padding）
+    .core_reply_wrapper {
+        width: 100%;
+        max-width: 840px; // TODO: 更具体的调整
+        border: none !important;
+        background-color: unset !important;
+
+        // 楼中楼容器
+        .core_reply_content {
+
+            // 单个楼中楼内容
+            .lzl_single_post {
+                margin-bottom: 12px;
+                animation: kf-slide-in var(--default-duration);
+                transform-origin: bottom;
+
+                &:not(.first_no_border) {
+                    padding-top: 0;
+                    margin-top: 0;
+                }
+
+                // 当前具体内容
+                .lzl_cnt {
+                    .at {
+                        @extend %anchor;
+                        padding: 2px 0;
+                        color: var(--default-fore);
+                        font-size: 14px;
+                        font-weight: bold;
+                    }
+
+                    .lzl_content_main {
+                        a {
+                            @extend %anchor;
+                        }
+
+                        img {
+                            vertical-align: text-bottom;
+                        }
+                    }
+
+                    // 楼中楼尾巴
+                    .lzl_content_reply {
+                        display: flex;
+                        align-items: center;
+                        line-height: 28px;
+                        text-align: justify;
+
+                        // 楼中楼举报
+                        .lzl_jb {
+                            order: 1;
+                            margin-left: auto;
+
+                            .lzl_jb_in {
+                                padding: 0;
+                            }
+                        }
+
+                        // 楼中楼回复
+                        .lzl_s_r {
+                            @extend %anchor;
+                            padding: 0;
+                            margin-left: 8px;
+                            color: var(--light-fore);
+
+                            &:hover {
+                                color: var(--tieba-theme-fore);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 楼中楼翻页
+            .lzl_li_pager {
+                padding: 0;
+                margin-top: -6px;
+
+                // 点击查看（更多）
+                .lzl_more a {
+                    @extend %anchor;
+                }
+
+                .j_pager {
+                    display: flex;
+                    align-items: center;
+                    font-family: var(--code-zh);
+
+                    .tP {
+                        width: auto;
+                        color: var(--tieba-theme-fore);
+                    }
+
+                    a {
+                        @extend %anchor;
+                        color: var(--light-fore);
+
+                        &:hover {
+                            color: var(--tieba-theme-fore);
+                        }
+                    }
+                }
+            }
+
+            // 楼中楼发帖按钮
+            .btn-sub {
+                @extend %anchor;
+                padding: 4px 0;
+                border-radius: 0;
+                background: none;
+            }
+
+            // 楼中楼编辑器
+            .edui-container {
+                width: auto !important;
+                max-height: 64px;
+
+                .edui-editor-body {
+                    overflow: hidden;
+                    height: max-content !important;
+                    max-height: 72px;
+                    padding: 6px;
+                    border-radius: 6px;
+
+                    .edui-body-container {
+                        min-height: 16px !important;
+                        max-height: 64px;
+                        padding-left: 0;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        overflow-y: auto;
+                    }
+                }
+            }
+
+            .lzl_panel_wrapper {
+                width: 100%;
+
+                .lzl_panel_submit {
+                    background: none;
+                }
+            }
+        }
+    }
+}

@@ -3,6 +3,7 @@ $content-padding-y: 24px;
 $content-font-size: 16px;
 $avatar-size: 36px;
 $floor-padding: 8px;
+$tail-gap: 12px;
 
 body {
     background-color: var(--page-background);
@@ -75,26 +76,6 @@ body.special_conf_skin {
     @extend %avatar-fit;
 }
 
-.lzl_cnt {
-    .at {
-        @extend %anchor;
-        padding: 2px 0;
-        color: var(--default-fore);
-        font-size: 14px;
-        font-weight: bold;
-    }
-
-    .lzl_content_main {
-        a {
-            @extend %anchor;
-        }
-
-        img {
-            vertical-align: text-bottom;
-        }
-    }
-}
-
 // 卡吧/C吧 出问题🤔
 // .hideLzl {
 //     position: absolute;
@@ -157,65 +138,12 @@ body.special_conf_skin {
                     margin: 6px auto;
                 }
             }
-
-            .core_reply {
-                margin-right: unset;
-
-                .core_reply_tail {
-                    margin-top: 0;
-                }
-
-                .core_reply_wrapper {
-                    width: 100%;
-                    border: none !important;
-                    background-color: unset !important;
-
-                    .core_reply_content {
-                        padding: 0 0 0 $avatar-size;
-
-                        .lzl_single_post {
-                            animation: kf-slide-in var(--default-duration);
-
-                            &:not(.first_no_border) {
-                                padding-top: 0;
-                                margin-top: 0;
-                            }
-                        }
-
-                        // 楼中楼编辑器
-                        .edui-container {
-                            width: auto !important;
-                            max-height: 64px;
-
-                            .edui-editor-body {
-                                overflow: hidden;
-                                height: max-content !important;
-                                max-height: 72px;
-                                padding: 6px;
-                                border-radius: 6px;
-
-                                .edui-body-container {
-                                    min-height: 16px !important;
-                                    max-height: 64px;
-                                    padding-left: 0;
-                                    border-radius: 6px;
-                                    font-size: 14px;
-                                    overflow-y: auto;
-                                }
-                            }
-                        }
-
-                        .lzl_panel_wrapper {
-                            width: 100%;
-
-                            .lzl_panel_submit {
-                                background: none;
-                            }
-                        }
-                    }
-                }
-            }
         }
+    }
+
+    // TODO: ?
+    div[data-po] {
+        display: none;
     }
 }
 
@@ -234,6 +162,90 @@ body.special_conf_skin {
 
 .left_section {
     width: 100%;
+}
+
+// 楼层尾部信息
+.post-tail-wrap,
+.core_reply_tail:not(.clearfix) {
+    display: flex;
+    align-items: center;
+    margin-top: 0;
+    color: var(--light-fore);
+    float: none;
+    gap: $tail-gap;
+
+    .question-image {
+        display: none;
+    }
+
+    // 举报
+    .j_jb_ele a {
+        @extend %anchor;
+    }
+
+    .tail-info {
+        margin: 0;
+
+        &:hover {
+            color: var(--light-fore);
+        }
+    }
+
+    .p_reply {
+        @extend %anchor;
+        margin: 0;
+
+        .lzl_link_fold {
+            @extend %anchor;
+            border: none;
+            background: none;
+        }
+    }
+}
+
+// https://tieba.baidu.com/f?kw=c%E8%AF%AD%E8%A8%80&ie=utf-8
+.core_reply_tail:not(.clearfix) {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+
+    .p_tail li,
+    .p_tail_txt,
+    .p_mtail a,
+    .ip-location {
+        color: var(--light-fore);
+    }
+
+    // 楼层 + 时间
+    .p_tail {
+        display: flex;
+        align-items: center;
+        gap: $tail-gap;
+
+        li {
+            margin: 0;
+        }
+    }
+
+    // 举报 + 平台
+    .p_mtail {
+        display: flex;
+        align-items: center;
+        gap: $tail-gap;
+
+        li {
+            margin: 0;
+        }
+
+        .j_jb_ele {
+            @extend %anchor;
+            padding: 0;
+        }
+    }
+
+    // TODO: ?
+    .p_props_tail.props_appraise_wrap {
+        display: none;
+    }
 }
 
 // 我在贴吧
@@ -345,6 +357,10 @@ body.special_conf_skin {
         opacity: 0.1;
         user-select: none;
     }
+}
+
+.core_reply_content {
+    padding: 0 0 0 $avatar-size;
 }
 
 .content-wrapper {
