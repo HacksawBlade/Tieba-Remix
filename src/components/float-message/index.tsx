@@ -1,7 +1,7 @@
 import { SupportedComponent } from "@/ex";
 import { dom } from "@/lib/elemental";
 import { EventProxy } from "@/lib/elemental/event-proxy";
-import { appendJSX, RenderedJSX } from "@/lib/render/jsx-extension";
+import { appendJSX } from "@/lib/render/jsx-extension";
 import { getFloatCoord } from "@/lib/render/layout/float";
 import _ from "lodash";
 import { nextTick, ref, Transition, VNode } from "vue";
@@ -25,11 +25,15 @@ let timeout = -1;
 let floatHover = false;
 let flaotMessageVNode: Maybe<VNode> = undefined;
 
+let handleTargetMouseEnter: Maybe<(e: MouseEvent) => void> = undefined;
+let handleTargetMouseLeave: Maybe<(e: MouseEvent) => void> = undefined;
+let handleTargetMouseMove: Maybe<(e: MouseEvent) => void> = undefined;
+
 /**
  * 将元素和浮动消息框进行绑定
  * @param opts 选项
 */
-export function floatMessage(opts: FloatMessageOpts): RenderedJSX<HTMLDivElement> {
+export function floatMessage(opts: FloatMessageOpts) {
     if (_.isNil(opts.delay)) opts.delay = DEFAULT_IN_DELAY;
     let root = dom<"div">(".float-message");
 
@@ -60,23 +64,19 @@ export function floatMessage(opts: FloatMessageOpts): RenderedJSX<HTMLDivElement
         });
     }
 
-    const targetEvproxy = new EventProxy();
-
-    targetEvproxy.on(opts.target, "mouseenter", function () {
+    handleTargetMouseEnter = () => {
         if (timeout >= 0)
             clearTimeout(timeout);
-    });
-
-    targetEvproxy.on(opts.target, "mouseleave", async function () {
+    };
+    handleTargetMouseLeave = async () => {
         if (timeout >= 0)
             clearTimeout(timeout);
 
         setTimeout(() => {
             if (!floatHover) messageShow.value = false;
         }, DEFAULT_OUT_DELAY);
-    });
-
-    targetEvproxy.on(opts.target, "mousemove", function (e: MouseEvent) {
+    };
+    handleTargetMouseMove = (e: MouseEvent) => {
         if (timeout >= 0)
             clearTimeout(timeout);
 
@@ -93,18 +93,19 @@ export function floatMessage(opts: FloatMessageOpts): RenderedJSX<HTMLDivElement
                     y: e.clientY + CURSOR_MARGIN,
                 }, "baseline");
 
-                root.style.left = `${coord.x - 1}px`;
-                root.style.top = `${coord.y < e.clientY ? coord.y - CURSOR_MARGIN * 2 : coord.y}px`;
+                root.style.left = `${window.scrollX + coord.x - 1}px`;
+                root.style.top = `${window.scrollY + (coord.y < e.clientY ? coord.y - CURSOR_MARGIN * 2 : coord.y)}px`;
             }
         }, opts.delay);
-    });
-
-    return {
-        root,
-        vnode: flaotMessageVNode,
-        remove() {
-            clearTimeout(timeout);
-            targetEvproxy.release();
-        },
     };
+
+    opts.target.addEventListener("mouseenter", handleTargetMouseEnter);
+    opts.target.addEventListener("mouseleave", handleTargetMouseLeave);
+    opts.target.addEventListener("mousemove", handleTargetMouseMove);
+}
+
+export function unbindFloatMessage(target: HTMLElement) {
+    if (handleTargetMouseEnter) target.removeEventListener("mouseenter", handleTargetMouseEnter);
+    if (handleTargetMouseLeave) target.removeEventListener("mouseleave", handleTargetMouseLeave);
+    if (handleTargetMouseMove) target.removeEventListener("mousemove", handleTargetMouseMove);
 }
