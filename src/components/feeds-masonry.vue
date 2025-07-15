@@ -6,6 +6,7 @@
             :key="post.id"
             :post="post"
             class="post-elem"
+            :class="{ animation: props.animation }"
             dynamic
             shadow-border
             @assets-loaded="addToLoaded">
@@ -20,19 +21,24 @@ import { headerProgress } from "@/lib/render/universal";
 import { unreadFeeds } from "@/lib/user-values";
 import { requestInstance, spawnOffsetTS, waitUntil } from "@/lib/utils";
 import { matchShield, shieldList } from "@/modules/shield";
+import { EventProxy } from "libelemental";
 import _ from "lodash";
 import { toast } from "user-view";
-import { ComponentPublicInstance, nextTick, onMounted, ref, watch } from "vue";
+import { ComponentPublicInstance, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import PostContainer from "./post-container.vue";
 
 interface Props {
     initFeeds?: TiebaPost[];
     showProgress?: boolean;
+    autoUpdate?: boolean;
+    animation?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     initFeeds: () => [],
     showProgress: false,
+    autoUpdate: true,
+    animation: true,
 });
 
 const feeds = ref<TiebaPost[]>([]);
@@ -50,9 +56,10 @@ let isFetchingFeeds = false;
 const debAddFeeds = _.debounce(addFeeds, 2000, { leading: true });
 
 let flexMasonry: FlexMasonry;
+const evproxy = new EventProxy();
 
 // 根据视图宽度修改布局
-window.addEventListener("resize", _.throttle(function () {
+evproxy.on(window, "resize", _.throttle(function () {
     flexMasonry.adjustWidth();
     if (flexMasonry.columns !== flexMasonry.calcColumns()) flexMasonry.exec();
 }, 100), { passive: true });
@@ -65,8 +72,9 @@ onMounted(() => {
     renderMasonry();
 
     // 页面滚动到底部加载新的推送
-    window.addEventListener("scroll", () => {
+    evproxy.on(window, "scroll", () => {
         if (isFetchingFeeds) return;
+        if (!props.autoUpdate) return;
 
         const scrollHeight = document.documentElement.scrollHeight;
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
@@ -79,6 +87,10 @@ onMounted(() => {
             }
         }
     });
+});
+
+onBeforeUnmount(() => {
+    evproxy.release();
 });
 
 watch(hasMoreFeeds, (newVal) => {
@@ -101,6 +113,7 @@ async function addFeeds(newFeeds?: TiebaPost[]) {
     isFetchingFeeds = true;
 
     if (newFeeds.length <= 0) {
+        console.warn("FeedsMasonry: No feeds to add, fetching from API...");
         const response: FeedListResponse = await requestInstance(tiebaAPI.feedlist());
         if (response) {
             newFeeds = parsePostsFromString(response.data.html);
@@ -130,7 +143,7 @@ async function addFeeds(newFeeds?: TiebaPost[]) {
 
     await waitUntil(() => currentLoadedFeeds.length >= (newFeeds ?? []).length);
     renderMasonry().then(function () {
-        unreadFeeds.set(newFeeds ? newFeeds : [], spawnOffsetTS(0, 0, 0, unreadTTL));
+        unreadFeeds.set(newFeeds ? _.takeRight(newFeeds, 10) : [], spawnOffsetTS(0, 0, 0, unreadTTL));
         currentLoadedFeeds.length = 0;
         isFetchingFeeds = false;
     });
@@ -150,7 +163,7 @@ async function renderMasonry() {
             fixScrollOffset: true,
         });
     } else {
-        flexMasonry.append(".masonry-wrapper > .post-elem.assets-loaded", 60);
+        flexMasonry.append(".masonry-wrapper > .post-elem.assets-loaded", props.animation ? 60 : undefined);
     }
 }
 
@@ -203,7 +216,7 @@ defineExpose({
             }
         }
 
-        .post-elem {
+        .post-elem.animation {
             animation: feeds-in 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.2);
         }
 

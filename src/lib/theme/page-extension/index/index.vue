@@ -2,32 +2,6 @@
     <div class="index-wrapper">
         <div class="grid-container">
             <div class="head-controls">
-                <!-- <div class="main-title">
-                    <img :src="getResource('assets/images/main/icon.png')" alt="icon" class="main-icon">
-                    <div class="title">贴吧</div>
-                </div> -->
-
-                <!-- 用户按钮 -->
-                <!-- <div class="profile-menu-container" @click="profileToggle = !profileToggle">
-                    <UserButton class="curr-user">
-                        <img :src="userInfo ? tiebaAPI.URL_profile(userInfo.user_portrait) : tiebaAPI.URL_profile('un')"
-                            alt="用户头像" class="user-profile">
-                    </UserButton>
-
-                    <DropdownMenu v-if="profileToggle" :menu-items="profileMenu!" class="profile-menu" :blur-effect="true"
-                        @request-close="profileToggle = false">
-                    </DropdownMenu>
-                </div> -->
-
-                <!-- 配置按钮 -->
-                <!-- <div class="config-menu-container" @click="configToggle = !configToggle">
-                    <UserButton class="config-menu-btn icon" :unset-background="true">menu</UserButton>
-
-                    <DropdownMenu v-if="configToggle" :menu-items="configMenu!" class="config-menu" :blur-effect="true"
-                        @request-close="configToggle = false">
-                    </DropdownMenu>
-                </div> -->
-
                 <!-- 搜索组件 -->
                 <div class="search-controls">
                     <UserTextbox v-model="searchText" class="search-box" placeholder="搜索 贴吧" autocomplete="none"
@@ -50,24 +24,52 @@
                 </div>
             </div>
 
-            <!-- 关注的吧 -->
-            <div v-if="followed" class="block-wrapper followed-container">
-                <div class="block-controls followed">
-                    <p class="block-title">关注的吧</p>
-                    <BlockPanel class="signed-count left-align">{{ signedForums }} /
-                        {{ followed?.like_forum.length }}
-                    </BlockPanel>
-
-                    <BlockPanel class="followed">
-                        <UserButton class="panel-btn icon sign-btn" @click="oneKeySignInstance" unset-background
-                            no-border>
-                            task_alt</UserButton>
-                        <UserButton class="panel-btn icon settings" unset-background no-border>settings</UserButton>
-                    </BlockPanel>
+            <div class="home-section-wrapper">
+                <div class="home-section-container">
+                    <UserToggle
+                        v-for="(toggle, key) in homeSections"
+                        v-show="toggle.active"
+                        v-model="homeSectionToggles[key]"
+                        class="home-section-button"
+                        :title="toggle.name"
+                        :key="key"
+                        :class="{ 'active': currentSection === key }"
+                        no-border="all"
+                        @click="currentSection = key">
+                        <span class="icon">{{ toggle.icon }}</span>
+                        <span v-show="key === currentSection" class="name">{{ toggle.name }}</span>
+                    </UserToggle>
                 </div>
 
+                <div class="home-section-container">
+                    <UserButton
+                        class="home-section-button"
+                        title="设置"
+                        no-border="all"
+                        @click="renderDialog(Settings)">
+                        <span class="icon">settings</span>
+                    </UserButton>
+                </div>
+
+                <div
+                    v-show="homeSections[currentSection].moreOpts"
+                    class="home-section-container"
+                    style="margin-left: auto;">
+                    <UserButton
+                        v-for="opt in homeSections[currentSection].moreOpts"
+                        class="home-section-button"
+                        :title="opt.name"
+                        :key="opt.name"
+                        no-border="all"
+                        @click="opt.event()">
+                        <span class="icon">{{ opt.icon }}</span>
+                    </UserButton>
+                </div>
+            </div>
+
+            <div v-show="followed && currentSection === 'followed'" class="block-wrapper followed-container">
                 <div class="block-container followed-list">
-                    <UserButton v-for="forum in followed.like_forum" :is-anchor="true" class="followed-btn"
+                    <UserButton v-for="forum in followed?.like_forum" :is-anchor="true" class="followed-btn"
                         :shadow-border="true" :href="tiebaAPI.URL_forum(forum.forum_name)" target="_blank" no-border>
                         <div v-if="forum.is_sign === 1" class="icon signed">check</div>
                         <div class="forum-title">{{ forum.forum_name }}</div>
@@ -78,20 +80,7 @@
                 </div>
             </div>
 
-            <!-- 贴吧热议 -->
-            <div v-if="topicList.length > 0" class="block-wrapper topic-container">
-                <div class="block-controls topics">
-                    <p class="block-title">贴吧热议</p>
-
-                    <BlockPanel class="topics">
-                        <UserButton class="panel-btn icon switch" :unset-background="true" no-border>tune</UserButton>
-                        <UserButton class="panel-btn icon more" :unset-background="true" no-border>more_horiz
-                        </UserButton>
-                        <UserButton class="panel-btn icon settings" :unset-background="true" no-border>settings
-                        </UserButton>
-                    </BlockPanel>
-                </div>
-
+            <div v-show="topicList.length > 0 && currentSection === 'topicList'" class="block-wrapper topic-container">
                 <div class="block-container topic-list">
                     <UserButton v-for="topic in _.take(topicList, 10)" :is-anchor="true" class="topic-btn"
                         :shadow-border="true" :href="topic.topic_url" target="_blank">
@@ -107,30 +96,22 @@
                 </div>
             </div>
 
-            <div id="carousel_wrap"></div>
+            <div v-show="false" id="carousel_wrap"></div>
         </div>
 
-        <div ref="masonryContainer" class="masonry-container">
-            <!-- 推送 -->
-            <div class="block-controls feeds">
-                <p class="block-title">推送</p>
+        <div
+            ref="masonryContainer"
+            v-if="currentSection === 'feeds'"
+            class="masonry-container">
 
-                <BlockPanel
-                    v-if="feedsMasonry && feedsMasonry.feeds && (feedsMasonry.feeds.length > 0 || feedsMasonry.isFetchingFeeds)">
-                    <UserButton class="panel-button icon refresh" unset-background @click="feedsMasonry.refreshAndMove"
-                        no-border>refresh
-                    </UserButton>
+            <FeedsMasonry
+                ref="feedsMasonry"
+                v-show="currentSection === 'feeds'"
+                :init-feeds="initFeeds"
+                :auto-update="currentSection === 'feeds'"
+                show-progress></FeedsMasonry>
 
-                    <UserButton
-                        class="panel-button icon settings"
-                        unset-background
-                        no-border>settings</UserButton>
-                </BlockPanel>
-            </div>
-
-            <FeedsMasonry ref="feedsMasonry" :init-feeds="initFeeds" show-progress></FeedsMasonry>
-
-            <div v-if="initFeeds.length === 0" class="empty-container">
+            <div v-show="initFeeds.length === 0" class="empty-container">
                 <p class="no-feed-content">没有更多了</p>
             </div>
         </div>
@@ -140,28 +121,40 @@
 <script setup lang="ts">
 import {
     FollowedForumsResponse,
+    levelToClass,
     SuggestionResponse,
+    tiebaAPI,
     TopicList,
     TopicListResponse,
     UserInfoResponse,
-    levelToClass,
-    tiebaAPI,
 } from "@/lib/api/tieba";
 
 import _ from "lodash";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
 import { findParent } from "@/lib/elemental";
 import { renderDialog } from "@/lib/render";
 import { errorMessage, requestInstance } from "@/lib/utils";
-import { messageBox, toast } from "user-view";
+import { messageBox, toast, UserToggle } from "user-view";
 
-import BlockPanel from "@/components/block-panel.vue";
 import FeedsMasonry from "@/components/feeds-masonry.vue";
 import Settings from "@/components/settings.vue";
 import { OneKeySignResponse } from "@/lib/api/tieba";
 import { BaiduPassport, GiteeRepo, GithubRepo, unreadFeeds } from "@/lib/user-values";
 import { UserButton, UserTextbox } from "user-view";
+
+interface HomeSection {
+    name: string;
+    icon: string;
+    active: boolean;
+    moreOpts?: {
+        name: string;
+        icon: string;
+        event(): void;
+    }[]
+}
+
+type HomeSectionKey = "followed" | "feeds" | "topicList";
 
 const initFeeds = ref<TiebaPost[]>([]);
 const userInfo = ref<UserInfoResponse["data"]>();
@@ -177,16 +170,53 @@ const suggestions = ref<{
     desc: string
     href: string
 }[]>([]);
-const configToggle = ref(false);
 const configMenu = ref<DropdownMenu[]>();
-const profileToggle = ref(false);
 const profileMenu = ref<DropdownMenu[]>();
 const topicList = ref<TopicList[]>([]);
 const feedsIntersecting = ref(false);
 const feedsMasonry = ref<InstanceType<typeof FeedsMasonry>>({} as any);
-
-// 状态
-let signedForums = 0;
+const signedForums = ref(0);
+const homeSections = computed<Record<HomeSectionKey, HomeSection>>(() => ({
+    followed: {
+        name: `关注的吧 (${signedForums.value ?? 0}/${followed.value?.like_forum.length ?? 0})`,
+        icon: "star",
+        active: true,
+        moreOpts: [
+            {
+                name: "一键签到",
+                icon: "task_alt",
+                event: oneKeySignInstance,
+            },
+        ],
+    },
+    feeds: {
+        name: "推送",
+        icon: "web_stories",
+        active: true,
+        moreOpts: [
+            {
+                name: "刷新",
+                icon: "refresh",
+                event() {
+                    feedsMasonry.value.refreshAndMove();
+                },
+            },
+        ],
+    },
+    topicList: {
+        name: "贴吧热议",
+        icon: "mode_heat",
+        active: true,
+    },
+}));
+const currentSection = ref<HomeSectionKey>("followed");
+const homeSectionToggles = computed<Record<HomeSectionKey, boolean>>(() => {
+    return {
+        followed: currentSection.value === "followed",
+        feeds: currentSection.value === "feeds",
+        topicList: currentSection.value === "topicList",
+    };
+});
 
 initFeeds.value = unreadFeeds.get();
 
@@ -209,6 +239,12 @@ onMounted(async () => {
 
 window.addEventListener("focusin", (ev) => toggleSuggControls(ev));
 window.addEventListener("mousedown", (ev) => toggleSuggControls(ev));
+
+watch(currentSection, (_, oldVal) => {
+    if (oldVal === "feeds") {
+        initFeeds.value = feedsMasonry.value.feeds;
+    }
+});
 
 async function init() {
     // 用户信息
@@ -357,12 +393,12 @@ const searchMatch = _.debounce(searchTextChange, 500);
 function getFollowedInstance() {
     requestInstance(tiebaAPI.followedForums()).then((response: FollowedForumsResponse) => {
         if (response) {
-            signedForums = 0;
+            signedForums.value = 0;
             followed.value = response.data;
 
             // 已签到计数
             _.forEach(followed.value.like_forum, forum => {
-                if (forum.is_sign === 1) signedForums++;
+                if (forum.is_sign === 1) signedForums.value++;
             });
             // 排序关注吧
             followed.value.like_forum.sort((a, b) =>
@@ -392,6 +428,52 @@ async function oneKeySignInstance() {
     });
 }
 </script>
+
+<style scoped lang="scss">
+.home-section-wrapper {
+    display: flex;
+    max-width: var(--content-max);
+    align-items: center;
+    gap: 8px;
+
+    .home-section-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .home-section-button {
+            display: flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 64px;
+            font-size: 14px;
+            gap: 4px;
+            transition: all 0s, transform var(--fast-duration), background-color var(--default-duration);
+
+            .icon {
+                font-size: 18px;
+            }
+
+            &:not(:hover, :active, :focus, .active) {
+                background-color: var(--trans-light-background);
+            }
+
+            &.active {
+                font-weight: var(--font-weight-bold);
+                transform: scale(1.05);
+
+                .icon {
+                    @extend %filled-icon;
+                }
+            }
+
+            .name {
+                font-family: var(--code-zh);
+            }
+        }
+    }
+}
+</style>
 
 <style scoped lang="scss">
 $menu-margin: 24px;
@@ -464,13 +546,13 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
 
     .grid-container {
         display: grid;
+        width: calc(100% - 32px);
         max-width: var(--content-max);
         margin: 16px;
-        gap: 36px;
+        gap: 20px;
         grid-template-rows: repeat(1, 1fr);
 
         .head-controls {
@@ -669,8 +751,6 @@ a {
         }
 
         .followed-container {
-            margin-top: -16px;
-
             .followed-list {
                 display: flex;
                 flex-wrap: wrap;
@@ -815,14 +895,6 @@ a {
                     font-size: 18px;
                 }
             }
-        }
-
-        .post-elem {
-            animation: feeds-in 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.2);
-        }
-
-        .post-elem:not(:hover, :active, :focus) {
-            box-shadow: none;
         }
 
         .empty-container {
