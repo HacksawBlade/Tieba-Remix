@@ -477,8 +477,8 @@ body {
             border-radius: 4px 4px 0 0;
         }
 
-        html.dark-theme & td,
-        html.dark-theme & .emotion_preview {
+        .dark-theme & td,
+        .dark-theme & .emotion_preview {
             filter: brightness(0.8);
         }
 

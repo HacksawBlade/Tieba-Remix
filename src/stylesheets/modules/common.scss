@@ -73,7 +73,7 @@
         backdrop-filter: blur($radius);
     }
 
-    html.dark-theme & {
+    .dark-theme & {
         backdrop-filter: blur($radius) brightness(0.8);
     }
 }
@@ -91,7 +91,7 @@
 @mixin main-box-shadow($offset-x: 0, $offset-y: 0) {
     box-shadow: $offset-x $offset-y 10px rgba($color: #000, $alpha: 20%);
 
-    html.dark-theme & {
+    .dark-theme & {
         box-shadow: $offset-x $offset-y 16px rgba($color: #000, $alpha: 40%);
     }
 }

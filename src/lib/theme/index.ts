@@ -40,26 +40,38 @@ export async function loadDynamicCSS() {
             "--font-weight-bold": `${fontWeights.get().bold}`,
         },
 
-        "html.dark-theme": {
+        ".dark-theme": {
             "--tieba-theme-color": theme.dark,
+            "--user-theme": theme.dark,
             "--trans-tieba-theme-color": `rgb(${darkRGBA.r} ${darkRGBA.g} ${darkRGBA.b} / 80%)`,
+            "--user-theme-transp": `rgb(${darkRGBA.r} ${darkRGBA.g} ${darkRGBA.b} / 80%)`,
             "--tieba-theme-hover": `hsl(${darkHSLA.h}deg ${parseInt(darkHSLA.s) + 40}% ${parseInt(darkHSLA.l) + 10}%)`,
+            "--user-theme-hover": `hsl(${darkHSLA.h}deg ${parseInt(darkHSLA.s) + 40}% ${parseInt(darkHSLA.l) + 10}%)`,
             "--tieba-theme-active": `hsl(${darkHSLA.h}deg ${parseInt(darkHSLA.s) + 50}% ${parseInt(darkHSLA.l) + 20}%)`,
+            "--user-theme-active": `hsl(${darkHSLA.h}deg ${parseInt(darkHSLA.s) + 50}% ${parseInt(darkHSLA.l) + 20}%)`,
             "--tieba-theme-background": `rgb(${darkRGBA.r} ${darkRGBA.g} ${darkRGBA.b} / 24%)`,
+            "--user-theme-back": `rgb(${darkRGBA.r} ${darkRGBA.g} ${darkRGBA.b} / 24%)`,
             "--tieba-theme-fore": `hsl(${darkHSLA.h}deg 100% 75%)`,
+            "--user-theme-fore": `hsl(${darkHSLA.h}deg 100% 75%)`,
         },
 
-        "html.light-theme": {
+        ".light-theme": {
             "--tieba-theme-color": theme.light,
+            "--user-theme": theme.light,
             "--trans-tieba-theme-color": `rgb(${lightRGBA.r} ${lightRGBA.g} ${lightRGBA.b} / 80%)`,
+            "--user-theme-transp": `rgb(${lightRGBA.r} ${lightRGBA.g} ${lightRGBA.b} / 80%)`,
             "--tieba-theme-hover": `hsl(${lightHSLA.h}deg ${parseInt(lightHSLA.s) - 40}% ${parseInt(lightHSLA.l) - 10}%)`,
+            "--user-theme-hover": `hsl(${lightHSLA.h}deg ${parseInt(lightHSLA.s) - 40}% ${parseInt(lightHSLA.l) - 10}%)`,
             "--tieba-theme-active": `hsl(${lightHSLA.h}deg ${parseInt(lightHSLA.s) - 50}% ${parseInt(lightHSLA.l) - 20}%)`,
+            "--user-theme-active": `hsl(${lightHSLA.h}deg ${parseInt(lightHSLA.s) - 50}% ${parseInt(lightHSLA.l) - 20}%)`,
             "--tieba-theme-background": `rgb(${lightRGBA.r} ${lightRGBA.g} ${lightRGBA.b} / 24%)`,
+            "--user-theme-back": `rgb(${lightRGBA.r} ${lightRGBA.g} ${lightRGBA.b} / 24%)`,
             "--tieba-theme-fore": `hsl(${lightHSLA.h}deg 60% 32%)`,
+            "--user-theme-fore": `hsl(${lightHSLA.h}deg 60% 32%)`,
         },
     });
 
-    GM_addStyle(dynCSS);
+    overwriteCSS(dynCSS);
 
     window.addEventListener("load", function () {
         GM_addStyle(

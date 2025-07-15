@@ -304,7 +304,7 @@ $fold-bar-height: 3px;
     box-shadow: 0 0 10px rgb(0 0 0 / 10%);
     transition: all var(--default-duration), width 0s;
 
-    html.dark-theme & {
+    .dark-theme & {
         box-shadow: 0 0 16px rgb(0 0 0 / 60%);
     }
 
