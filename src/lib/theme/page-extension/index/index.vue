@@ -448,7 +448,10 @@ async function oneKeySignInstance() {
             border-radius: 64px;
             font-size: 14px;
             gap: 4px;
-            transition: all 0s, transform var(--fast-duration), background-color var(--default-duration);
+            transition:
+                all 0s,
+                transform var(--fast-duration) cubic-bezier(0.39, 0.58, 0.57, 1),
+                background-color var(--default-duration);
 
             .icon {
                 font-size: 18px;
