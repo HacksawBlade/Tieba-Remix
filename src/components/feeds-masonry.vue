@@ -113,7 +113,6 @@ async function addFeeds(newFeeds?: TiebaPost[]) {
     isFetchingFeeds = true;
 
     if (newFeeds.length <= 0) {
-        console.warn("FeedsMasonry: No feeds to add, fetching from API...");
         const response: FeedListResponse = await requestInstance(tiebaAPI.feedlist());
         if (response) {
             newFeeds = parsePostsFromString(response.data.html);
