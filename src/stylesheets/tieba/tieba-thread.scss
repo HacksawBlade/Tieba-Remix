@@ -561,10 +561,12 @@ span.tP {
     display: none;
 }
 
+/* 展开图片 */
 .replace_div .replace_tip {
-    /* 展开图片 */
+    left: 50%;
     border-color: var(--border-color);
     background-color: var(--elem-color);
+    transform: translateX(-50%);
 }
 
 .achievement_medal_section {
