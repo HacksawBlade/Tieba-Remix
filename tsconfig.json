@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
-        "target": "ESNext",
+        "target": "esnext",
         "useDefineForClassFields": true,
-        "module": "ESNext",
-        "moduleResolution": "Node",
+        "module": "preserve",
+        "moduleResolution": "bundler",
         "strict": true,
         "jsx": "preserve",
         "jsxFactory": "h",
@@ -23,10 +23,9 @@
             "vite/client",
         ],
         "noEmit": true,
-        "baseUrl": "src",
         "paths": {
             "@/*": [
-                "./*"
+                "./src/*"
             ]
         }
     },
