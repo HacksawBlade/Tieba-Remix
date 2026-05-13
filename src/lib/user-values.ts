@@ -226,7 +226,12 @@ export const fontWeights = new UserKey("fontWeights", {
     "normal": 400,
     "bold": 700,
 });
+/** 高清图像 */
 export const highQualityImage = new UserKey("highQualityImage", true);
+/** 正在使用旧版贴吧 */
+export const usingLegacyTieba = new UserKey("usingLegacyTieba", false);
+/** 永不回退到旧版贴吧 */
+export const neverFallbackToLegacy = new UserKey("neverFallbackToLegacy", false);
 
 export const SymbolFont = "Material Symbols";
 
