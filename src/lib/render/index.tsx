@@ -1,9 +1,11 @@
 import { SupportedComponent } from "@/ex";
 import { dom, domrd } from "@/lib/elemental";
 import { CSSRule, injectCSSRule, parseCSSRule } from "@/lib/elemental/styles";
+import { findParent } from "libelemental";
 import _ from "lodash";
-import { UserDialog, UserDialogAbnormal, UserDialogOpts } from "user-view";
+import { toast, UserDialog, UserDialogAbnormal, UserDialogOpts } from "user-view";
 import { App, Component, ComponentPublicInstance, createApp, h } from "vue";
+import { neverFallbackToLegacy } from "../user-values";
 
 export interface RenderedComponent<T extends Element = Element> {
     app: App<T>;
@@ -165,4 +167,42 @@ export function removeDefault() {
             el.remove();
         }
     });
+}
+
+export function fallbackDialog() {
+    userDialog(
+        <p>
+            由于贴吧网页端的大规模更新，脚本已无法在新版贴吧使用。针对新版的适配工作需要进行较长时间，若想继续使用脚本原先的功能，请暂时先回到旧版本贴吧。
+        </p>,
+        {
+            title: "暂时回到旧版贴吧",
+            containerStyle: { maxWidth: "600px" },
+            contentStyle: { color: "var(--user-fore)" },
+            dialogButtons: [
+                {
+                    text: "确认",
+                    style: "themed",
+                    event() {
+                        const backToOldLocator = dom("use[*|href='#back_old']");
+                        if (backToOldLocator) {
+                            findParent(dom("use[*|href='#back_old']")!, "menu-item")?.click();
+                            return true;
+                        } else {
+                            toast({
+                                type: "warning",
+                                message: "无法找到页面上的回退旧版按钮，尝试全屏网页或降低页面缩放比例并重试。",
+                            });
+                        }
+                    },
+                },
+                {
+                    text: "永久忽略",
+                    event() {
+                        neverFallbackToLegacy.set(true);
+                        location.reload();
+                        return true;
+                    },
+                },
+            ],
+        });
 }
