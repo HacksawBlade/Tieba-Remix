@@ -2,7 +2,7 @@ import { GM_addStyle } from "$";
 import "@/stylesheets/main/animations.scss";
 import baseStyle from "@/stylesheets/main/base.scss?inline";
 import "@/stylesheets/main/material-symbols.css";
-import "@/stylesheets/main/palette.scss";
+import paletteStyle from "@/stylesheets/main/palette.scss?inline";
 import universalStyle from "@/stylesheets/main/universal.scss?inline";
 import "@/stylesheets/main/variables.scss";
 import tiebaErrorStyle from "@/stylesheets/tieba/tieba-error.scss?inline";
@@ -89,6 +89,7 @@ export async function loadDynamicCSS() {
 
 export async function loadMainCSS() {
     overwriteCSS(
+        paletteStyle,
         baseStyle,
         universalStyle,
         tiebaErrorStyle,
