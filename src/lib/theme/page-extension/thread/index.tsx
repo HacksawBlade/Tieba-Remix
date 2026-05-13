@@ -222,11 +222,12 @@ export default async function () {
         threadFloorsObserver.addEvent(async () => {
             await waitUntil(() => !!PageData.thread.thread_id);
             _.forEach(dom<"img">(".BDE_Image", threadList, []), el => {
-                const newEl = el.cloneNode(false) as HTMLImageElement;
+                const imageClone = el.cloneNode(false) as HTMLImageElement;
+                imageClone.className = "thread-image";
                 const postContent = findParent(el, "d_post_content");
 
-                newEl.dataset.pid = _(postContent?.id).split("_").last();
-                newEl.addEventListener("click", async function () {
+                imageClone.dataset.pid = _(postContent?.id).split("_").last();
+                imageClone.addEventListener("click", async function () {
                     if (!_.isNil(currentStorage.get(THREAD_IMAGES))) {
                         showImage();
                     } else {
@@ -242,21 +243,21 @@ export default async function () {
                     getAllThreadImages({ threadId: PageData.thread.thread_id, lzOnly: false });
 
                     async function showImage() {
-                        if (_.isNil(newEl.dataset.index)) {
-                            newEl.dataset.index = `${_.findIndex(
+                        if (_.isNil(imageClone.dataset.index)) {
+                            imageClone.dataset.index = `${_.findIndex(
                                 await getAllThreadImages({ threadId: PageData.thread.thread_id, lzOnly: false }),
-                                { postId: +(newEl.dataset.pid ?? 0) }
+                                { postId: +(imageClone.dataset.pid ?? 0) }
                             ) + _.findIndex(
-                                dom<"img">(".BDE_Image", postContent!, []), img => img === newEl
+                                dom<"img">(".thread-image", postContent!, []), img => img === imageClone
                             )}`;
                         }
                         imagesViewer({
                             content: await getAllThreadImages({ threadId: PageData.thread.thread_id, lzOnly: false }),
-                            defaultIndex: parseInt(newEl.dataset.index ?? "0", 10),
+                            defaultIndex: parseInt(imageClone.dataset.index ?? "0", 10),
                         });
                     }
                 });
-                el.replaceWith(newEl);
+                el.replaceWith(imageClone);
             });
         });
 

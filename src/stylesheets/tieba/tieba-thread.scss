@@ -498,12 +498,15 @@ span.tP {
     border-top: none;
 }
 
-.BDE_Image {
-    /* 正文图片 */
+/* 正文图片 */
+.BDE_Image,
+.thread-image {
     border-radius: 24px;
+    cursor: zoom-in;
 }
 
-.BDE_Image:first-child {
+.BDE_Image:first-child,
+.thread-image:first-child {
     margin-top: 8px;
 }
 
