@@ -149,7 +149,7 @@ const prodConfig = defineConfig({
     ],
 });
 
-const viteConfig = {
+const viteConfig: Record<string, Record<string, () => UserConfig>> = {
     build: {
         "development": () => deepmerge<UserConfig>(commonConfig, devConfig),
         "production": () => deepmerge<UserConfig>(commonConfig, prodConfig),
