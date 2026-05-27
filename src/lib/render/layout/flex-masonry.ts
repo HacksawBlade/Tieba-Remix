@@ -1,6 +1,6 @@
 /**
  * Flex Masonry
- * @author @HacksawBlade
+ * @author @0x0b1ade
  * @version 1.1
  * @license MIT
  */
@@ -197,7 +197,7 @@ export class FlexMasonry {
     public calcColumns() {
         this._columns = Math.ceil(
             (this.container.clientWidth - this.columnWidth) /
-                (this.columnWidth + this.gap[0]),
+            (this.columnWidth + this.gap[0]),
         );
         return this._columns;
     }

@@ -1,9 +1,3 @@
-/**
- * Easy Jump
- * 直接获取贴吧中超链接的直链，不再进行中转
- * @HacksawBlade
- */
-
 import { afterHead, asyncdom } from "@/lib/elemental";
 import { injectCSSRule } from "@/lib/elemental/styles";
 

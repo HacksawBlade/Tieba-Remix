@@ -7,7 +7,7 @@ import { setCustomBackground } from "./theme";
 import { isLiteralObject, spawnOffsetTS } from "./utils";
 
 export const MainTitle = "Tieba Remix";
-export const Owner = "HacksawBlade";
+export const Owner = "0x0b1ade";
 export const RepoName = "Tieba-Remix";
 export const GithubRepo = `https://github.com/${Owner}/${RepoName}`;
 export const GiteeRepo = `https://gitee.com/${Owner}/${RepoName}`;
