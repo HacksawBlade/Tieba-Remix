@@ -28,7 +28,7 @@ function main(): void {
     fadeInElems.push(".d_badge_bright .d_badge_lv, .user_level .badge_index");
 
     // 让耗时加载元素默认不透明度为0
-    fadeInElems.forEach(selector => {
+    fadeInElems.forEach((selector) => {
         injectCSSRule(selector, {
             opacity: "0",
         });
@@ -38,19 +38,20 @@ function main(): void {
 
     document.addEventListener("DOMContentLoaded", () => {
         // 修改元素
-        dom(".post-tail-wrap .icon-jubao", []).forEach(elem => {
+        dom(".post-tail-wrap .icon-jubao", []).forEach((elem) => {
             elem.removeAttribute("src");
             elem.after("举报");
         });
 
         // 远古用户没有等级则隐藏等级标签
         threadFloorsObserver.addEvent(() => {
-            dom<"div">(".d_badge_lv", []).forEach(elem => {
+            dom<"div">(".d_badge_lv", []).forEach((elem) => {
                 if (elem.textContent === "") {
                     let parent = elem as HTMLElement;
                     while (!parent.classList.contains("l_badge")) {
-                        if (parent.parentElement)
+                        if (parent.parentElement) {
                             parent = parent.parentElement;
+                        }
                     }
                     parent.style.display = "none";
                 }
@@ -71,9 +72,12 @@ function main(): void {
             const lvlOrange = `${lvlClassHead}orange`;
 
             dom(
-                ".d_badge_bawu1 .d_badge_lv, .d_badge_bawu2 .d_badge_lv, .badge_index", []
-            ).forEach(elem => {
-                if (elem.className.indexOf(lvlClassHead) !== -1) return;
+                ".d_badge_bawu1 .d_badge_lv, .d_badge_bawu2 .d_badge_lv, .badge_index",
+                [],
+            ).forEach((elem) => {
+                if (elem.className.indexOf(lvlClassHead) !== -1) {
+                    return;
+                }
 
                 const lvl = parseInt(_.defaults(elem.textContent, "0"));
                 if (lvl >= 1 && lvl <= 3) {

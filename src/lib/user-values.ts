@@ -1,5 +1,5 @@
 import { GM_deleteValue, GM_getValue, GM_setValue } from "$";
-import { NavBarHideMode } from "@/components/nav-bar.vue";
+import type { NavBarHideMode } from "@/components/nav-bar.vue";
 import _ from "lodash";
 import { setTheme } from "./api/remixed";
 import { setPerfAttr } from "./perf";
@@ -23,9 +23,9 @@ export const REMIXED =
     "╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚══════╝╚═════╝ \n";
 
 const userKeyEvents = ["getter", "setter"] as const;
-type UserKeyEvent = typeof userKeyEvents[number];
-type UserKeyEventsListener<T> = Record<UserKeyEvent, ((value: T) => unknown)>;
-type UserKeyEventsListeners<T> = Record<UserKeyEvent, Array<((value: T) => unknown)>>;
+type UserKeyEvent = (typeof userKeyEvents)[number];
+type UserKeyEventsListener<T> = Record<UserKeyEvent, (value: T) => unknown>;
+type UserKeyEventsListeners<T> = Record<UserKeyEvent, Array<(value: T) => unknown>>;
 export class UserKey<T, LegacyType = unknown> {
     public key: string;
     public defaultValue: T;
@@ -48,13 +48,15 @@ export class UserKey<T, LegacyType = unknown> {
     }
 
     protected dispatchEvent(event: UserKeyEvent, value: T) {
-        _.forEach(this.listeners[event], listener => listener(value));
+        _.forEach(this.listeners[event], (listener) => listener(value));
     }
 
     public get() {
         let value = GM_getValue<T>(this.key, this.defaultValue);
-        if (isLiteralObject(value) &&
-            _.keys(value).length < _.keys(this.defaultValue).length) {
+        if (
+            isLiteralObject(value) &&
+            _.keys(value).length < _.keys(this.defaultValue).length
+        ) {
             value = _.merge(this.defaultValue, value);
         }
         if (this.migration) {
@@ -97,7 +99,7 @@ export class UserKeyTS<T, LegacyType = unknown> extends UserKey<T, LegacyType> {
     constructor(
         key: string,
         defaultValue: T,
-        invalidfn?: (() => number),
+        invalidfn?: () => number,
         listeners?: Partial<UserKeyEventsListener<T>>,
         migration?: (maybeLegacy: T | LegacyType) => T,
     ) {
@@ -107,11 +109,15 @@ export class UserKeyTS<T, LegacyType = unknown> extends UserKey<T, LegacyType> {
 
     public get() {
         let value = getUserValueTS<T>(this.key, this.defaultValue);
-        if (isLiteralObject(value) &&
-            _.keys(value).length < _.keys(this.defaultValue).length) {
+        if (
+            isLiteralObject(value) &&
+            _.keys(value).length < _.keys(this.defaultValue).length
+        ) {
             value = _.merge(this.defaultValue, value);
         }
-        if (this.migration) value = this.migration(value);
+        if (this.migration) {
+            value = this.migration(value);
+        }
         this.dispatchEvent("getter", value);
         return value;
     }
@@ -122,7 +128,11 @@ export class UserKeyTS<T, LegacyType = unknown> extends UserKey<T, LegacyType> {
      * @param invalidTime 失效时间，默认为函数执行 12 小时后
      */
     public set(value: T, invalidTime?: number) {
-        setUserValueTS(this.key, value, invalidTime ? invalidTime : this.defaultInvalid());
+        setUserValueTS(
+            this.key,
+            value,
+            invalidTime ? invalidTime : this.defaultInvalid(),
+        );
         this.dispatchEvent("setter", value);
     }
 
@@ -166,25 +176,29 @@ export const experimental = new UserKey("experimental", {
     rasterEffect: false,
 });
 /** 最新发行版相关信息 */
-export const latestRelease = new UserKeyTS<Maybe<GiteeRelease>>("latestRelease", undefined);
+export const latestRelease = new UserKeyTS<Maybe<GiteeRelease>>(
+    "latestRelease",
+    undefined,
+);
 /** 更新配置 */
 export const updateConfig = new UserKey<UpdateConfig>("updateConfig", {
     time: "6h",
     notify: true,
 });
 /** 今日是否提醒用户更新 */
-export const showUpdateToday = new UserKeyTS("showUpdateToday", true, () => new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000);
+export const showUpdateToday = new UserKeyTS(
+    "showUpdateToday",
+    true,
+    () => new Date().setHours(0, 0, 0, 0) + 24 * 60 * 60 * 1000,
+);
 /** 用户决定跳过更新的版本的标签 */
 export const ignoredTag = new UserKey("ignoredTag", "");
 /** 用户主题设置 */
-export const themeType = new UserKey<"auto" | "dark" | "light">(
-    "themeType",
-    "auto",
-    {
-        setter(value) {
-            setTheme(value);
-        },
-    });
+export const themeType = new UserKey<"auto" | "dark" | "light">("themeType", "auto", {
+    setter(value) {
+        setTheme(value);
+    },
+});
 /** 紧凑布局 */
 export const compactLayout = new UserKey("compactLayout", false);
 /** 宽屏设置 */
@@ -205,7 +219,7 @@ export const customBackground = new UserKey<Maybe<string>>(
         setter() {
             setCustomBackground();
         },
-    }
+    },
 );
 /** 页面扩展 */
 export const pageExtension = new UserKey("pageExtension", {
@@ -216,15 +230,19 @@ export const pageExtension = new UserKey("pageExtension", {
 export const userFonts = new UserKey<string[]>("userFonts", []);
 /** 自定义等宽字体组合 */
 export const monospaceFonts = new UserKey<string[]>("monospaceFonts", [
-    "Consolas", "JetBrains Mono", "Fira Code", "Menlo", "monospace",
+    "Consolas",
+    "JetBrains Mono",
+    "Fira Code",
+    "Menlo",
+    "monospace",
 ]);
 /** 导航栏模式 */
 export const navBarHideMode = new UserKey<NavBarHideMode>("navBarHideMode", "fold");
 /** 自定义样式 */
 export const customStyle = new UserKey<string>("customStyle", "");
 export const fontWeights = new UserKey("fontWeights", {
-    "normal": 400,
-    "bold": 700,
+    normal: 400,
+    bold: 700,
 });
 /** 高清图像 */
 export const highQualityImage = new UserKey("highQualityImage", true);
@@ -238,9 +256,15 @@ export const SymbolFont = "Material Symbols";
 export const currentStorageBase = new Map<string, any>();
 export type CurrentStorageEntry<T = any> = [string, T];
 
-export const HOME_FEED_IMAGES: CurrentStorageEntry<Record<number, ThreadPicture[]>> = ["home_feed_images", {}];
+export const HOME_FEED_IMAGES: CurrentStorageEntry<Record<number, ThreadPicture[]>> = [
+    "home_feed_images",
+    {},
+];
 export const THREAD_IMAGES: CurrentStorageEntry<ThreadPicture[]> = ["thread_images", []];
-export const THREAD_IMAGES_LZONLY: CurrentStorageEntry<ThreadPicture[]> = ["thread_images_lzonly", []];
+export const THREAD_IMAGES_LZONLY: CurrentStorageEntry<ThreadPicture[]> = [
+    "thread_images_lzonly",
+    [],
+];
 
 export const currentStorage = {
     get<T extends CurrentStorageEntry>(entry: T): T[1] {
@@ -276,41 +300,41 @@ export const currentStorage = {
 };
 
 export interface GiteeRelease {
-    "id": number
-    "tag_name": string
-    "target_commitish": string
-    "prerelease": boolean
-    "name": string
-    "body": string
-    "author": {
-        "id": number
+    id: number;
+    tag_name: string;
+    target_commitish: string;
+    prerelease: boolean;
+    name: string;
+    body: string;
+    author: {
+        id: number;
         /** 原始用户名 */
-        "login": string
-        "name": string
-        "avatar_url": string
-        "url": string
-        "html_url": string
-        "remark": string
-        "followers_url": string
-        "following_url": string
-        "gists_url": string
-        "starred_url": string
-        "subscriptions_url": string
-        "organizations_url": string
-        "repos_url": string
-        "events_url": string
-        "received_events_url": string
-        "type": string
-    },
-    "created_at": string
-    "assets": {
-        "browser_download_url": string
-        "name"?: string
-    }[]
+        login: string;
+        name: string;
+        avatar_url: string;
+        url: string;
+        html_url: string;
+        remark: string;
+        followers_url: string;
+        following_url: string;
+        gists_url: string;
+        starred_url: string;
+        subscriptions_url: string;
+        organizations_url: string;
+        repos_url: string;
+        events_url: string;
+        received_events_url: string;
+        type: string;
+    };
+    created_at: string;
+    assets: {
+        browser_download_url: string;
+        name?: string;
+    }[];
 }
 
 export interface GiteeReleaseNotFound {
-    message: string
+    message: string;
 }
 
 /**

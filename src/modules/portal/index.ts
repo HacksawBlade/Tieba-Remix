@@ -30,7 +30,9 @@ function main(): void {
 
         function addBiliLinks(selector: string): void {
             _.forEach(dom(selector, []), (elem) => {
-                if (elem.classList.contains(LINKED_CLASS)) return;
+                if (elem.classList.contains(LINKED_CLASS)) {
+                    return;
+                }
                 elem.classList.add(LINKED_CLASS);
 
                 // av号
@@ -45,24 +47,24 @@ function main(): void {
                     bindingLinks(BVs ?? undefined);
                 }
 
-                function bindingLinks(
-                    array: Maybe<RegExpMatchArray>,
-                    lowerCase = false
-                ) {
-                    if (!array) return;
+                function bindingLinks(array: Maybe<RegExpMatchArray>, lowerCase = false) {
+                    if (!array) {
+                        return;
+                    }
 
                     const hadHyperLink: string[] = [];
                     _.forEach(array, (videoID) => {
                         if (hadHyperLink.indexOf(videoID) === -1) {
                             hadHyperLink.push(videoID);
                             const htmlArray = elem.innerHTML.split(
-                                RegExp(`(?<!://www.bilibili.com/video/)${videoID}`, "g")
+                                RegExp(`(?<!://www.bilibili.com/video/)${videoID}`, "g"),
                             );
-                            if (lowerCase) videoID = videoID.toLowerCase();
-                            const linkedID =
-                                `<a href='https://www.bilibili.com/video/${videoID
-                                }' target='_blank'>${videoID
-                                }</a>`;
+                            if (lowerCase) {
+                                videoID = videoID.toLowerCase();
+                            }
+                            const linkedID = `<a href='https://www.bilibili.com/video/${
+                                videoID
+                            }' target='_blank'>${videoID}</a>`;
                             elem.innerHTML = htmlArray.join(linkedID);
                         }
                     });

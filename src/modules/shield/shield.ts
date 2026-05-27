@@ -29,7 +29,10 @@ export interface ShieldRuleLegacy {
 }
 
 export const shieldList = new UserKey<ShieldRule[], (ShieldRule | ShieldRuleLegacy)[]>(
-    "shieldList", [], undefined, (maybeLegacy) => _.map(maybeLegacy, shieldRuleMigration)
+    "shieldList",
+    [],
+    undefined,
+    (maybeLegacy) => _.map(maybeLegacy, shieldRuleMigration),
 );
 
 /**
@@ -39,15 +42,25 @@ export const shieldList = new UserKey<ShieldRule[], (ShieldRule | ShieldRuleLega
  * @param scope 作用域，屏蔽规则作用于内容或用户
  * @returns 是否匹配成功
  */
-export function matchShield(rule: ShieldRule, str: string, scope: ShieldRule["scope"]): boolean {
+export function matchShield(
+    rule: ShieldRule,
+    str: string,
+    scope: ShieldRule["scope"],
+): boolean {
     // 规则未启用，直接返回
-    if (!rule.toggle) return false;
+    if (!rule.toggle) {
+        return false;
+    }
 
     // 作用域不匹配，直接返回
-    if (rule.scope !== scope) return false;
+    if (rule.scope !== scope) {
+        return false;
+    }
 
     // 可选参数
-    if (rule.ignoreCase === undefined) rule.ignoreCase = true;
+    if (rule.ignoreCase === undefined) {
+        rule.ignoreCase = true;
+    }
 
     // 字符串
     if (rule.type === "text") {
@@ -82,7 +95,9 @@ export function matchShield(rule: ShieldRule, str: string, scope: ShieldRule["sc
 }
 
 export function shieldRuleMigration(rule: ShieldRule | ShieldRuleLegacy): ShieldRule {
-    if (!_.has(rule, "rule")) return rule as ShieldRule;
+    if (!_.has(rule, "rule")) {
+        return rule as ShieldRule;
+    }
     rule = rule as ShieldRuleLegacy;
 
     const newRule: ShieldRule = {
@@ -94,9 +109,15 @@ export function shieldRuleMigration(rule: ShieldRule | ShieldRuleLegacy): Shield
         matchHTML: rule.matchHTML,
     };
 
-    if (rule.type === "string") newRule.type = "text";
-    if (rule.scope === "posts") newRule.scope = "content";
-    if (rule.scope === "users") newRule.scope = "username";
+    if (rule.type === "string") {
+        newRule.type = "text";
+    }
+    if (rule.scope === "posts") {
+        newRule.scope = "content";
+    }
+    if (rule.scope === "users") {
+        newRule.scope = "username";
+    }
 
     return newRule;
 }

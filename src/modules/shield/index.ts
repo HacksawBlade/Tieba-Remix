@@ -1,10 +1,17 @@
-import { UserModuleEx } from "@/ex";
+import type { UserModuleEx } from "@/ex";
 import { dom } from "@/lib/elemental";
-import { TbObserver, forumThreadsObserver, legacyIndexFeedsObserver, threadCommentsObserver, threadFloorsObserver } from "@/lib/observers";
+import type { TbObserver } from "@/lib/observers";
+import {
+    forumThreadsObserver,
+    legacyIndexFeedsObserver,
+    threadCommentsObserver,
+    threadFloorsObserver,
+} from "@/lib/observers";
 import _ from "lodash";
 import { markRaw } from "vue";
 import moduleShieldVue from "./module.shield.vue";
-import { ShieldRule, matchShield, shieldList } from "./shield";
+import type { ShieldRule } from "./shield";
+import { matchShield, shieldList } from "./shield";
 
 export default {
     id: "shield",
@@ -18,12 +25,13 @@ export default {
     settings: {
         "shield-controls": {
             title: "管理屏蔽规则",
-            description:
-                `这些屏蔽规则将会在首页、看贴页面生效，会自动隐藏所有符合匹配规则的贴子和楼层。`,
-            widgets: [{
-                type: "component",
-                component: markRaw(moduleShieldVue),
-            }],
+            description: `这些屏蔽规则将会在首页、看贴页面生效，会自动隐藏所有符合匹配规则的贴子和楼层。`,
+            widgets: [
+                {
+                    type: "component",
+                    component: markRaw(moduleShieldVue),
+                },
+            ],
         },
     },
     entry: main,
@@ -41,12 +49,15 @@ function shieldBySelector(
     observer: TbObserver,
     scope: ShieldRule["scope"],
     parentSelector: string,
-    subSelector: string
+    subSelector: string,
 ) {
     observer.addEvent(() => {
-        dom(parentSelector, []).forEach(elem => {
+        dom(parentSelector, []).forEach((elem) => {
             let isMatch = false;
-            const content = _.join(_.map(dom(subSelector, elem, []), el => el.textContent ?? ""), "\n");
+            const content = _.join(
+                _.map(dom(subSelector, elem, []), (el) => el.textContent ?? ""),
+                "\n",
+            );
 
             for (const rule of shieldList.get()) {
                 if (matchShield(rule, content, scope)) {
@@ -64,14 +75,44 @@ function shieldBySelector(
 
 function main() {
     // 看贴页面
-    shieldBySelector(threadFloorsObserver, "content", ".l_post_bright", ".d_post_content");
-    shieldBySelector(threadFloorsObserver, "username", ".l_post_bright", ".p_author_name");
-    shieldBySelector(threadCommentsObserver, "content", ".lzl_single_post", ".lzl_content_main");
-    shieldBySelector(threadCommentsObserver, "username", ".lzl_single_post", ".lzl_cnt .j_user_card");
+    shieldBySelector(
+        threadFloorsObserver,
+        "content",
+        ".l_post_bright",
+        ".d_post_content",
+    );
+    shieldBySelector(
+        threadFloorsObserver,
+        "username",
+        ".l_post_bright",
+        ".p_author_name",
+    );
+    shieldBySelector(
+        threadCommentsObserver,
+        "content",
+        ".lzl_single_post",
+        ".lzl_content_main",
+    );
+    shieldBySelector(
+        threadCommentsObserver,
+        "username",
+        ".lzl_single_post",
+        ".lzl_cnt .j_user_card",
+    );
     // 首页动态
     shieldBySelector(legacyIndexFeedsObserver, "content", ".j_feed_li", ".title, .n_txt");
     shieldBySelector(legacyIndexFeedsObserver, "username", ".j_feed_li", ".post_author");
     // 进吧页面
-    shieldBySelector(forumThreadsObserver, "content", ".j_thread_list", ".threadlist_title a");
-    shieldBySelector(forumThreadsObserver, "username", ".j_thread_list", ".frs-author-name-wrap");
+    shieldBySelector(
+        forumThreadsObserver,
+        "content",
+        ".j_thread_list",
+        ".threadlist_title a",
+    );
+    shieldBySelector(
+        forumThreadsObserver,
+        "username",
+        ".j_thread_list",
+        ".frs-author-name-wrap",
+    );
 }

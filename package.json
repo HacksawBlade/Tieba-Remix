@@ -7,7 +7,10 @@
         "build": "vue-tsc --noEmit && vite build",
         "build-dev": "vite build --mode development",
         "build-fork": "vite build --mode fork",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "lint": "eslint src --ext .ts,.tsx,.vue --max-warnings 0",
+        "format": "prettier --write src",
+        "format-check": "prettier --check src"
     },
     "dependencies": {
         "libelemental": "^1.0.7",
@@ -27,6 +30,7 @@
         "caniuse-lite": "^1.0.30001690",
         "deepmerge": "^4.3.1",
         "eslint": "^8.56.0",
+        "eslint-config-prettier": "^10.1.8",
         "eslint-config-standard-with-typescript": "^34.0.1",
         "eslint-plugin-import": "^2.29.1",
         "eslint-plugin-n": "^15.7.0",
@@ -37,6 +41,7 @@
         "postcss-html": "^1.6.0",
         "postcss-preset-env": "^8.5.1",
         "postcss-scss": "^4.0.9",
+        "prettier": "^3.8.3",
         "sass": "^1.70.0",
         "stylelint": "^15.11.0",
         "stylelint-config-idiomatic-order": "^9.0.0",

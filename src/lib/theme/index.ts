@@ -15,7 +15,15 @@ import { getResource } from "../api/remixed";
 import { domrd } from "../elemental";
 import { injectCSSRule, overwriteCSS, parseMultiCSS } from "../elemental/styles";
 import { scrollbarWidth } from "../render";
-import { customBackground, customStyle, fontWeights, monospaceFonts, themeColor, userFonts, wideScreen } from "../user-values";
+import {
+    customBackground,
+    customStyle,
+    fontWeights,
+    monospaceFonts,
+    themeColor,
+    userFonts,
+    wideScreen,
+} from "../user-values";
 import { waitUntil } from "../utils";
 import { hexToRGBA, rgbaToHSLA } from "../utils/color";
 
@@ -73,18 +81,24 @@ export async function loadDynamicCSS() {
 
     overwriteCSS(dynCSS);
 
-    window.addEventListener("load", function () {
-        GM_addStyle(
-            parseMultiCSS({
-                ":root": {
-                    "--scrollbar-width": `${scrollbarWidth()}px`,
-                },
-            })
-        );
-    }, { once: true });
+    window.addEventListener(
+        "load",
+        function () {
+            GM_addStyle(
+                parseMultiCSS({
+                    ":root": {
+                        "--scrollbar-width": `${scrollbarWidth()}px`,
+                    },
+                }),
+            );
+        },
+        { once: true },
+    );
 
     const customCSS = customStyle.get();
-    if (customCSS !== "") GM_addStyle(customCSS);
+    if (customCSS !== "") {
+        GM_addStyle(customCSS);
+    }
 }
 
 export async function loadMainCSS() {
@@ -99,13 +113,19 @@ export async function loadMainCSS() {
         tiebaThreadStyle,
     );
 
-    document.addEventListener("DOMContentLoaded", function () {
-        document.head.appendChild(domrd("link", {
-            type: "image/icon",
-            rel: "shortcut icon",
-            href: getResource("/assets/images/main/favicon32.ico"),
-        }));
-    }, { once: true });
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+            document.head.appendChild(
+                domrd("link", {
+                    type: "image/icon",
+                    rel: "shortcut icon",
+                    href: getResource("/assets/images/main/favicon32.ico"),
+                }),
+            );
+        },
+        { once: true },
+    );
 }
 
 let customBackgroundElement: Maybe<HTMLStyleElement> = undefined;

@@ -1,5 +1,5 @@
 import { dom } from "@/lib/elemental";
-import { TiebaForum } from "@/lib/tieba-components/forum";
+import type { TiebaForum } from "@/lib/tieba-components/forum";
 import _ from "lodash";
 
 export interface ThreadContent {
@@ -13,14 +13,14 @@ export interface ThreadContent {
         nameAnchor: HTMLAnchorElement;
         level: number;
         badgeTitle: string;
-    }
+    };
 
     tail: {
         location: string;
         platform: string;
         floor: string;
         time: string;
-    }
+    };
 }
 
 export interface TiebaThread {
@@ -40,8 +40,8 @@ export interface TiebaThread {
         jumper: {
             textbox: HTMLInputElement;
             submitButton: HTMLButtonElement;
-        }
-    }
+        };
+    };
 }
 
 export interface PostDataField {
@@ -51,7 +51,7 @@ export interface PostDataField {
         user_id: number;
         user_name: string;
         user_nickname: string;
-    }
+    };
 
     content: {
         builderId: number;
@@ -71,8 +71,8 @@ export interface PostDataField {
         post_no: number;
         props: unknown;
         thread_id: number;
-        type: "0"
-    }
+        type: "0";
+    };
 }
 
 export function threadParser(): TiebaThread {
@@ -86,10 +86,28 @@ export function threadParser(): TiebaThread {
 
     const replyButtons = dom<"a">(".lzl_link_unfold", []);
 
-    const locations = _.map(dom<"span">(".post-tail-wrap span:first-child, .ip-location", []), el => el.innerText);
-    const platforms = _.map(dom<"a">(".tail-info a, .p_tail_wap", []), el => el.innerText);
-    const floors = _.map(dom<"span">(".j_jb_ele + .tail-info + .tail-info, .p_tail li:first-child span", []), el => el.innerText);
-    const times = _.map(dom<"span">(".post-tail-wrap span:nth-last-child(2), .p_tail li:last-child span", []), el => el.innerText);
+    const locations = _.map(
+        dom<"span">(".post-tail-wrap span:first-child, .ip-location", []),
+        (el) => el.innerText,
+    );
+    const platforms = _.map(
+        dom<"a">(".tail-info a, .p_tail_wap", []),
+        (el) => el.innerText,
+    );
+    const floors = _.map(
+        dom<"span">(
+            ".j_jb_ele + .tail-info + .tail-info, .p_tail li:first-child span",
+            [],
+        ),
+        (el) => el.innerText,
+    );
+    const times = _.map(
+        dom<"span">(
+            ".post-tail-wrap span:nth-last-child(2), .p_tail li:last-child span",
+            [],
+        ),
+        (el) => el.innerText,
+    );
 
     const threadContents: ThreadContent[] = [];
 

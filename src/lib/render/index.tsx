@@ -1,10 +1,13 @@
-import { SupportedComponent } from "@/ex";
+import type { SupportedComponent } from "@/ex";
 import { dom, domrd } from "@/lib/elemental";
-import { CSSRule, injectCSSRule, parseCSSRule } from "@/lib/elemental/styles";
+import type { CSSRule } from "@/lib/elemental/styles";
+import { injectCSSRule, parseCSSRule } from "@/lib/elemental/styles";
 import { findParent } from "libelemental";
 import _ from "lodash";
-import { toast, UserDialog, UserDialogAbnormal, UserDialogOpts } from "user-view";
-import { App, Component, ComponentPublicInstance, createApp, h } from "vue";
+import type { UserDialogAbnormal, UserDialogOpts } from "user-view";
+import { toast, UserDialog } from "user-view";
+import type { App, Component, ComponentPublicInstance } from "vue";
+import { createApp, h } from "vue";
 import { neverFallbackToLegacy } from "../user-values";
 
 export interface RenderedComponent<T extends Element = Element> {
@@ -15,7 +18,8 @@ export interface RenderedComponent<T extends Element = Element> {
 export function renderComponent<T extends LiteralObject>(
     root: Component,
     container: string | Element,
-    rootProps?: T): RenderedComponent {
+    rootProps?: T,
+): RenderedComponent {
     const app = createApp(root, rootProps);
     return {
         app: app,
@@ -39,9 +43,11 @@ export function renderPage(root: Component, rootProps?: LiteralObject) {
     const page = domrd("div", { id: "remixed-page" });
     document.body.insertBefore(page, document.body.firstChild);
 
-    document.body.appendChild(domrd("div", {
-        "id": "carousel_wrap",
-    }));
+    document.body.appendChild(
+        domrd("div", {
+            id: "carousel_wrap",
+        }),
+    );
 
     injectCSSRule("#spage-tbshare-container, .tbui_aside_float_bar", {
         display: "none !important",
@@ -54,10 +60,12 @@ export function createRenderWrapper(id: string, style?: CSSRule) {
     let wrapper = dom<"div">(`#${id}`);
     return () => {
         if (_.isNil(wrapper)) {
-            wrapper = document.body.appendChild(domrd("div", {
-                id,
-                style: parseCSSRule(style ?? {} as CSSRule),
-            }));
+            wrapper = document.body.appendChild(
+                domrd("div", {
+                    id,
+                    style: parseCSSRule(style ?? ({} as CSSRule)),
+                }),
+            );
             return wrapper;
         }
         return wrapper;
@@ -65,11 +73,11 @@ export function createRenderWrapper(id: string, style?: CSSRule) {
 }
 
 export interface DialogEvents<PayloadType = any> {
-    beforeRender(): void,
-    rendered(rendered: RenderedComponent): void,
-    beforeUnload(rendered: RenderedComponent): void,
-    unloaded(payload: PayloadType): void,
-    abnormalUnload(abnormal: UserDialogAbnormal): void,
+    beforeRender(): void;
+    rendered(rendered: RenderedComponent): void;
+    beforeUnload(rendered: RenderedComponent): void;
+    unloaded(payload: PayloadType): void;
+    abnormalUnload(abnormal: UserDialogAbnormal): void;
 }
 
 /**
@@ -79,10 +87,7 @@ export interface DialogEvents<PayloadType = any> {
  * @param events 对话框事件绑定
  * @returns 对话框组件实例
  */
-export function renderDialog<
-    ContentOpts extends LiteralObject,
-    PayloadType = any,
->(
+export function renderDialog<ContentOpts extends LiteralObject, PayloadType = any>(
     content: SupportedComponent,
     opts?: ContentOpts,
     events?: Partial<DialogEvents<PayloadType>>,
@@ -90,7 +95,7 @@ export function renderDialog<
     events?.beforeRender?.();
 
     const dialogWrapper = document.body.appendChild(
-        domrd("div", { class: "dialog-wrapper" })
+        domrd("div", { class: "dialog-wrapper" }),
     );
     const dialogApp = createApp(content, {
         ...opts,
@@ -126,20 +131,26 @@ export function renderDialog<
 export function userDialog<ContentOpts extends LiteralObject>(
     content: SupportedComponent,
     dialogOpts?: UserDialogOpts,
-    opts?: ContentOpts
+    opts?: ContentOpts,
 ) {
     return renderDialog(<UserDialog {...dialogOpts}>{h(content, opts)}</UserDialog>);
 }
 
 export function removeDefault() {
     _.forEach(document.head.children, (el) => {
-        if (el && el.tagName.toUpperCase() === "LINK"
-            && _.includes(el.getAttribute("href"), "static-common/style")) {
+        if (
+            el &&
+            el.tagName.toUpperCase() === "LINK" &&
+            _.includes(el.getAttribute("href"), "static-common/style")
+        ) {
             el.remove();
         }
 
-        if (el && el.tagName.toUpperCase() === "SCRIPT"
-            && _.includes(el.getAttribute("src"), "static-common/lib")) {
+        if (
+            el &&
+            el.tagName.toUpperCase() === "SCRIPT" &&
+            _.includes(el.getAttribute("src"), "static-common/lib")
+        ) {
             el.remove();
         }
     });
@@ -185,12 +196,16 @@ export function fallbackDialog() {
                     event() {
                         const backToOldLocator = dom("use[*|href='#back_old']");
                         if (backToOldLocator) {
-                            findParent(dom("use[*|href='#back_old']")!, "menu-item")?.click();
+                            findParent(
+                                dom("use[*|href='#back_old']")!,
+                                "menu-item",
+                            )?.click();
                             return true;
                         } else {
                             toast({
                                 type: "warning",
-                                message: "无法找到页面上的回退旧版按钮，尝试全屏网页或降低页面缩放比例并重试。",
+                                message:
+                                    "无法找到页面上的回退旧版按钮，尝试全屏网页或降低页面缩放比例并重试。",
                             });
                         }
                     },
@@ -204,5 +219,6 @@ export function fallbackDialog() {
                     },
                 },
             ],
-        });
+        },
+    );
 }

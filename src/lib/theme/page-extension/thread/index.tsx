@@ -1,36 +1,46 @@
-import AwaitDialog, { AwaitDialogOpts } from "@/components/await-dialog.vue";
+import type { AwaitDialogOpts } from "@/components/await-dialog.vue";
+import AwaitDialog from "@/components/await-dialog.vue";
 import { imagesViewer } from "@/components/images-viewer";
 import Pager from "@/components/pager.vue";
 import ThreadEditor from "@/components/thread-editor.vue";
-import TogglePanel, { TogglePanelProps } from "@/components/toggle-panel.vue";
+import type { TogglePanelProps } from "@/components/toggle-panel.vue";
+import TogglePanel from "@/components/toggle-panel.vue";
 import { currentPageType } from "@/lib/api/remixed";
 import { getAllThreadImages, levelToClass } from "@/lib/api/tieba";
 import { asyncdom, dom, domrd, findParent } from "@/lib/elemental";
-import { CSSRule, overwriteCSS, parseCSSRule } from "@/lib/elemental/styles";
+import type { CSSRule } from "@/lib/elemental/styles";
+import { overwriteCSS, parseCSSRule } from "@/lib/elemental/styles";
 import { threadCommentsObserver, threadFloorsObserver } from "@/lib/observers";
 import { renderDialog } from "@/lib/render";
 import { appendJSX, insertJSX } from "@/lib/render/jsx-extension";
 import { floatBar } from "@/lib/tieba-components/float-bar";
 import { pager } from "@/lib/tieba-components/pager";
-import { compactLayout, currentStorage, experimental, pageExtension, perfProfile, THREAD_IMAGES } from "@/lib/user-values";
+import {
+    compactLayout,
+    currentStorage,
+    experimental,
+    pageExtension,
+    perfProfile,
+    THREAD_IMAGES,
+} from "@/lib/user-values";
 import { waitUntil } from "@/lib/utils";
 import _ from "lodash";
 import { floatMessage, UserButton } from "user-view";
-import { VNode } from "vue";
+import type { VNode } from "vue";
 import commentsStyle from "./comments.scss?inline";
 import compactStyle from "./compact.scss?inline";
 import { threadParser } from "./parser";
 import threadStyle from "./thread.scss?inline";
 
 export default async function () {
-    if (!pageExtension.get().thread) return;
-    if (currentPageType() !== "thread") return;
+    if (!pageExtension.get().thread) {
+        return;
+    }
+    if (currentPageType() !== "thread") {
+        return;
+    }
 
-    overwriteCSS(
-        threadStyle,
-        compactStyle,
-        commentsStyle,
-    );
+    overwriteCSS(threadStyle, compactStyle, commentsStyle);
 
     await waitUntil(() => !_.isNil(document.body)).then(function () {
         // document.body.insertBefore(mainWrapper, document.body.firstChild);
@@ -40,46 +50,61 @@ export default async function () {
     });
 
     waitUntil(() => !_.isNil(floatBar.get())).then(function () {
-        floatBar.add("other", function () {
-            renderDialog<TogglePanelProps>(TogglePanel, {
-                toggles: [
-                    {
-                        icon: "favorite",
-                        name: "收藏",
-                        defaultValue: (function () {
-                            return dom<"a">(".j_favor, #j_favthread .p_favthr_main")?.innerText === "收藏" ? false : true;
-                        })(),
-                        event() {
-                            dom<"a">(".j_favor, #j_favthread .p_favthr_main")?.click();
+        floatBar.add(
+            "other",
+            function () {
+                renderDialog<TogglePanelProps>(TogglePanel, {
+                    toggles: [
+                        {
+                            icon: "favorite",
+                            name: "收藏",
+                            defaultValue: (function () {
+                                return dom<"a">(".j_favor, #j_favthread .p_favthr_main")
+                                    ?.innerText === "收藏"
+                                    ? false
+                                    : true;
+                            })(),
+                            event() {
+                                dom<"a">(
+                                    ".j_favor, #j_favthread .p_favthr_main",
+                                )?.click();
+                            },
                         },
-                    },
-                    {
-                        icon: "face_6",
-                        name: "只看楼主",
-                        defaultValue: (function () {
-                            return dom<"a">("#lzonly_cntn")?.innerText === "只看楼主" ? false : true;
-                        })(),
-                        event() {
-                            dom<"a">("#lzonly_cntn")?.click();
+                        {
+                            icon: "face_6",
+                            name: "只看楼主",
+                            defaultValue: (function () {
+                                return dom<"a">("#lzonly_cntn")?.innerText === "只看楼主"
+                                    ? false
+                                    : true;
+                            })(),
+                            event() {
+                                dom<"a">("#lzonly_cntn")?.click();
+                            },
                         },
-                    },
-                    {
-                        icon: "compare_arrows",
-                        name: "紧凑布局",
-                        defaultValue: (() => compactLayout.get())(),
-                        event() {
-                            document.body.toggleAttribute("compact-layout");
-                            compactLayout.set(!compactLayout.get());
+                        {
+                            icon: "compare_arrows",
+                            name: "紧凑布局",
+                            defaultValue: (() => compactLayout.get())(),
+                            event() {
+                                document.body.toggleAttribute("compact-layout");
+                                compactLayout.set(!compactLayout.get());
+                            },
                         },
-                    },
-                ],
-            });
-        }, "module-settings", "menu");
+                    ],
+                });
+            },
+            "module-settings",
+            "menu",
+        );
 
-        document.body.insertBefore(domrd("div", {
-            class: "vue-module-control",
-            style: "display: none;",
-        }), document.body.firstChild);
+        document.body.insertBefore(
+            domrd("div", {
+                class: "vue-module-control",
+                style: "display: none;",
+            }),
+            document.body.firstChild,
+        );
     });
 
     const content = await asyncdom<"div">(".content");
@@ -97,32 +122,42 @@ export default async function () {
 
         let thread = threadParser();
 
-        const forumIconLink = (thread.forum.components.iconContainer.children[0] as HTMLImageElement).src;  // 分辨率比从 PageData 中获取到的更高
+        const forumIconLink = (
+            thread.forum.components.iconContainer.children[0] as HTMLImageElement
+        ).src; // 分辨率比从 PageData 中获取到的更高
 
-        insertJSX(<div id="title-wrapper">
-            <h3 class="thread-title">{
-                _.unescape(_(PageData.thread.title).split("回复：").last())
-                    .replace(/&#039;/g, "'")
-                    .replace(/&quot;/g, '"')
-            }</h3>
+        insertJSX(
+            <div id="title-wrapper">
+                <h3 class="thread-title">
+                    {_.unescape(_(PageData.thread.title).split("回复：").last())
+                        .replace(/&#039;/g, "'")
+                        .replace(/&quot;/g, '"')}
+                </h3>
 
-            <div class="forum-wrapper-button">
-                <img class="forum-icon" src={forumIconLink} alt="吧头像" />
-                <a class="forum-name anchor-noback"
-                    href={`/f?kw=${PageData.forum.name_url}`} target="_blank">
-                    {PageData.forum.forum_name} 吧
-                </a>
+                <div class="forum-wrapper-button">
+                    <img class="forum-icon" src={forumIconLink} alt="吧头像" />
+                    <a
+                        class="forum-name anchor-noback"
+                        href={`/f?kw=${PageData.forum.name_url}`}
+                        target="_blank"
+                    >
+                        {PageData.forum.forum_name} 吧
+                    </a>
 
-                <div class="button-container">
-                    <UserButton
-                        class="icon forum-button add-forum-button"
-                        noBorder
-                        onClick={() => dom<"button">("#j_head_focus_btn")?.click()}>
-                        {PageData.user.is_like ? "check" : "add"}
-                    </UserButton>
+                    <div class="button-container">
+                        <UserButton
+                            class="icon forum-button add-forum-button"
+                            noBorder
+                            onClick={() => dom<"button">("#j_head_focus_btn")?.click()}
+                        >
+                            {PageData.user.is_like ? "check" : "add"}
+                        </UserButton>
+                    </div>
                 </div>
-            </div>
-        </div>, content, pbContent);
+            </div>,
+            content,
+            pbContent,
+        );
 
         // 绑定事件
         floatMessage({
@@ -137,24 +172,33 @@ export default async function () {
         // 楼层举报按钮的文本只在刷新帖子时才会出现，翻页时不会出现
         // 缺少文本时手动插入
         // 由于一些动态加载行为，在 DOMContentLoaded 后判断举报按钮中的文字节点是否存在更为妥当
-        document.addEventListener("DOMContentLoaded", function () {
-            threadFloorsObserver.addEvent(function () {
-                _.forEach(dom<"a">(".j_jb_ele a", []), el => {
-                    if (el.lastChild?.nodeType !== Node.TEXT_NODE) {
-                        el.appendChild(new Text("举报"));
-                    }
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+                threadFloorsObserver.addEvent(function () {
+                    _.forEach(dom<"a">(".j_jb_ele a", []), (el) => {
+                        if (el.lastChild?.nodeType !== Node.TEXT_NODE) {
+                            el.appendChild(new Text("举报"));
+                        }
+                    });
                 });
-            });
 
-            // 帖子主楼层显示分隔符，但无人回帖时不显示
-            if (PageData.pager.cur_page === 1 && PageData.thread.reply_num > 1) {
-                const firstFloor = dom<"div">(".l_post", threadList);
-                if (firstFloor) firstFloor.style.borderBottom = "2px solid var(--tieba-theme-fore) !important";
-            }
-        }, { once: true });
+                // 帖子主楼层显示分隔符，但无人回帖时不显示
+                if (PageData.pager.cur_page === 1 && PageData.thread.reply_num > 1) {
+                    const firstFloor = dom<"div">(".l_post", threadList);
+                    if (firstFloor) {
+                        firstFloor.style.borderBottom =
+                            "2px solid var(--tieba-theme-fore) !important";
+                    }
+                }
+            },
+            { once: true },
+        );
 
         threadFloorsObserver.addEvent(function () {
-            if (dom(".d_author", []).length === 0) return;
+            if (dom(".d_author", []).length === 0) {
+                return;
+            }
 
             // TODO: performance
             thread = threadParser();
@@ -164,7 +208,9 @@ export default async function () {
             });
 
             // 去除左侧用户栏
-            _.forEach(dom(".d_author", []), el => el.remove());
+            _.forEach(dom(".d_author", []), (el) => {
+                el.remove();
+            });
         });
 
         function createAuthorContainer(index: number) {
@@ -177,51 +223,65 @@ export default async function () {
             authorContainer.appendChild(thread.cotents[index].profile.avatar);
             authorContainer.appendChild(thread.cotents[index].profile.nameAnchor);
 
-            const badgeContainer = appendJSX<HTMLDivElement>(<div class="badge-container"></div>, authorContainer);
+            const badgeContainer = appendJSX<HTMLDivElement>(
+                <div class="badge-container"></div>,
+                authorContainer,
+            );
 
             appendJSX(
-                <div class={`floor-badge level-${levelToClass(thread.cotents[index].profile.level)}`}>
+                <div
+                    class={`floor-badge level-${levelToClass(thread.cotents[index].profile.level)}`}
+                >
                     <div class="badge-level">{thread.cotents[index].profile.level}</div>
-                    <div class="badge-title">{thread.cotents[index].profile.badgeTitle}</div>
-                </div>, badgeContainer.root);
+                    <div class="badge-title">
+                        {thread.cotents[index].profile.badgeTitle}
+                    </div>
+                </div>,
+                badgeContainer.root,
+            );
 
-            if (thread.cotents[index].isLouzhu)
+            if (thread.cotents[index].isLouzhu) {
                 appendJSX(<div class="floor-badge">楼主</div>, badgeContainer.root);
+            }
 
             return authorContainer;
         }
 
         // 头像 lazy load
-        const avatarObserver = new IntersectionObserver(function (entries, observer) {
-            _.forEach(entries, function (entry) {
-                if (entry.isIntersecting) {
-                    const avatar = entry.target.children[0] as HTMLImageElement;
-                    const lazyLink = avatar.getAttribute("data-tb-lazyload");
+        const avatarObserver = new IntersectionObserver(
+            function (entries, observer) {
+                _.forEach(entries, function (entry) {
+                    if (entry.isIntersecting) {
+                        const avatar = entry.target.children[0] as HTMLImageElement;
+                        const lazyLink = avatar.getAttribute("data-tb-lazyload");
 
-                    if (avatar.src !== lazyLink) {
-                        if (lazyLink)
-                            avatar.src = lazyLink;
-                        else
+                        if (avatar.src !== lazyLink) {
+                            if (lazyLink) {
+                                avatar.src = lazyLink;
+                            } else {
+                                observer.unobserve(entry.target);
+                            }
+                        } else {
                             observer.unobserve(entry.target);
-                    } else {
-                        observer.unobserve(entry.target);
+                        }
                     }
-                }
-            });
-        }, {
-            root: null,
-            rootMargin: "0px",
-            threshold: 0.5,
-        });
+                });
+            },
+            {
+                root: null,
+                rootMargin: "0px",
+                threshold: 0.5,
+            },
+        );
 
-        _.forEach(thread.cotents, content => {
+        _.forEach(thread.cotents, (content) => {
             avatarObserver.observe(content.profile.avatar);
         });
 
         // 替换图片查看方式
         threadFloorsObserver.addEvent(async () => {
             await waitUntil(() => !!PageData.thread.thread_id);
-            _.forEach(dom<"img">(".BDE_Image", threadList, []), el => {
+            _.forEach(dom<"img">(".BDE_Image", threadList, []), (el) => {
                 const imageClone = el.cloneNode(false) as HTMLImageElement;
                 imageClone.className = "thread-image";
                 const postContent = findParent(el, "d_post_content");
@@ -231,28 +291,46 @@ export default async function () {
                     if (!_.isNil(currentStorage.get(THREAD_IMAGES))) {
                         showImage();
                     } else {
-                        renderDialog<AwaitDialogOpts>(AwaitDialog, {
-                            unloadPred: () => !_.isNil(currentStorage.get(THREAD_IMAGES)),
-                        }, {
-                            unloaded() {
-                                showImage();
+                        renderDialog<AwaitDialogOpts>(
+                            AwaitDialog,
+                            {
+                                unloadPred: () =>
+                                    !_.isNil(currentStorage.get(THREAD_IMAGES)),
                             },
-                        });
+                            {
+                                unloaded() {
+                                    showImage();
+                                },
+                            },
+                        );
                     }
 
-                    getAllThreadImages({ threadId: PageData.thread.thread_id, lzOnly: false });
+                    getAllThreadImages({
+                        threadId: PageData.thread.thread_id,
+                        lzOnly: false,
+                    });
 
                     async function showImage() {
                         if (_.isNil(imageClone.dataset.index)) {
-                            imageClone.dataset.index = `${_.findIndex(
-                                await getAllThreadImages({ threadId: PageData.thread.thread_id, lzOnly: false }),
-                                { postId: +(imageClone.dataset.pid ?? 0) }
-                            ) + _.findIndex(
-                                dom<"img">(".thread-image", postContent!, []), img => img === imageClone
-                            )}`;
+                            imageClone.dataset.index = `${
+                                _.findIndex(
+                                    await getAllThreadImages({
+                                        threadId: PageData.thread.thread_id,
+                                        lzOnly: false,
+                                    }),
+                                    { postId: +(imageClone.dataset.pid ?? 0) },
+                                ) +
+                                _.findIndex(
+                                    dom<"img">(".thread-image", postContent!, []),
+                                    (img) => img === imageClone,
+                                )
+                            }`;
                         }
                         imagesViewer({
-                            content: await getAllThreadImages({ threadId: PageData.thread.thread_id, lzOnly: false }),
+                            content: await getAllThreadImages({
+                                threadId: PageData.thread.thread_id,
+                                lzOnly: false,
+                            }),
                             defaultIndex: parseInt(imageClone.dataset.index ?? "0", 10),
                         });
                     }
@@ -263,10 +341,11 @@ export default async function () {
 
         // 去除楼中楼用户发言的冒号
         threadCommentsObserver.addEvent(() => {
-            _.forEach(dom(".lzl_cnt", []), el => {
-                _.forEach(el.childNodes, node => {
-                    if (node)
+            _.forEach(dom(".lzl_cnt", []), (el) => {
+                _.forEach(el.childNodes, (node) => {
+                    if (node) {
                         node.nodeType === 3 ? node.remove() : undefined;
+                    }
                 });
             });
         });
@@ -280,19 +359,27 @@ export default async function () {
 
     // pager 相关
     const pagerVNodes: VNode[] = [];
-    const insertPager = (parent: Element, position: Node | null, additionalStyles?: CSSRule) => {
-        const { vnode: pagerVNode } = insertJSX(createPager(additionalStyles), parent, position ?? undefined);
+    const insertPager = (
+        parent: Element,
+        position: Node | null,
+        additionalStyles?: CSSRule,
+    ) => {
+        const { vnode: pagerVNode } = insertJSX(
+            createPager(additionalStyles),
+            parent,
+            position ?? undefined,
+        );
         pagerVNodes.push(pagerVNode);
 
         function createPager(additionalStyles?: CSSRule) {
-            const pagerComponent =
+            const pagerComponent = (
                 <Pager
                     total={PageData.pager.total_page}
                     current={PageData.pager.cur_page}
                     showPagers={PageData.pager.total_page > 1}
                     pagerChange={function (page) {
                         pager.jumpTo(page);
-                        _.forEach(pagerVNodes, pagerVNode => {
+                        _.forEach(pagerVNodes, (pagerVNode) => {
                             // @ts-ignore
                             pagerVNode.component.exposeProxy.current = page;
                         });
@@ -301,11 +388,13 @@ export default async function () {
                         width: "100%",
                         padding: "0",
                         ...additionalStyles,
-                    })}>
+                    })}
+                >
                     {{
                         tailSlot: () => `回帖 ${PageData.thread.reply_num - 1}`,
                     }}
-                </Pager>;
+                </Pager>
+            );
             return pagerComponent;
         }
     };
@@ -324,7 +413,7 @@ export default async function () {
             floatBar.add("post", showEditor, undefined, undefined, 2);
         }
 
-        const postButton = _.find(floatBar.buttons(), button => {
+        const postButton = _.find(floatBar.buttons(), (button) => {
             return button.type === "post";
         });
         postButton?.el.addEventListener("click", showEditor);
@@ -336,13 +425,18 @@ export default async function () {
         appendJSX(
             <div id="thread-jsx-components">
                 {/* @ts-ignore */}
-                <UserButton class="dummy-button" noBorder onClick={showEditor}>回复帖子</UserButton>
-            </div>, pbContent);
+                <UserButton class="dummy-button" noBorder onClick={showEditor}>
+                    回复帖子
+                </UserButton>
+            </div>,
+            pbContent,
+        );
 
         function showEditor() {
             const ueditor = (function () {
-                if (dom(".edui-container", []).length > 0)
+                if (dom(".edui-container", []).length > 0) {
                     return dom(".edui-container");
+                }
                 return dom("#ueditor_replace");
             })();
             if (ueditor) {

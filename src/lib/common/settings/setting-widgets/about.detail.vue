@@ -1,7 +1,11 @@
 <template>
     <div class="about-wrapper">
         <div class="main-title">
-            <img :src="getResource('/assets/images/main/icon.png')" alt="icon" class="main-icon">
+            <img
+                :src="getResource('/assets/images/main/icon.png')"
+                alt="icon"
+                class="main-icon"
+            />
 
             <div class="title">{{ MainTitle }}</div>
         </div>
@@ -13,23 +17,32 @@
             </div>
 
             <div class="about-desc">
-                <div v-for="line in `本开源项目使用 MIT 协议`.split('\n')" class="line">{{ line }}</div>
+                <div v-for="line in `本开源项目使用 MIT 协议`.split('\n')" class="line">
+                    {{ line }}
+                </div>
             </div>
         </div>
 
         <div class="about-controls">
-            <UserButton class="about-button github" :is-anchor="true" :href="GithubRepo" :shadow-border="true"
-                target="_balnk">开放源代码
+            <UserButton
+                class="about-button github"
+                :is-anchor="true"
+                :href="GithubRepo"
+                :shadow-border="true"
+                target="_balnk"
+                >开放源代码
             </UserButton>
 
-            <UserButton class="about-button update" :shadow-border="true"
-                @click="emit('changeView', 'about', 'update')">
+            <UserButton
+                class="about-button update"
+                :shadow-border="true"
+                @click="emit('changeView', 'about', 'update')"
+            >
                 检查更新
             </UserButton>
         </div>
 
-        <div class="about-desc">
-        </div>
+        <div class="about-desc"></div>
     </div>
 </template>
 

@@ -1,36 +1,72 @@
 <template>
     <div class="pager-wrapper">
         <div v-if="showPagers" class="pager-button-container">
-            <UserButton v-show="current > Math.ceil(pagerCount / 2) && current > 1 && total > pagerCount"
-                class="pager-button pager-head-button " no-border @click="pagerChange('head', 1)">1</UserButton>
-            <UserButton v-show="current > Math.ceil(pagerCount / 2) && current > 1 && total > pagerCount"
-                class="pager-button pager-back-button icon" no-border
-                @click="pagerChange('prev', Math.max(1, current - pagerCount))">
+            <UserButton
+                v-show="
+                    current > Math.ceil(pagerCount / 2) &&
+                    current > 1 &&
+                    total > pagerCount
+                "
+                class="pager-button pager-head-button"
+                no-border
+                @click="pagerChange('head', 1)"
+                >1</UserButton
+            >
+            <UserButton
+                v-show="
+                    current > Math.ceil(pagerCount / 2) &&
+                    current > 1 &&
+                    total > pagerCount
+                "
+                class="pager-button pager-back-button icon"
+                no-border
+                @click="pagerChange('prev', Math.max(1, current - pagerCount))"
+            >
                 keyboard_double_arrow_left
             </UserButton>
 
-            <UserButton v-for="(displayNumber, i) in _.range(pagerStart, pagerEnd)" :key="i" class="pager-button"
-                :class="{ 'fill': fill, 'curr-pager-button': displayNumber === current }"
-                @click="pagerChange('page', displayNumber)" no-border="all" :disabled="displayNumber === current">
+            <UserButton
+                v-for="(displayNumber, i) in _.range(pagerStart, pagerEnd)"
+                :key="i"
+                class="pager-button"
+                :class="{ fill: fill, 'curr-pager-button': displayNumber === current }"
+                @click="pagerChange('page', displayNumber)"
+                no-border="all"
+                :disabled="displayNumber === current"
+            >
                 {{ displayNumber }}
             </UserButton>
 
-            <UserButton v-show="total - pagerCount > 1 && total - current > pagerCount / 2"
-                class="pager-button pager-forward-button icon" no-border
-                @click="pagerChange('next', Math.min(total, current + pagerCount))">
+            <UserButton
+                v-show="total - pagerCount > 1 && total - current > pagerCount / 2"
+                class="pager-button pager-forward-button icon"
+                no-border
+                @click="pagerChange('next', Math.min(total, current + pagerCount))"
+            >
                 keyboard_double_arrow_right
             </UserButton>
-            <UserButton v-show="tail && total - pagerCount > 1 && total - current > pagerCount / 2"
-                class="pager-button pager-tail-button" no-border @click="pagerChange('tail', total)">
-                {{ total }}</UserButton>
+            <UserButton
+                v-show="
+                    tail && total - pagerCount > 1 && total - current > pagerCount / 2
+                "
+                class="pager-button pager-tail-button"
+                no-border
+                @click="pagerChange('tail', total)"
+            >
+                {{ total }}</UserButton
+            >
         </div>
 
         <div v-if="showPagers && jumper" class="pager-separactor">|</div>
 
         <div v-if="showPagers && jumper" class="jumper-container">
             转到
-            <UserTextbox v-model="jumperValue" class="jumper"
-                @update:model-value="emit('update:jumperValue', jumperValue)" @keydown.enter="handleJumperEnter">
+            <UserTextbox
+                v-model="jumperValue"
+                class="jumper"
+                @update:model-value="emit('update:jumperValue', jumperValue)"
+                @keydown.enter="handleJumperEnter"
+            >
             </UserTextbox>
             页
         </div>
@@ -42,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PagerType } from "@/lib/tieba-components/pager";
+import type { PagerType } from "@/lib/tieba-components/pager";
 import _ from "lodash";
 import { UserButton, UserTextbox } from "user-view";
 import { computed, ref } from "vue";
@@ -81,21 +117,19 @@ const jumperValue = ref(props.jumperValue ?? "");
 // const current = defineModel<number>("current", { default: 0 });
 // const jumperValue = defineModel<string>("jumperValue", { default: "" });
 
-const emit = defineEmits([
-    "update:current",
-    "update:jumperValue",
-]);
+const emit = defineEmits(["update:current", "update:jumperValue"]);
 
 const pagerCount = Math.min(props.maxDisplay, props.total);
 
 // 额外维护一个内部使用
-const pagerStart = computed(
-    () =>
-        current.value + pagerCount / 2 > props.total
-            ? props.total - pagerCount + 1
-            : Math.max(1, current.value - Math.floor(props.maxDisplay / 2))
+const pagerStart = computed(() =>
+    current.value + pagerCount / 2 > props.total
+        ? props.total - pagerCount + 1
+        : Math.max(1, current.value - Math.floor(props.maxDisplay / 2)),
 );
-const pagerEnd = computed(() => Math.min(props.total, pagerStart.value + props.maxDisplay - 1) + 1);
+const pagerEnd = computed(
+    () => Math.min(props.total, pagerStart.value + props.maxDisplay - 1) + 1,
+);
 
 defineExpose({
     current,
@@ -103,38 +137,55 @@ defineExpose({
 });
 
 function pagerChange(type: PagerType | null, page: number) {
-    if (props.pagerChange && page !== current.value)
+    if (props.pagerChange && page !== current.value) {
         props.pagerChange(page);
+    }
     current.value = page;
     emit("update:current", page);
 
     switch (type) {
         case "page":
-            if (props.pagerClick) props.pagerClick(page);
+            if (props.pagerClick) {
+                props.pagerClick(page);
+            }
             break;
         case "head":
-            if (props.headClick) props.headClick();
+            if (props.headClick) {
+                props.headClick();
+            }
             break;
         case "tail":
-            if (props.tailClick) props.tailClick();
+            if (props.tailClick) {
+                props.tailClick();
+            }
             break;
         case "prev":
-            if (props.prevClick) props.prevClick(page);
+            if (props.prevClick) {
+                props.prevClick(page);
+            }
             break;
         case "next":
-            if (props.nextClick) props.nextClick(page);
+            if (props.nextClick) {
+                props.nextClick(page);
+            }
             break;
     }
 }
 
 function handleJumperEnter() {
-    if (!jumperValue.value) return;
+    if (!jumperValue.value) {
+        return;
+    }
 
     const page = +jumperValue.value;
-    if (page < 1 || page > props.total) return;
+    if (page < 1 || page > props.total) {
+        return;
+    }
 
     pagerChange(null, page);
-    if (props.jumperEnter) props.jumperEnter(page);
+    if (props.jumperEnter) {
+        props.jumperEnter(page);
+    }
     jumperValue.value = "";
 }
 </script>

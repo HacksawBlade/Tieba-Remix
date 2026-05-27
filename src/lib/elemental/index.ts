@@ -5,7 +5,7 @@ export const fadeInElems: string[] = [];
 const fadeInClass = "fade-in-elem";
 
 export interface DOMTagNameMap extends HTMLElementTagNameMap {
-    "default": Element;
+    default: Element;
 }
 export type DOMTagNames = keyof DOMTagNameMap;
 
@@ -15,23 +15,33 @@ export type DOMTagNames = keyof DOMTagNameMap;
  * @param parent 查找范围
  * @returns DOM 元素
  */
-export function dom<T extends DOMTagNames = "default">(selector: string, parent?: Element): Maybe<DOMTagNameMap[T]>;
+export function dom<T extends DOMTagNames = "default">(
+    selector: string,
+    parent?: Element,
+): Maybe<DOMTagNameMap[T]>;
 /**
  * @param selector 选择器
  * @param multi 查找全部
  */
-export function dom<T extends DOMTagNames = "default">(selector: string, multi?: never[]): DOMTagNameMap[T][];
+export function dom<T extends DOMTagNames = "default">(
+    selector: string,
+    multi?: never[],
+): DOMTagNameMap[T][];
 /**
  * @param selector 选择器
  * @param parent 查找范围
  * @param multi 查找全部
  */
-export function dom<T extends DOMTagNames = "default">(selector: string, parent: Element, multi?: never[]): DOMTagNameMap[T][];
+export function dom<T extends DOMTagNames = "default">(
+    selector: string,
+    parent: Element,
+    multi?: never[],
+): DOMTagNameMap[T][];
 
 export function dom<T extends DOMTagNames = "default">(
     selector: string,
     arg1?: Element | never[],
-    arg2?: never[]
+    arg2?: never[],
 ): Maybe<DOMTagNameMap[T] | DOMTagNameMap[T][]> {
     if (!arg1) {
         return document.querySelector<DOMTagNameMap[T]>(selector) ?? undefined;
@@ -53,7 +63,7 @@ export function dom<T extends DOMTagNames = "default">(
  */
 export function asyncdom<T extends DOMTagNames = "default">(
     selector: string,
-    parent?: Element
+    parent?: Element,
 ): Promise<DOMTagNameMap[T]>;
 /**
  * @param selector 选择器
@@ -64,16 +74,17 @@ export function asyncdom<T extends DOMTagNames = "default">(
 export function asyncdom<T extends DOMTagNames = "default">(
     selector: string,
     parent?: Element,
-    timeout?: number
+    timeout?: number,
 ): Promise<Maybe<DOMTagNameMap[T]>>;
 
 export async function asyncdom<T extends DOMTagNames = "default">(
     selector: string,
     parent?: Element,
-    timeout = Infinity
+    timeout = Infinity,
 ) {
-    return waitUntil(() => !_.isNil(dom<T>(selector, parent)), timeout)
-        .then(() => dom<T>(selector, parent));
+    return waitUntil(() => !_.isNil(dom<T>(selector, parent)), timeout).then(() =>
+        dom<T>(selector, parent),
+    );
 }
 
 /**
@@ -144,9 +155,7 @@ export function getNodeAttrsDeeply(node: HTMLElement) {
  * @param attrs 待合并的属性对象
  * @returns 合并后的节点属性对象
  */
-export function mergeNodeAttrs<T extends HTMLElement>(
-    node: T, attrs: LiteralObject,
-) {
+export function mergeNodeAttrs<T extends HTMLElement>(node: T, attrs: LiteralObject) {
     _.forOwn(attrs, (value, key) => {
         if (value !== node.getAttribute(key)) {
             if (isLiteralObject(value)) {
@@ -165,7 +174,8 @@ export function mergeNodeAttrs<T extends HTMLElement>(
  * @returns 合并后的节点属性对象
  */
 export function mergeNodeAttrsDeeply<T extends HTMLElement>(
-    node: T, attrs: LiteralObject,
+    node: T,
+    attrs: LiteralObject,
 ) {
     const src = getNodeAttrsDeeply(node);
     const des = _.merge(src, attrs);
@@ -180,7 +190,10 @@ export function mergeNodeAttrsDeeply<T extends HTMLElement>(
  * @returns 被创建的节点
  */
 export function domrd<T extends keyof HTMLElementTagNameMap>(
-    tag: T, attrs?: LiteralObject, children: (Node | string)[] | string = [], doc?: Document,
+    tag: T,
+    attrs?: LiteralObject,
+    children: (Node | string)[] | string = [],
+    doc?: Document,
 ): HTMLElementTagNameMap[T] {
     const DOC = doc ? doc : document;
     const elem = DOC.createElement(tag);
@@ -192,7 +205,7 @@ export function domrd<T extends keyof HTMLElementTagNameMap>(
     if (typeof children === "string") {
         elem.appendChild(document.createTextNode(children));
     } else {
-        _.forEach(children, child => {
+        _.forEach(children, (child) => {
             if (typeof child === "string") {
                 elem.appendChild(document.createTextNode(child));
             } else {
@@ -216,7 +229,7 @@ export function findParent<T extends keyof HTMLElementTagNameMap>(
     trait: string,
     mode: "selector" | "className" | "id" | "tagName" = "className",
 ): Maybe<HTMLElementTagNameMap[T]> {
-    const verifier = ((): (parent: HTMLElement) => boolean => {
+    const verifier = ((): ((parent: HTMLElement) => boolean) => {
         switch (mode) {
             case "selector": {
                 const allValid = new Set(dom(trait, []));
@@ -234,7 +247,8 @@ export function findParent<T extends keyof HTMLElementTagNameMap>(
             }
 
             case "tagName": {
-                return (parent: HTMLElement) => parent.tagName.toLowerCase() === trait.toLowerCase();
+                return (parent: HTMLElement) =>
+                    parent.tagName.toLowerCase() === trait.toLowerCase();
             }
         }
     })();
@@ -242,7 +256,7 @@ export function findParent<T extends keyof HTMLElementTagNameMap>(
     while (el.parentElement && !verifier(el.parentElement)) {
         el = el.parentElement;
     }
-    return el.parentElement ? el.parentElement as HTMLElementTagNameMap[T] : undefined;
+    return el.parentElement ? (el.parentElement as HTMLElementTagNameMap[T]) : undefined;
 }
 
 /**
@@ -250,7 +264,7 @@ export function findParent<T extends keyof HTMLElementTagNameMap>(
  * @param selector QuerySelector 字符串
  */
 export function fadeInLoad(selector: string) {
-    dom<"div">(selector, []).forEach(elem => {
+    dom<"div">(selector, []).forEach((elem) => {
         elem.classList.add(fadeInClass);
         elem.addEventListener("animationend", () => {
             elem.style.opacity = "1";

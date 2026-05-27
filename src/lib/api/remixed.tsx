@@ -1,5 +1,14 @@
 import { GM_getValue, GM_info, GM_listValues, GM_openInTab, GM_setValue } from "$";
-import { GiteeRelease, GiteeReleaseNotFound, GiteeRepo, Owner, RepoName, ignoredTag, latestRelease, showUpdateToday, themeType, updateConfig } from "@/lib/user-values";
+import type { GiteeRelease, GiteeReleaseNotFound, themeType } from "@/lib/user-values";
+import {
+    GiteeRepo,
+    Owner,
+    RepoName,
+    ignoredTag,
+    latestRelease,
+    showUpdateToday,
+    updateConfig,
+} from "@/lib/user-values";
 import { outputFile, selectLocalFile, spawnOffsetTS, waitUntil } from "@/lib/utils";
 import _ from "lodash";
 import { marked } from "marked";
@@ -8,7 +17,7 @@ import { parseCSSRule } from "../elemental/styles";
 import { userDialog } from "../render";
 import { darkPrefers } from "../theme";
 
-export type PageType = "index" | "thread" | "forum" | "user" | "unhandled"
+export type PageType = "index" | "thread" | "forum" | "user" | "unhandled";
 
 marked.setOptions({});
 
@@ -34,32 +43,50 @@ marked.setOptions({});
 export function currentPageType(): PageType {
     // if (PageData) return dt2PageType(PageData.page);
 
-    if (location.hostname.toLowerCase() !== "tieba.baidu.com") return "unhandled";
+    if (location.hostname.toLowerCase() !== "tieba.baidu.com") {
+        return "unhandled";
+    }
 
     const pathname = location.pathname.toLocaleLowerCase();
 
-    if (_.includes(["/", "/index.html"], pathname)) return "index";
-    if (/\/p\/\d+/.test(pathname)) return "thread";
-    if (pathname === "/f") return "forum";
-    if (pathname === "/home/main") return "user";
+    if (_.includes(["/", "/index.html"], pathname)) {
+        return "index";
+    }
+    if (/\/p\/\d+/.test(pathname)) {
+        return "thread";
+    }
+    if (pathname === "/f") {
+        return "forum";
+    }
+    if (pathname === "/home/main") {
+        return "user";
+    }
 
     return "unhandled";
 }
 
-export async function getLatestReleaseFromGitee(forceUpdate = false): Promise<Maybe<GiteeRelease>> {
+export async function getLatestReleaseFromGitee(
+    forceUpdate = false,
+): Promise<Maybe<GiteeRelease>> {
     if (latestRelease.get() && !forceUpdate) {
         return latestRelease.get();
     } else {
         const TTL = (function () {
             switch (updateConfig.get().time) {
-                case "1h": return 1;
-                case "3h": return 3;
-                case "6h": return 6;
-                case "never": return -1;
+                case "1h":
+                    return 1;
+                case "3h":
+                    return 3;
+                case "6h":
+                    return 6;
+                case "never":
+                    return -1;
             }
         })();
 
-        if (TTL < 0) return;
+        if (TTL < 0) {
+            return;
+        }
 
         const updateUrl = `https://gitee.com/api/v5/repos/${Owner}/${RepoName}/releases/latest/`;
 
@@ -67,7 +94,9 @@ export async function getLatestReleaseFromGitee(forceUpdate = false): Promise<Ma
 
         if (response.ok) {
             const result = await response.json();
-            if ((result as GiteeReleaseNotFound).message) return;
+            if ((result as GiteeReleaseNotFound).message) {
+                return;
+            }
 
             latestRelease.set(result, spawnOffsetTS(0, 0, 0, TTL));
             return result;
@@ -79,24 +108,36 @@ export async function getLatestReleaseFromGitee(forceUpdate = false): Promise<Ma
 
 export function checkUpdateAndNotify(showLatest = false) {
     // 不追踪发行信息
-    if (updateConfig.get().time === "never") return;
+    if (updateConfig.get().time === "never") {
+        return;
+    }
     // 静默
-    if (!updateConfig.get().notify) return;
+    if (!updateConfig.get().notify) {
+        return;
+    }
     // 今日已不能再提醒
-    if (!showUpdateToday.get()) return;
+    if (!showUpdateToday.get()) {
+        return;
+    }
 
     // 开发者专用
-    if (GM_info.script.version === "developer-only") return;
+    if (GM_info.script.version === "developer-only") {
+        return;
+    }
 
     getLatestReleaseFromGitee().then((latestRelease) => {
         if (latestRelease && latestRelease.tag_name.slice(1) !== GM_info.script.version) {
             // 忽略当前版本
-            if (ignoredTag.get() === latestRelease.tag_name) return;
+            if (ignoredTag.get() === latestRelease.tag_name) {
+                return;
+            }
 
             userDialog(
-                <div class="markdown"
+                <div
+                    class="markdown"
                     v-html={marked(latestRelease.body)}
-                    style={parseCSSRule({ maxWidth: "600px" })} />,
+                    style={parseCSSRule({ maxWidth: "600px" })}
+                />,
                 {
                     title: latestRelease.name,
                     dialogButtons: [
@@ -123,14 +164,16 @@ export function checkUpdateAndNotify(showLatest = false) {
                             },
                         },
                     ],
-                });
+                },
+            );
         } else {
-            if (showLatest)
+            if (showLatest) {
                 messageBox({
                     title: "检查更新",
                     content: "当前已是最新版本",
                     type: "okCancel",
                 });
+            }
         }
     });
 }
@@ -152,7 +195,7 @@ export function installFromRelease(release: GiteeRelease) {
 
     const asset = (function () {
         for (const asset of release.assets) {
-            if (asset.name && asset.name.endsWith(".user.js")) {
+            if (asset.name?.endsWith(".user.js")) {
                 return asset.browser_download_url;
             }
         }
@@ -211,12 +254,15 @@ export function setTheme(theme: ReturnType<typeof themeType.get>) {
 
 export function backupUserConfigs() {
     const excluded = ["unreadFeeds", "latestRelease", "showUpdateToday"];
-    const userKeys = _.filter(GM_listValues(), key => !_.includes(excluded, key));
-    const userValues = _.map(userKeys, key => {
+    const userKeys = _.filter(GM_listValues(), (key) => !_.includes(excluded, key));
+    const userValues = _.map(userKeys, (key) => {
         return GM_getValue(key);
     });
     const configs = _.zipObject(userKeys, userValues);
-    outputFile(`tieba-remix-backup@${new Date().getTime()}.json`, JSON.stringify(configs));
+    outputFile(
+        `tieba-remix-backup@${new Date().getTime()}.json`,
+        JSON.stringify(configs),
+    );
 }
 
 export async function restoreUserConfigs() {

@@ -7,14 +7,20 @@ import { pageExtension } from "@/lib/user-values";
 import Home from "./index.vue";
 
 export default async function () {
-    if (currentPageType() !== "index") return;
-    if (!pageExtension.get().index) return;
+    if (currentPageType() !== "index") {
+        return;
+    }
+    if (!pageExtension.get().index) {
+        return;
+    }
 
-    const bodyMask = GM_addStyle(parseMultiCSS({
-        "body": {
-            display: "none",
-        },
-    }));
+    const bodyMask = GM_addStyle(
+        parseMultiCSS({
+            body: {
+                display: "none",
+            },
+        }),
+    );
 
     const wrap = await asyncdom(".wrap1");
     renderPage(Home);

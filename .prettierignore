@@ -1,0 +1,6 @@
+node_modules
+build
+pnpm-lock.yaml
+tieba-remix.user.js
+**/@debug*
+**/@deprecated*

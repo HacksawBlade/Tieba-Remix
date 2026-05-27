@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { transEmojiFromDOMString } from "../api/tieba";
 import { dom } from "../elemental";
-import { TiebaForum } from "./forum";
+import type { TiebaForum } from "./forum";
 
 export interface ThreadContent {
     post: HTMLDivElement;
@@ -14,14 +14,14 @@ export interface ThreadContent {
         nameAnchor: HTMLAnchorElement;
         level: number;
         badgeTitle: string;
-    }
+    };
 
     tail: {
         location: string;
         platform: string;
         floor: string;
         time: string;
-    }
+    };
 }
 
 export interface TiebaThread {
@@ -41,8 +41,8 @@ export interface TiebaThread {
         jumper: {
             textbox: HTMLInputElement;
             submitButton: HTMLButtonElement;
-        }
-    }
+        };
+    };
 }
 
 export interface PostDataField {
@@ -52,7 +52,7 @@ export interface PostDataField {
         user_id: number;
         user_name: string;
         user_nickname: string;
-    }
+    };
 
     content: {
         builderId: number;
@@ -72,18 +72,22 @@ export interface PostDataField {
         post_no: number;
         props: unknown;
         thread_id: number;
-        type: "0"
-    }
+        type: "0";
+    };
 }
 
 export function threadParser(doc: Document): TiebaThread;
 export function threadParser(html: string): TiebaThread;
 export function threadParser(param: Document | string): TiebaThread {
     let doc: Document;
-    if (typeof param === "string")
-        doc = new DOMParser().parseFromString(transEmojiFromDOMString(param), "text/html");
-    else
+    if (typeof param === "string") {
+        doc = new DOMParser().parseFromString(
+            transEmojiFromDOMString(param),
+            "text/html",
+        );
+    } else {
         doc = param;
+    }
 
     const postWrappers = dom<"div">(".l_post", doc.body, []);
     const contents = dom<"div">(".d_post_content", doc.body, []);
@@ -95,10 +99,30 @@ export function threadParser(param: Document | string): TiebaThread {
 
     const replyButtons = dom<"a">(".lzl_link_unfold", doc.body, []);
 
-    const locations = _.map(dom<"span">(".post-tail-wrap span:first-child, .ip-location", doc.body, []), el => el.innerText);
-    const platforms = _.map(dom<"a">(".tail-info a, .p_tail_wap", doc.body, []), el => el.innerText);
-    const floors = _.map(dom<"span">(".j_jb_ele + .tail-info + .tail-info, .p_tail li:first-child span", doc.body, []), el => el.innerText);
-    const times = _.map(dom<"span">(".post-tail-wrap span:nth-last-child(2), .p_tail li:last-child span", doc.body, []), el => el.innerText);
+    const locations = _.map(
+        dom<"span">(".post-tail-wrap span:first-child, .ip-location", doc.body, []),
+        (el) => el.innerText,
+    );
+    const platforms = _.map(
+        dom<"a">(".tail-info a, .p_tail_wap", doc.body, []),
+        (el) => el.innerText,
+    );
+    const floors = _.map(
+        dom<"span">(
+            ".j_jb_ele + .tail-info + .tail-info, .p_tail li:first-child span",
+            doc.body,
+            [],
+        ),
+        (el) => el.innerText,
+    );
+    const times = _.map(
+        dom<"span">(
+            ".post-tail-wrap span:nth-last-child(2), .p_tail li:last-child span",
+            doc.body,
+            [],
+        ),
+        (el) => el.innerText,
+    );
 
     const threadContents: ThreadContent[] = [];
 

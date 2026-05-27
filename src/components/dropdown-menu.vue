@@ -6,13 +6,20 @@
             </template>
 
             <template v-else>
-                <UserButton class="menu-item" :is-anchor="menuItem.href !== undefined"
-                    :href="menuItem.href ? menuItem.href : 'javascript:;'" @click="menuItem.click"
-                    :target="menuItem.href ? '_blank' : ''" no-border>
+                <UserButton
+                    class="menu-item"
+                    :is-anchor="menuItem.href !== undefined"
+                    :href="menuItem.href ? menuItem.href : 'javascript:;'"
+                    @click="menuItem.click"
+                    :target="menuItem.href ? '_blank' : ''"
+                    no-border
+                >
                     <div v-if="menuItem.icon" class="icon">{{ menuItem.icon }}</div>
                     <div class="menu-title">
                         {{ menuItem.title }}
-                        <span v-if="menuItem.innerText" class="menu-inner">{{ menuItem.innerText }}</span>
+                        <span v-if="menuItem.innerText" class="menu-inner">{{
+                            menuItem.innerText
+                        }}</span>
                     </div>
                 </UserButton>
             </template>
@@ -26,8 +33,8 @@ import { UserButton } from "user-view";
 import { onMounted } from "vue";
 
 interface Props {
-    menuItems: DropdownMenu[],
-    blurEffect?: true
+    menuItems: DropdownMenu[];
+    blurEffect?: true;
 }
 const props = defineProps<Props>();
 
@@ -43,7 +50,7 @@ onMounted(() => {
         });
 
         window.addEventListener("focusin", (ev) => {
-            if (!findParent((ev.target as HTMLElement), "dropdown-menu")) {
+            if (!findParent(ev.target as HTMLElement, "dropdown-menu")) {
                 emit("RequestClose");
             }
         });

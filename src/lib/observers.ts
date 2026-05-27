@@ -2,7 +2,11 @@ import _ from "lodash";
 import { dom } from "./elemental";
 
 export class TbObserver {
-    constructor(selector: string, options?: MutationObserverInit, initEvent?: keyof WindowEventMap) {
+    constructor(
+        selector: string,
+        options?: MutationObserverInit,
+        initEvent?: keyof WindowEventMap,
+    ) {
         this.selector = selector;
         this.options = options;
         this.initEvent = initEvent;
@@ -16,7 +20,7 @@ export class TbObserver {
 
     public observe() {
         const eventFuncs = () => {
-            this.events.forEach(func => {
+            this.events.forEach((func) => {
                 func();
             });
         };
@@ -29,12 +33,16 @@ export class TbObserver {
 
         const observer = new MutationObserver(eventFuncs);
         const obsElem = dom(this.selector);
-        if (obsElem) observer.observe(obsElem, this.options);
+        if (obsElem) {
+            observer.observe(obsElem, this.options);
+        }
     }
 
     public addEvent(...events: (() => void)[]) {
-        _.forEach(events, event => {
-            if (this.events.includes(event)) return;
+        _.forEach(events, (event) => {
+            if (this.events.includes(event)) {
+                return;
+            }
             if (typeof this.initEvent === "undefined") {
                 event();
             } else {
@@ -60,8 +68,15 @@ export class TbObserver {
 /** 帖子页面 楼层监控 */
 export const threadFloorsObserver = new TbObserver("#j_p_postlist", { childList: true });
 /** 帖子页面 楼中楼监控 */
-export const threadCommentsObserver = new TbObserver("#j_p_postlist", { childList: true, subtree: true });
+export const threadCommentsObserver = new TbObserver("#j_p_postlist", {
+    childList: true,
+    subtree: true,
+});
 /** 旧版主页 推送监控 */
 export const legacyIndexFeedsObserver = new TbObserver("#new_list", { childList: true });
 /** 进吧页面 贴子监控 */
-export const forumThreadsObserver = new TbObserver("#pagelet_frs-list\\/pagelet\\/thread", { attributes: true }, "load");
+export const forumThreadsObserver = new TbObserver(
+    "#pagelet_frs-list\\/pagelet\\/thread",
+    { attributes: true },
+    "load",
+);

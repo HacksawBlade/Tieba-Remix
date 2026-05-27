@@ -13,7 +13,10 @@ export function parseMultiCSS(cssObject: CSSObject) {
     return _.flatMapDeep(cssObject, (value, key) => {
         return [
             `${key} {`,
-            ..._.flatMapDeep(value, (v, k) => `${_.startsWith(k, "--") ? k : _.kebabCase(k)}: ${v};`),
+            ..._.flatMapDeep(
+                value,
+                (v, k) => `${_.startsWith(k, "--") ? k : _.kebabCase(k)}: ${v};`,
+            ),
             "}",
             "",
         ];
@@ -63,11 +66,11 @@ export function insertCSS(style: string) {
  */
 export function overwriteCSS(...style: string[]) {
     const styles: HTMLStyleElement[] = [];
-    _.forEach(style, styleElement => {
+    _.forEach(style, (styleElement) => {
         styles.push(insertCSS(styleElement));
     });
     waitUntil(() => !_.isNil(document.body)).then(() => {
-        _.forEach(styles, styleElement => {
+        _.forEach(styles, (styleElement) => {
             document.head.appendChild(styleElement);
         });
     });

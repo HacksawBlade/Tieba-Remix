@@ -4,17 +4,34 @@
             <div class="head-controls">
                 <!-- 搜索组件 -->
                 <div class="search-controls">
-                    <UserTextbox v-model="searchText" class="search-box" placeholder="搜索 贴吧" autocomplete="none"
-                        @focus="searchBoxFocus" @input="searchMatch">
+                    <UserTextbox
+                        v-model="searchText"
+                        class="search-box"
+                        placeholder="搜索 贴吧"
+                        autocomplete="none"
+                        @focus="searchBoxFocus"
+                        @input="searchMatch"
+                    >
                     </UserTextbox>
 
-                    <UserButton class="search-button" :theme-style="true" no-border>搜索</UserButton>
+                    <UserButton class="search-button" :theme-style="true" no-border
+                        >搜索</UserButton
+                    >
 
                     <!-- 搜索建议组件 -->
-                    <div v-show="suggToggle && suggestions.length > 0" class="search-suggestions">
-                        <UserButton :is-anchor="true" class="search-elem" v-for="sugg in suggestions" :href="sugg.href"
-                            target="_blank" no-border>
-                            <img class="sugg-img" :src="sugg.image" alt="">
+                    <div
+                        v-show="suggToggle && suggestions.length > 0"
+                        class="search-suggestions"
+                    >
+                        <UserButton
+                            :is-anchor="true"
+                            class="search-elem"
+                            v-for="sugg in suggestions"
+                            :href="sugg.href"
+                            target="_blank"
+                            no-border
+                        >
+                            <img class="sugg-img" :src="sugg.image" alt="" />
                             <div class="sugg-content">
                                 <p class="sugg-title">{{ sugg.title }}</p>
                                 <p class="sugg-desc">{{ sugg.desc }}</p>
@@ -33,11 +50,14 @@
                         class="home-section-button"
                         :title="toggle.name"
                         :key="key"
-                        :class="{ 'active': currentSection === key }"
+                        :class="{ active: currentSection === key }"
                         no-border="all"
-                        @click="currentSection = key">
+                        @click="currentSection = key"
+                    >
                         <span class="icon">{{ toggle.icon }}</span>
-                        <span v-show="key === currentSection" class="name">{{ toggle.name }}</span>
+                        <span v-show="key === currentSection" class="name">{{
+                            toggle.name
+                        }}</span>
                     </UserToggle>
                 </div>
 
@@ -46,7 +66,8 @@
                         class="home-section-button"
                         title="设置"
                         no-border="all"
-                        @click="renderDialog(Settings)">
+                        @click="renderDialog(Settings)"
+                    >
                         <span class="icon">settings</span>
                     </UserButton>
                 </div>
@@ -54,43 +75,73 @@
                 <div
                     v-show="homeSections[currentSection].moreOpts"
                     class="home-section-container"
-                    style="margin-left: auto;">
+                    style="margin-left: auto"
+                >
                     <UserButton
                         v-for="opt in homeSections[currentSection].moreOpts"
                         class="home-section-button"
                         :title="opt.name"
                         :key="opt.name"
                         no-border="all"
-                        @click="opt.event()">
+                        @click="opt.event()"
+                    >
                         <span class="icon">{{ opt.icon }}</span>
                     </UserButton>
                 </div>
             </div>
 
-            <div v-show="followed && currentSection === 'followed'" class="block-wrapper followed-container">
+            <div
+                v-show="followed && currentSection === 'followed'"
+                class="block-wrapper followed-container"
+            >
                 <div class="block-container followed-list">
-                    <UserButton v-for="forum in followed?.like_forum" :is-anchor="true" class="followed-btn"
-                        :shadow-border="true" :href="tiebaAPI.URL_forum(forum.forum_name)" target="_blank" no-border>
+                    <UserButton
+                        v-for="forum in followed?.like_forum"
+                        :is-anchor="true"
+                        class="followed-btn"
+                        :shadow-border="true"
+                        :href="tiebaAPI.URL_forum(forum.forum_name)"
+                        target="_blank"
+                        no-border
+                    >
                         <div v-if="forum.is_sign === 1" class="icon signed">check</div>
                         <div class="forum-title">{{ forum.forum_name }}</div>
-                        <div class="forum-level" :class="'level-' + levelToClass(forum.user_level)">
+                        <div
+                            class="forum-level"
+                            :class="'level-' + levelToClass(forum.user_level)"
+                        >
                             {{ forum.user_level }}
                         </div>
                     </UserButton>
                 </div>
             </div>
 
-            <div v-show="topicList.length > 0 && currentSection === 'topicList'" class="block-wrapper topic-container">
+            <div
+                v-show="topicList.length > 0 && currentSection === 'topicList'"
+                class="block-wrapper topic-container"
+            >
                 <div class="block-container topic-list">
-                    <UserButton v-for="topic in _.take(topicList, 10)" :is-anchor="true" class="topic-btn"
-                        :shadow-border="true" :href="topic.topic_url" target="_blank">
-                        <img class="topic-img" :src="topic.topic_pic">
+                    <UserButton
+                        v-for="topic in _.take(topicList, 10)"
+                        :is-anchor="true"
+                        class="topic-btn"
+                        :shadow-border="true"
+                        :href="topic.topic_url"
+                        target="_blank"
+                    >
+                        <img class="topic-img" :src="topic.topic_pic" />
                         <div class="topic-content">
                             <div class="topic-title">
-                                <div :class="'topic-rank-' + topic.idx_num">{{ topic.idx_num }}</div>
-                                <div class="topic-name">{{ _.unescape(topic.topic_name) }}</div>
+                                <div :class="'topic-rank-' + topic.idx_num">
+                                    {{ topic.idx_num }}
+                                </div>
+                                <div class="topic-name">
+                                    {{ _.unescape(topic.topic_name) }}
+                                </div>
                             </div>
-                            <div class="topic-desc">{{ _.unescape(topic.topic_desc) }}</div>
+                            <div class="topic-desc">
+                                {{ _.unescape(topic.topic_desc) }}
+                            </div>
                         </div>
                     </UserButton>
                 </div>
@@ -102,14 +153,15 @@
         <div
             ref="masonryContainer"
             v-if="currentSection === 'feeds'"
-            class="masonry-container">
-
+            class="masonry-container"
+        >
             <FeedsMasonry
                 ref="feedsMasonry"
                 v-show="currentSection === 'feeds'"
                 :init-feeds="initFeeds"
                 :auto-update="currentSection === 'feeds'"
-                show-progress></FeedsMasonry>
+                show-progress
+            ></FeedsMasonry>
 
             <div v-show="initFeeds.length === 0" class="empty-container">
                 <p class="no-feed-content">没有更多了</p>
@@ -119,15 +171,14 @@
 </template>
 
 <script setup lang="ts">
-import {
+import type {
     FollowedForumsResponse,
-    levelToClass,
     SuggestionResponse,
-    tiebaAPI,
     TopicList,
     TopicListResponse,
     UserInfoResponse,
 } from "@/lib/api/tieba";
+import { levelToClass, tiebaAPI } from "@/lib/api/tieba";
 
 import _ from "lodash";
 import { computed, onMounted, ref, watch } from "vue";
@@ -139,7 +190,7 @@ import { messageBox, toast, UserToggle } from "user-view";
 
 import FeedsMasonry from "@/components/feeds-masonry.vue";
 import Settings from "@/components/settings.vue";
-import { OneKeySignResponse } from "@/lib/api/tieba";
+import type { OneKeySignResponse } from "@/lib/api/tieba";
 import { BaiduPassport, GiteeRepo, GithubRepo, unreadFeeds } from "@/lib/user-values";
 import { UserButton, UserTextbox } from "user-view";
 
@@ -151,7 +202,7 @@ interface HomeSection {
         name: string;
         icon: string;
         event(): void;
-    }[]
+    }[];
 }
 
 type HomeSectionKey = "followed" | "feeds" | "topicList";
@@ -164,12 +215,14 @@ const masonryContainer = ref<HTMLDivElement>();
 const feedsContainer = ref<HTMLAnchorElement>();
 const searchText = ref<string>("");
 const suggToggle = ref(false);
-const suggestions = ref<{
-    image: string
-    title: string
-    desc: string
-    href: string
-}[]>([]);
+const suggestions = ref<
+    {
+        image: string;
+        title: string;
+        desc: string;
+        href: string;
+    }[]
+>([]);
 const configMenu = ref<DropdownMenu[]>();
 const profileMenu = ref<DropdownMenu[]>();
 const topicList = ref<TopicList[]>([]);
@@ -237,8 +290,12 @@ onMounted(async () => {
     });
 });
 
-window.addEventListener("focusin", (ev) => toggleSuggControls(ev));
-window.addEventListener("mousedown", (ev) => toggleSuggControls(ev));
+window.addEventListener("focusin", (ev) => {
+    toggleSuggControls(ev);
+});
+window.addEventListener("mousedown", (ev) => {
+    toggleSuggControls(ev);
+});
 
 watch(currentSection, (_, oldVal) => {
     if (oldVal === "feeds") {
@@ -250,7 +307,9 @@ async function init() {
     // 用户信息
     userInfo.value = await (async () => {
         try {
-            const userInfoResp = (await (await tiebaAPI.userInfo()).json() as UserInfoResponse);
+            const userInfoResp = (await (
+                await tiebaAPI.userInfo()
+            ).json()) as UserInfoResponse;
             if (userInfoResp) {
                 return userInfoResp.data;
             }
@@ -328,7 +387,9 @@ async function init() {
     });
 
     // 页面
-    if (!feedsContainer.value) return;
+    if (!feedsContainer.value) {
+        return;
+    }
 }
 
 function toggleSuggControls(e: Event) {
@@ -352,22 +413,24 @@ async function loadSuggestions(query?: string) {
             // 没有输入搜索内容则获取热门搜索
             if (!query || query === "") {
                 const topicList = value.hottopic_list.search_data;
-                if (topicList)
+                if (topicList) {
                     suggestions.value = _.map(topicList, (topic) => ({
                         image: topic.topic_pic,
                         title: topic.topic_name,
                         desc: topic.topic_desc,
                         href: topic.topic_url,
                     }));
+                }
             } else {
                 const matchList = value.query_match.search_data;
-                if (matchList)
+                if (matchList) {
                     suggestions.value = _.map(matchList, (match) => ({
                         image: match.fpic,
                         title: match.fname,
                         desc: match.forum_desc,
                         href: tiebaAPI.URL_forum(match.fname),
                     }));
+                }
             }
         });
     }
@@ -391,39 +454,47 @@ function searchTextChange() {
 const searchMatch = _.debounce(searchTextChange, 500);
 
 function getFollowedInstance() {
-    requestInstance(tiebaAPI.followedForums()).then((response: FollowedForumsResponse) => {
-        if (response) {
-            signedForums.value = 0;
-            followed.value = response.data;
+    requestInstance(tiebaAPI.followedForums()).then(
+        (response: FollowedForumsResponse) => {
+            if (response) {
+                signedForums.value = 0;
+                followed.value = response.data;
 
-            // 已签到计数
-            _.forEach(followed.value.like_forum, forum => {
-                if (forum.is_sign === 1) signedForums.value++;
-            });
-            // 排序关注吧
-            followed.value.like_forum.sort((a, b) =>
-                parseInt(b.user_exp) - parseInt(a.user_exp));
-        }
-    });
+                // 已签到计数
+                _.forEach(followed.value.like_forum, (forum) => {
+                    if (forum.is_sign === 1) {
+                        signedForums.value++;
+                    }
+                });
+                // 排序关注吧
+                followed.value.like_forum.sort(
+                    (a, b) => parseInt(b.user_exp) - parseInt(a.user_exp),
+                );
+            }
+        },
+    );
 }
 
 async function oneKeySignInstance() {
     messageBox({
         title: "一键签到",
-        content: "需要注意，Web端签到获取到的经验远少于移动端，建议使用其他设备进行签到。",
+        content:
+            "需要注意，Web端签到获取到的经验远少于移动端，建议使用其他设备进行签到。",
         type: "okCancel",
     }).then((tag) => {
         if (tag === "positive") {
-            requestInstance(tiebaAPI.oneKeySign()).then((response: OneKeySignResponse) => {
-                toast({
-                    message: `本次共签到成功 ${response.data.signedForumAmount} 个吧，未签到 ${response.data.unsignedForumAmount} 个吧，签到失败 ${response.data.signedForumAmountFail} 个吧，共获得 ${response.data.gradeNoVip} 经验。`,
-                    type: "check",
-                    blurEffect: true,
-                });
+            requestInstance(tiebaAPI.oneKeySign()).then(
+                (response: OneKeySignResponse) => {
+                    toast({
+                        message: `本次共签到成功 ${response.data.signedForumAmount} 个吧，未签到 ${response.data.unsignedForumAmount} 个吧，签到失败 ${response.data.signedForumAmountFail} 个吧，共获得 ${response.data.gradeNoVip} 经验。`,
+                        type: "check",
+                        blurEffect: true,
+                    });
 
-                // 刷新关注的吧
-                getFollowedInstance();
-            });
+                    // 刷新关注的吧
+                    getFollowedInstance();
+                },
+            );
         }
     });
 }

@@ -66,7 +66,9 @@ export class Pager extends TiebaComponent<"li"> {
 
         const jumperBox = dom<"input">("#jumpPage4, #jumpPage6");
         const jumperButton = dom<"button">("#pager_go4, #pager_go6");
-        if (jumperBox) jumperBox.value = page.toString();
+        if (jumperBox) {
+            jumperBox.value = page.toString();
+        }
         jumperButton?.click();
     }
 

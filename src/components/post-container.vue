@@ -1,31 +1,65 @@
 <template>
-    <UserButton ref="postContainer" :is-anchor="true" class="post-container" :href="'/p/' + props.post.id"
+    <UserButton
+        ref="postContainer"
+        :is-anchor="true"
+        class="post-container"
+        :href="'/p/' + props.post.id"
         target="_blank"
-        :class="{ 'dynamic': props.dynamic, 'assets-loaded': loadedAssets === props.post.images.length }">
+        :class="{
+            dynamic: props.dynamic,
+            'assets-loaded': loadedAssets === props.post.images.length,
+        }"
+    >
         <div>
-            <UserButton :is-anchor="true" class="forum-btn" :shadow-border="true" :href="props.post.forum.href"
-                target="_blank">
+            <UserButton
+                :is-anchor="true"
+                class="forum-btn"
+                :shadow-border="true"
+                :href="props.post.forum.href"
+                target="_blank"
+            >
                 {{ props.post.forum.name + " 吧" }}
             </UserButton>
         </div>
 
         <div class="main-content">
             <p class="title">{{ props.post.title }}</p>
-            <p v-if="props.post.content && props.post.content !== ' '" class="content">{{ props.post.content }}</p>
+            <p v-if="props.post.content && props.post.content !== ' '" class="content">
+                {{ props.post.content }}
+            </p>
         </div>
 
         <div v-if="props.post.images.length > 0" class="img-container">
-            <UserButton v-for="image, index in props.post.images" class="img-button" @click="showImage($event, index)"
-                no-border="all">
-                <img class="post-img" :src="isIntersecting ? image.original : image.thumb" @load="addLoadedPost">
+            <UserButton
+                v-for="(image, index) in props.post.images"
+                class="img-button"
+                @click="showImage($event, index)"
+                no-border="all"
+            >
+                <img
+                    class="post-img"
+                    :src="isIntersecting ? image.original : image.thumb"
+                    @load="addLoadedPost"
+                />
             </UserButton>
         </div>
 
         <div class="bottom-controls">
-            <UserButton class="author" :is-anchor="true" :href="props.post.author.href" target="_blank"
-                :shadow-border="true">
-                <img class="author-portrait"
-                    :src="isIntersecting ? tiebaAPI.URL_profile(props.post.author.portrait) : ''">
+            <UserButton
+                class="author"
+                :is-anchor="true"
+                :href="props.post.author.href"
+                target="_blank"
+                :shadow-border="true"
+            >
+                <img
+                    class="author-portrait"
+                    :src="
+                        isIntersecting
+                            ? tiebaAPI.URL_profile(props.post.author.portrait)
+                            : ''
+                    "
+                />
                 <div class="author-info">
                     <div class="author-name">{{ props.post.author.name }}</div>
                     <div class="post-time">{{ props.post.time }}</div>
@@ -37,19 +71,21 @@
 </template>
 
 <script setup lang="ts">
-import { GetThreadImagesResponse, tiebaAPI } from "@/lib/api/tieba";
+import type { GetThreadImagesResponse } from "@/lib/api/tieba";
+import { tiebaAPI } from "@/lib/api/tieba";
 import { renderDialog } from "@/lib/render";
 import { currentStorage, highQualityImage, HOME_FEED_IMAGES } from "@/lib/user-values";
 import _ from "lodash";
 import { UserButton } from "user-view";
 import { onMounted, ref } from "vue";
-import AwaitDialog, { AwaitDialogOpts } from "./await-dialog.vue";
+import type { AwaitDialogOpts } from "./await-dialog.vue";
+import AwaitDialog from "./await-dialog.vue";
 import { imagesViewer } from "./images-viewer";
 
 interface Props {
-    post: TiebaPost
-    lazyLoad?: boolean
-    dynamic?: boolean
+    post: TiebaPost;
+    lazyLoad?: boolean;
+    dynamic?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
     lazyLoad: false,
@@ -63,13 +99,17 @@ const isIntersecting = ref(!props.lazyLoad);
 const loadedAssets = ref(0);
 
 onMounted(() => {
-    if (!postContainer.value) return;
+    if (!postContainer.value) {
+        return;
+    }
 
     if (props.post.images.length === 0) {
         emit("assetsLoaded", postContainer.value);
     }
 
-    if (!props.lazyLoad) return;
+    if (!props.lazyLoad) {
+        return;
+    }
     // 进入视图后再加载图片
     const iObs = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -85,31 +125,44 @@ onMounted(() => {
 
 async function showImage(e: MouseEvent, index: number) {
     e.preventDefault();
-    if (!_.isNil(currentStorage.get(HOME_FEED_IMAGES)) && !_.isNil(currentStorage.get(HOME_FEED_IMAGES)[+props.post.id])) {
+    if (
+        !_.isNil(currentStorage.get(HOME_FEED_IMAGES)) &&
+        !_.isNil(currentStorage.get(HOME_FEED_IMAGES)[+props.post.id])
+    ) {
         imagesViewer({
             content: currentStorage.get(HOME_FEED_IMAGES)[+props.post.id],
             defaultIndex: index,
         });
     } else {
-        renderDialog<AwaitDialogOpts>(AwaitDialog, {
-            unloadPred: () => (!_.isNil(currentStorage.get(HOME_FEED_IMAGES)) && !_.isNil(currentStorage.get(HOME_FEED_IMAGES)[+props.post.id])),
-        }, {
-            unloaded() {
-                imagesViewer({
-                    content: pictureList,
-                    defaultIndex: index,
-                });
+        renderDialog<AwaitDialogOpts>(
+            AwaitDialog,
+            {
+                unloadPred: () =>
+                    !_.isNil(currentStorage.get(HOME_FEED_IMAGES)) &&
+                    !_.isNil(currentStorage.get(HOME_FEED_IMAGES)[+props.post.id]),
             },
-        });
+            {
+                unloaded() {
+                    imagesViewer({
+                        content: pictureList,
+                        defaultIndex: index,
+                    });
+                },
+            },
+        );
 
-        const response: GetThreadImagesResponse = await (await tiebaAPI.getThreadImages(+props.post.id, true)).json();
+        const response: GetThreadImagesResponse = await (
+            await tiebaAPI.getThreadImages(+props.post.id, true)
+        ).json();
         const pictureList: ThreadPicture[] = _(response!.data.pic_list)
             .keys()
-            .sortBy(key => parseInt(key.slice(1)))
-            .map(key => {
+            .sortBy((key) => parseInt(key.slice(1)))
+            .map((key) => {
                 const value = response!.data.pic_list[key];
                 return {
-                    original: highQualityImage.get() ? value.img.original.waterurl : value.img.screen.waterurl,
+                    original: highQualityImage.get()
+                        ? value.img.original.waterurl
+                        : value.img.screen.waterurl,
                     thumbnail: value.img.medium.url,
                 };
             })

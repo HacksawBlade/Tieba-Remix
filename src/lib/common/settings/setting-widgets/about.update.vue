@@ -1,8 +1,12 @@
 <template>
     <div v-if="!forbidden" class="update-wrapper">
-        <div v-if="isLatest !== undefined" class="latest-info" :class="{ 'is-latest': isLatest }">
-            <div class="icon">{{ isLatest ? 'check' : 'warning' }}</div>
-            <div class="content">{{ isLatest ? '当前是最新版本' : '检测到新版本' }}</div>
+        <div
+            v-if="isLatest !== undefined"
+            class="latest-info"
+            :class="{ 'is-latest': isLatest }"
+        >
+            <div class="icon">{{ isLatest ? "check" : "warning" }}</div>
+            <div class="content">{{ isLatest ? "当前是最新版本" : "检测到新版本" }}</div>
         </div>
 
         <div class="title-container">
@@ -11,15 +15,28 @@
         </div>
 
         <div class="main-info">
-            <img v-if="release?.author.avatar_url" :src="release?.author.avatar_url" alt="" class="avatar">
+            <img
+                v-if="release?.author.avatar_url"
+                :src="release?.author.avatar_url"
+                alt=""
+                class="avatar"
+            />
             <div class="owner">{{ release?.author.name }}</div>
         </div>
 
-        <div class="release-body markdown" v-html="release?.body ? marked(release?.body) : ''"></div>
+        <div
+            class="release-body markdown"
+            v-html="release?.body ? marked(release?.body) : ''"
+        ></div>
 
         <div class="update-controls">
-            <UserButton class="up-button download-button" shadow-border theme-style is-anchor
-                :href="release?.assets[0].browser_download_url">安装更新
+            <UserButton
+                class="up-button download-button"
+                shadow-border
+                theme-style
+                is-anchor
+                :href="release?.assets[0].browser_download_url"
+                >安装更新
             </UserButton>
         </div>
     </div>
@@ -33,7 +50,7 @@
 <script lang="ts" setup>
 import { GM_info } from "$";
 import { getLatestReleaseFromGitee } from "@/lib/api/remixed";
-import { GiteeRelease } from "@/lib/user-values";
+import type { GiteeRelease } from "@/lib/user-values";
 import { marked } from "marked";
 import { UserButton } from "user-view";
 import { onMounted, ref } from "vue";

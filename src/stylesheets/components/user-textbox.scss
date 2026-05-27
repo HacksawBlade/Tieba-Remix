@@ -5,7 +5,10 @@
     border-radius: 6px;
     background-color: var(--default-background);
     outline: none;
-    transition: all var(--default-duration), width 0s, height 0s;
+    transition:
+        all var(--default-duration),
+        width 0s,
+        height 0s;
 
     &:hover {
         border-color: var(--light-background);

@@ -65,7 +65,9 @@ function main(): void {
 
     function createTagsAll() {
         _.forEach(dom(".lzl_cnt .at", []), (elem) => {
-            if (elem.classList.contains(TAGGED)) return;
+            if (elem.classList.contains(TAGGED)) {
+                return;
+            }
             elem.classList.add(TAGGED);
 
             let isLouzhu = false;
@@ -125,7 +127,7 @@ function main(): void {
                 function dataClassify() {
                     const dataAttr = elem.getAttribute("data-field");
                     if (dataAttr) {
-                        const dataField = JSON.parse(dataAttr.replace(/'/g, "\""));
+                        const dataField = JSON.parse(dataAttr.replace(/'/g, '"'));
                         if (portrait) {
                             if (dataField.id === portrait) {
                                 return true;
@@ -145,7 +147,7 @@ function main(): void {
             elem.appendChild(
                 domrd("div", {
                     class: `${TB_TAG} ${className}`,
-                })
+                }),
             );
         }
     }

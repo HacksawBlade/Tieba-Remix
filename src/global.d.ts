@@ -3,85 +3,87 @@ declare module "*.json";
 type Maybe<T> = T | undefined;
 
 interface LiteralObject {
-    [prop: string]: T
+    [prop: string]: T;
 }
 
-type ValueOf<T> = T[keyof T]
+type ValueOf<T> = T[keyof T];
 
 type Mapped<T> = {
-    [prop in keyof T]: T[prop]
-}
+    [prop in keyof T]: T[prop];
+};
 
 type KeyMapped<T, U> = {
-    [prop in keyof T]: U
-}
+    [prop in keyof T]: U;
+};
 
 type OptionalMapped<T> = {
     [prop in keyof T]?: T[prop];
-}
+};
 
-type PageType = "index" | "thread" | "forum" | "user" | "unhandled"
+type PageType = "index" | "thread" | "forum" | "user" | "unhandled";
 
 /** 用户模块 */
 interface UserModule {
-    [prop: string]: any
+    [prop: string]: any;
 
-    id: string
+    id: string;
     /** 需要显示给用户的模块名称 */
-    name: string
-    author: string
-    version: string
-    brief: string
-    description: string
+    name: string;
+    author: string;
+    version: string;
+    brief: string;
+    description: string;
 
-    switch?: boolean
-    scope: true | PageType[] | RegExp
-    runAt: "immediately" | "afterHead" | "DOMLoaded" | "loaded"
+    switch?: boolean;
+    scope: true | PageType[] | RegExp;
+    runAt: "immediately" | "afterHead" | "DOMLoaded" | "loaded";
 
-    entry: (() => void)
+    entry: () => void;
 }
 
 /** 贴子 */
 interface TiebaPost {
-    id: string
+    id: string;
     forum: {
-        id: string
-        name: string
-        href: string
-    }
+        id: string;
+        name: string;
+        href: string;
+    };
 
     author: {
-        portrait: string
-        name: string
-        href: string
-    }
-    time: string
+        portrait: string;
+        name: string;
+        href: string;
+    };
+    time: string;
 
-    title: string
-    content: string
-    replies: number | string
+    title: string;
+    content: string;
+    replies: number | string;
     images: {
-        thumb: string
-        original: string
-    }[]
+        thumb: string;
+        original: string;
+    }[];
 }
 
-type DropdownMenu = {
-    title: string
-    href?: string
-    click?: (() => void)
-    icon?: string
-    innerText?: string
-} | "separator"
+type DropdownMenu =
+    | {
+          title: string;
+          href?: string;
+          click?: () => void;
+          icon?: string;
+          innerText?: string;
+      }
+    | "separator";
 
 interface UserValueTS<T> {
-    value: T
-    invalidTime: number
+    value: T;
+    invalidTime: number;
 }
 
 interface SimpleButton {
-    title: string
-    event: (() => void)
+    title: string;
+    event: () => void;
 }
 
 interface Meta {

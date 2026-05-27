@@ -1,14 +1,31 @@
 <template>
     <UserDialog ref="dialog" v-bind="dialogOpts">
         <div id="thread-editor">
-            <UserButton aria-label="关闭" id="thread-editor-exit" class="icon" shadow-border @click="unload">close
+            <UserButton
+                aria-label="关闭"
+                id="thread-editor-exit"
+                class="icon"
+                shadow-border
+                @click="unload"
+                >close
             </UserButton>
-            <UserTextbox v-if="type === 'thread'" class="title-editor" placeholder="输入标题" lodash-style></UserTextbox>
+            <UserTextbox
+                v-if="type === 'thread'"
+                class="title-editor"
+                placeholder="输入标题"
+                lodash-style
+            ></UserTextbox>
 
             <div ref="editorSlot" id="thread-editor-slot"></div>
 
             <div id="thread-editor-toolbar">
-                <UserButton id="thread-editor-submit" shadow-border theme-style @click="submit">发表</UserButton>
+                <UserButton
+                    id="thread-editor-submit"
+                    shadow-border
+                    theme-style
+                    @click="submit"
+                    >发表</UserButton
+                >
             </div>
         </div>
     </UserDialog>
@@ -16,7 +33,8 @@
 
 <script lang="tsx" setup>
 import { asyncdom } from "@/lib/elemental";
-import { UserButton, UserDialog, UserDialogOpts, UserTextbox } from "user-view";
+import type { UserDialogOpts } from "user-view";
+import { UserButton, UserDialog, UserTextbox } from "user-view";
 import { nextTick, onMounted, ref } from "vue";
 
 export interface ThreadEditorOpts {
@@ -86,7 +104,9 @@ const originParent = ref<HTMLDivElement>();
 onMounted(async function () {
     await nextTick();
 
-    if (!editorSlot.value) return;
+    if (!editorSlot.value) {
+        return;
+    }
     originParent.value = props.ueditor.parentElement as HTMLDivElement;
     editorSlot.value.appendChild(props.ueditor);
 
@@ -104,8 +124,12 @@ async function submit() {
 }
 
 async function unload() {
-    if (!originParent.value) return;
-    if (!editorSlot.value) return;
+    if (!originParent.value) {
+        return;
+    }
+    if (!editorSlot.value) {
+        return;
+    }
     // 传入的可能是未加载完毕的，归还时一定要完整的
     originParent.value.appendChild(await asyncdom(".edui-container"));
     dialog.value?.unload();
@@ -148,7 +172,6 @@ async function unload() {
     h1 {
         margin-right: auto;
     }
-
 
     #thread-editor-slot {
         width: 100%;

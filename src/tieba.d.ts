@@ -1,5 +1,5 @@
 const Env: {
-    server_time: number
+    server_time: number;
 };
 
 const datalazyload: {
@@ -11,7 +11,7 @@ const datalazyload: {
         execScript: boolean;
         container: object;
         autoDestory: boolean;
-    }
+    };
 
     _callbacks: object;
     _containerIsNotDocument: boolean;

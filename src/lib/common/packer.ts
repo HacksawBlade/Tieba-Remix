@@ -5,17 +5,17 @@ import { disabledModules } from "../user-values";
 
 /**
  * 解析用户模块，并根据默认情况按需执行模块
- * @param glob 
- * @param callbackfn 
+ * @param glob
+ * @param callbackfn
  * @returns 所有解析后的模块
  */
 export function parseUserModules(
     glob: Record<string, () => Promise<any>>,
-    callbackfn?: ((module: UserModule) => void)
+    callbackfn?: (module: UserModule) => void,
 ): UserModule[] {
     const modules: UserModule[] = [];
 
-    _.forEach(glob, async moduleExport => {
+    _.forEach(glob, async (moduleExport) => {
         const currentModule = (await moduleExport()).default as UserModule;
         const disabledSet = new Set(disabledModules.get());
 
@@ -56,21 +56,23 @@ export function parseUserModules(
 
         // 根据模块 runAt 选择运行模式
         const runModule = {
-            "immediately": () => { currentModule.entry(); },
+            immediately: () => {
+                currentModule.entry();
+            },
 
-            "afterHead": () => {
+            afterHead: () => {
                 afterHead(() => {
                     currentModule.entry();
                 });
             },
 
-            "DOMLoaded": () => {
+            DOMLoaded: () => {
                 document.addEventListener("DOMContentLoaded", () => {
                     currentModule.entry();
                 });
             },
 
-            "loaded": () => {
+            loaded: () => {
                 window.addEventListener("load", () => {
                     currentModule.entry();
                 });
@@ -85,7 +87,9 @@ export function parseUserModules(
         modules.push(currentModule);
 
         // 处理回调函数
-        if (callbackfn) callbackfn(currentModule);
+        if (callbackfn) {
+            callbackfn(currentModule);
+        }
     });
 
     return modules;

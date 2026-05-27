@@ -1,14 +1,22 @@
 <template>
     <UserDialog ref="dialog" v-bind="dialogOpts">
         <svg class="loading-svg" viewBox="0 0 100 100">
-            <circle class="loading-circle" cx="50" cy="50" r="40" fill="none" stroke-width="8"></circle>
+            <circle
+                class="loading-circle"
+                cx="50"
+                cy="50"
+                r="40"
+                fill="none"
+                stroke-width="8"
+            ></circle>
         </svg>
     </UserDialog>
 </template>
 
 <script setup lang="ts">
 import { waitUntil } from "@/lib/utils";
-import { UserDialog, UserDialogOpts } from "user-view";
+import type { UserDialogOpts } from "user-view";
+import { UserDialog } from "user-view";
 import { onMounted, ref } from "vue";
 
 export interface AwaitDialogOpts {

@@ -17,7 +17,9 @@ export class EventProxy {
         callback: ((e: E) => void) | EventListenerObject,
         options?: AddEventListenerOptions | boolean,
     ) {
-        if (!target) return;
+        if (!target) {
+            return;
+        }
         target.addEventListener(type, callback as EventListener, options);
         this.records.push({ target, type, callback, options });
     }

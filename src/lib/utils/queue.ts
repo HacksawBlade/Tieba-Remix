@@ -1,6 +1,8 @@
 export class Queue<T> {
     constructor(items?: Array<T>) {
-        if (items) this.items = items;
+        if (items) {
+            this.items = items;
+        }
     }
 
     private items: T[] = [];

@@ -6,7 +6,8 @@
     font-family: "Material Symbols";
     font-style: normal;
     font-weight: 200 400;
-    src: url("https://fonts.gstatic.com/s/materialsymbolsoutlined/v110/kJEhBvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oFsI.woff2") format("woff2");
+    src: url("https://fonts.gstatic.com/s/materialsymbolsoutlined/v110/kJEhBvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oFsI.woff2")
+        format("woff2");
 }
 
 .material-symbols-outlined {

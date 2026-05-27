@@ -1,12 +1,30 @@
 <template>
-    <nav ref="navBar" id="nav-bar" class="nav-bar remove-default"
-        :class="{ 'fold': hideMode === 'alwaysFold', 'blur-effect': !experimental.get().rasterEffect, 'raster-effect': experimental.get().rasterEffect, 'fixed-on-top': hideMode === 'fixedOnTop' }">
+    <nav
+        ref="navBar"
+        id="nav-bar"
+        class="nav-bar remove-default"
+        :class="{
+            fold: hideMode === 'alwaysFold',
+            'blur-effect': !experimental.get().rasterEffect,
+            'raster-effect': experimental.get().rasterEffect,
+            'fixed-on-top': hideMode === 'fixedOnTop',
+        }"
+    >
         <div v-show="teiggerHide" id="fold-bar"></div>
 
         <div id="nav-container">
             <div class="left-container">
-                <UserButton class="nav-button nav-title-container" is-anchor href="/" no-border="all">
-                    <img :src="getResource('/assets/images/main/icon64.png')" alt="" class="nav-icon">
+                <UserButton
+                    class="nav-button nav-title-container"
+                    is-anchor
+                    href="/"
+                    no-border="all"
+                >
+                    <img
+                        :src="getResource('/assets/images/main/icon64.png')"
+                        alt=""
+                        class="nav-icon"
+                    />
                     <p class="nav-title">贴吧</p>
                 </UserButton>
             </div>
@@ -14,19 +32,29 @@
             <div class="right-container">
                 <div class="middle-container">
                     <template v-for="(menu, key) in middleMenu" :key="key">
-                        <UserButton class="menu-trigger middle-menu-trigger" no-border="all">
+                        <UserButton
+                            class="menu-trigger middle-menu-trigger"
+                            no-border="all"
+                        >
                             {{ key }}
-                            <DropdownMenu class="nav-menu" :menu-items="menu"></DropdownMenu>
+                            <DropdownMenu
+                                class="nav-menu"
+                                :menu-items="menu"
+                            ></DropdownMenu>
                         </UserButton>
                     </template>
                 </div>
 
                 <UserButton class="nav-button menu-trigger avatar-button" no-border="all">
-                    <img ref="navAvatar" class="nav-avatar">
+                    <img ref="navAvatar" class="nav-avatar" />
                     <DropdownMenu class="nav-menu" :menu-items="userMenu!"></DropdownMenu>
                 </UserButton>
 
-                <UserButton class="nav-button menu-trigger menu-button" shadow-border no-border="all">
+                <UserButton
+                    class="nav-button menu-trigger menu-button"
+                    shadow-border
+                    no-border="all"
+                >
                     <div class="icon">menu</div>
                     <DropdownMenu class="nav-menu" :menu-items="extendMenu!">
                     </DropdownMenu>
@@ -50,10 +78,15 @@ import { onMounted, ref } from "vue";
 import DropdownMenu from "./dropdown-menu.vue";
 import Settings from "./settings.vue";
 
-export type NavBarHideMode = "fold" | "alwaysFold" | "hideWhenScroll" | "fixedOnTop" | "never";
+export type NavBarHideMode =
+    | "fold"
+    | "alwaysFold"
+    | "hideWhenScroll"
+    | "fixedOnTop"
+    | "never";
 
 interface Props {
-    hideMode?: NavBarHideMode
+    hideMode?: NavBarHideMode;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -74,8 +107,9 @@ init();
 onMounted(async function () {
     {
         waitUntil(() => userPortrait.value !== "").then(function () {
-            if (navAvatar.value)
+            if (navAvatar.value) {
                 navAvatar.value.src = tiebaAPI.URL_profile(userPortrait.value);
+            }
         });
     }
 });
@@ -88,13 +122,17 @@ async function init() {
 
     const navBarElement = dom("#nav-bar");
     if (navBarElement) {
-        _.forEach(dom<"button">(".menu-trigger", navBarElement, []), el => {
+        _.forEach(dom<"button">(".menu-trigger", navBarElement, []), (el) => {
             el.addEventListener("mousemove", function (e) {
                 e.stopPropagation();
                 const menu = el.lastElementChild as HTMLElement;
 
                 const elRect = el.getBoundingClientRect();
-                const menuCoord = getFloatCoord(menu, { x: elRect.left + elRect.width / 2, y: 0 }, "middle");
+                const menuCoord = getFloatCoord(
+                    menu,
+                    { x: elRect.left + elRect.width / 2, y: 0 },
+                    "middle",
+                );
                 menu.style.left = `${menuCoord.x}px`;
                 menu.style.top = "48px";
             });
@@ -109,7 +147,8 @@ async function init() {
         case "fold":
         case "hideWhenScroll": {
             const modeClass = props.hideMode === "fold" ? "fold" : "hide";
-            const threshold = 50, timeout = 1000;
+            const threshold = 50,
+                timeout = 1000;
             let lastScrollY = window.scrollY;
             let timer = -1;
             const handle = _.throttle(function () {
@@ -157,9 +196,7 @@ async function login() {
     }
 
     function regularLogin() {
-        loginButton
-            ? dom<"a">("a", loginButton)?.click()
-            : cannotLogin();
+        loginButton ? dom<"a">("a", loginButton)?.click() : cannotLogin();
     }
 
     function cannotLogin() {
@@ -169,7 +206,7 @@ async function login() {
 
 function loadNavMenuContent() {
     middleMenu.value = {
-        "消息": [
+        消息: [
             {
                 title: "查看私信",
                 href: "/im/pcmsg",
@@ -202,7 +239,7 @@ function loadNavMenuContent() {
             },
         ],
 
-        "更多": [
+        更多: [
             {
                 title: "账号设置",
                 href: "//passport.baidu.com/?center&tpl=tb&aid=6&default_tab=3#3,0",
@@ -235,22 +272,25 @@ function loadNavMenuContent() {
 
     PageData.user.is_login
         ? userMenu.value.push("separator", {
-            title: "退出登录",
-            click() {
-                const logoutButton = dom(".u_logout");
-                if (logoutButton) {
-                    dom<"a">("a", logoutButton)?.click();
-                } else {
-                    toast({ message: "未检测到退出登录入口，请刷新重试。", type: "warning" });
-                }
-            },
-        })
+              title: "退出登录",
+              click() {
+                  const logoutButton = dom(".u_logout");
+                  if (logoutButton) {
+                      dom<"a">("a", logoutButton)?.click();
+                  } else {
+                      toast({
+                          message: "未检测到退出登录入口，请刷新重试。",
+                          type: "warning",
+                      });
+                  }
+              },
+          })
         : userMenu.value.push("separator", {
-            title: "登录",
-            click() {
-                login();
-            },
-        });
+              title: "登录",
+              click() {
+                  login();
+              },
+          });
 
     extendMenu.value = [
         {
@@ -302,7 +342,9 @@ $fold-bar-height: 3px;
     border-bottom: 1px solid var(--border-color);
     background-color: var(--trans-page-background);
     box-shadow: 0 0 10px rgb(0 0 0 / 10%);
-    transition: all var(--default-duration), width 0s;
+    transition:
+        all var(--default-duration),
+        width 0s;
 
     .dark-theme & {
         box-shadow: 0 0 16px rgb(0 0 0 / 60%);

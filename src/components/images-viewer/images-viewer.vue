@@ -2,26 +2,50 @@
     <UserDialog ref="dialog" v-bind="dialogOpts">
         <div ref="imagesViewer" class="images-viewer" @click="clickModal">
             <div ref="imageContainer" class="image-container dialog-toggle">
-                <img ref="currImage" class="curr-image changing" :src="imageArray[curr]"
-                    :style="parseCSSRule(imageStyle)">
+                <img
+                    ref="currImage"
+                    class="curr-image changing"
+                    :src="imageArray[curr]"
+                    :style="parseCSSRule(imageStyle)"
+                />
             </div>
 
-            <div class="control-panel head-controls" :class="{ 'hide': !showControls.top }">
-                <UserToggle class="vli-mode head-btn icon" title="长图模式" v-model="vliMode">chrome_reader_mode
+            <div class="control-panel head-controls" :class="{ hide: !showControls.top }">
+                <UserToggle
+                    class="vli-mode head-btn icon"
+                    title="长图模式"
+                    v-model="vliMode"
+                    >chrome_reader_mode
                 </UserToggle>
                 <span>|</span>
-                <UserButton class="zoom-in head-btn icon" title="缩小" @click="zoomImage(0.5)">
+                <UserButton
+                    class="zoom-in head-btn icon"
+                    title="缩小"
+                    @click="zoomImage(0.5)"
+                >
                     zoom_in
                 </UserButton>
-                <UserButton class="zoom-out head-btn icon" title="放大" @click="zoomImage(-0.5)">
+                <UserButton
+                    class="zoom-out head-btn icon"
+                    title="放大"
+                    @click="zoomImage(-0.5)"
+                >
                     zoom_out
                 </UserButton>
                 <span class="zoom-size">{{ _.round(scale * 100) + "%" }}</span>
                 <span>|</span>
-                <UserButton class="turn-left head-btn icon" title="逆时针旋转" @click="rotateImage(-90)">
+                <UserButton
+                    class="turn-left head-btn icon"
+                    title="逆时针旋转"
+                    @click="rotateImage(-90)"
+                >
                     undo
                 </UserButton>
-                <UserButton class=" turn-right head-btn icon" title="顺时针旋转" @click="rotateImage(90)">
+                <UserButton
+                    class="turn-right head-btn icon"
+                    title="顺时针旋转"
+                    @click="rotateImage(90)"
+                >
                     redo
                 </UserButton>
                 <span>|</span>
@@ -30,23 +54,44 @@
                 </UserButton>
             </div>
 
-            <UserButton v-if="imageArray.length > 1" class="control-panel back icon"
-                :class="{ 'hide': !showControls.left }" title="上一张" @click="listBack">
+            <UserButton
+                v-if="imageArray.length > 1"
+                class="control-panel back icon"
+                :class="{ hide: !showControls.left }"
+                title="上一张"
+                @click="listBack"
+            >
                 chevron_left
             </UserButton>
-            <UserButton v-if="imageArray.length > 1" class="control-panel forward icon"
-                :class="{ 'hide': !showControls.right }" title="下一张" @click="listForward">
+            <UserButton
+                v-if="imageArray.length > 1"
+                class="control-panel forward icon"
+                :class="{ hide: !showControls.right }"
+                title="下一张"
+                @click="listForward"
+            >
                 chevron_right
             </UserButton>
 
-            <div ref="bottomPanel"
+            <div
+                ref="bottomPanel"
                 class="control-panel bottom-controls-wrapper"
-                :class="{ 'hide': !showControls.bottom }">
+                :class="{ hide: !showControls.bottom }"
+            >
                 <div class="bottom-controls-container">
                     <div ref="thumbContainer" class="thumb-container">
-                        <UserButton v-for="(thumb, index) in thumbArray" class="bottom-btn"
-                            :class="{ 'selected': index === curr }" no-border="all">
-                            <img class="image-list" alt="" :data-lazyload="thumb" @click="curr = index">
+                        <UserButton
+                            v-for="(thumb, index) in thumbArray"
+                            class="bottom-btn"
+                            :class="{ selected: index === curr }"
+                            no-border="all"
+                        >
+                            <img
+                                class="image-list"
+                                alt=""
+                                :data-lazyload="thumb"
+                                @click="curr = index"
+                            />
                         </UserButton>
                     </div>
                 </div>
@@ -59,9 +104,11 @@
 <script setup lang="ts">
 import { dom } from "@/lib/elemental";
 import { EventProxy } from "@/lib/elemental/event-proxy";
-import { CSSRule, parseCSSRule } from "@/lib/elemental/styles";
+import type { CSSRule } from "@/lib/elemental/styles";
+import { parseCSSRule } from "@/lib/elemental/styles";
 import _ from "lodash";
-import { UserButton, UserDialog, UserDialogOpts, UserToggle } from "user-view";
+import type { UserDialogOpts } from "user-view";
+import { UserButton, UserDialog, UserToggle } from "user-view";
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 
 export interface ImagesViewerOpts {
@@ -87,8 +134,8 @@ if (typeof props.content === "string") {
     thumbArray.push(props.content);
 } else if (Array.isArray(props.content)) {
     if (typeof props.content[0] === "string") {
-        imageArray.push(...props.content as string[]);
-        thumbArray.push(...props.content as string[]);
+        imageArray.push(...(props.content as string[]));
+        thumbArray.push(...(props.content as string[]));
     } else {
         _.forEach(props.content as ThreadPicture[], (value) => {
             imageArray.push(value.original);
@@ -143,8 +190,11 @@ const imageProps = computed(function () {
     return {
         naturalHeight: naturalHeight ?? 0,
         scaledHeight: naturalHeight ?? 0 * scale.value,
-        vliMaxTop: -(naturalHeight * (1 - scale.value) / 2) + window.innerHeight / 2,
-        vliMinTop: -(naturalHeight * scale.value) - (naturalHeight * (1 - scale.value) / 2) + window.innerHeight / 2,
+        vliMaxTop: -((naturalHeight * (1 - scale.value)) / 2) + window.innerHeight / 2,
+        vliMinTop:
+            -(naturalHeight * scale.value) -
+            (naturalHeight * (1 - scale.value)) / 2 +
+            window.innerHeight / 2,
     };
 });
 
@@ -183,27 +233,42 @@ let thumbLazyloadObserver: IntersectionObserver;
 onMounted(async () => {
     await nextTick();
 
-    const currentBottom = dom(".bottom-btn", thumbContainer.value!, [])[props.defaultIndex];
+    const currentBottom = dom(".bottom-btn", thumbContainer.value!, [])[
+        props.defaultIndex
+    ];
     currentBottom.scrollIntoView({
         inline: "center",
     });
 
-    let offsetX = 0, offsetY = 0;
+    let offsetX = 0,
+        offsetY = 0;
 
-    evproxy.on(window, "mousemove", _.throttle(function (e: MouseEvent) {
-        const { clientX, clientY } = e;
-        lastMousePos = { x: clientX, y: clientY };
-        showControls.value = verifyPos();
-    }, 100, { leading: true }));
+    evproxy.on(
+        window,
+        "mousemove",
+        _.throttle(
+            function (e: MouseEvent) {
+                const { clientX, clientY } = e;
+                lastMousePos = { x: clientX, y: clientY };
+                showControls.value = verifyPos();
+            },
+            100,
+            { leading: true },
+        ),
+    );
 
     lockControlsTemporarily("all", DEFAULT_HIDE_CONTROLS_DELAY);
 
     evproxy.on(imagesViewer.value, "wheel", imageWheel, { passive: true });
 
     evproxy.on(currImage.value, "mousedown", (e: MouseEvent) => {
-        if (!currImage.value) return;
+        if (!currImage.value) {
+            return;
+        }
         e.preventDefault();
-        if (vliMode.value) return;
+        if (vliMode.value) {
+            return;
+        }
 
         offsetX = e.clientX - currImage.value.offsetLeft;
         offsetY = e.clientY - currImage.value.offsetTop;
@@ -216,19 +281,27 @@ onMounted(async () => {
     });
 
     evproxy.on(currImage.value, "load", function () {
-        if (!currImage.value) return;
+        if (!currImage.value) {
+            return;
+        }
         vliMode.value = false;
 
         (() => {
-            if (currImage.value.naturalHeight < window.innerHeight &&
-                currImage.value.naturalWidth < window.innerWidth) {
+            if (
+                currImage.value.naturalHeight < window.innerHeight &&
+                currImage.value.naturalWidth < window.innerWidth
+            ) {
                 scale.value = 1;
                 return;
             }
 
-            if (currImage.value.naturalHeight / currImage.value.naturalWidth >= VLI_THRESHOLD) {
+            if (
+                currImage.value.naturalHeight / currImage.value.naturalWidth >=
+                VLI_THRESHOLD
+            ) {
                 vliMode.value = true;
-                scale.value = window.innerWidth / VLI_WIDTH_SCALE / currImage.value.naturalWidth;
+                scale.value =
+                    window.innerWidth / VLI_WIDTH_SCALE / currImage.value.naturalWidth;
                 imageLeft.value = undefined;
                 return;
             }
@@ -255,13 +328,17 @@ onMounted(async () => {
     thumbLazyloadObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
-                (entry.target as HTMLImageElement).src = (entry.target as HTMLImageElement).dataset.lazyload ?? "";
+                (entry.target as HTMLImageElement).src =
+                    (entry.target as HTMLImageElement).dataset.lazyload ?? "";
                 thumbLazyloadObserver.unobserve(entry.target);
             }
         });
     });
 
-    const bottomPanelScrollBar = dom<"div">(".bottom-panel-scroll-bar", bottomPanel.value);
+    const bottomPanelScrollBar = dom<"div">(
+        ".bottom-panel-scroll-bar",
+        bottomPanel.value,
+    );
     const bottomContainer = dom<"div">(".bottom-controls-container", bottomPanel.value);
     if (bottomPanel.value) {
         dom("img", bottomPanel.value, []).forEach((img) => {
@@ -269,7 +346,8 @@ onMounted(async () => {
         });
 
         if (bottomPanelScrollBar && bottomContainer) {
-            const scrollBarScale = bottomContainer.clientWidth / bottomContainer.scrollWidth;
+            const scrollBarScale =
+                bottomContainer.clientWidth / bottomContainer.scrollWidth;
             if (scrollBarScale >= 1) {
                 bottomPanelScrollBar.style.display = "none";
             }
@@ -277,26 +355,35 @@ onMounted(async () => {
         }
     }
 
-    evproxy.on(bottomPanel.value, "wheel", (e: WheelEvent) => {
-        e.stopPropagation();
-        if (!bottomContainer) return;
+    evproxy.on(
+        bottomPanel.value,
+        "wheel",
+        (e: WheelEvent) => {
+            e.stopPropagation();
+            if (!bottomContainer) {
+                return;
+            }
 
-        if (e.deltaX === 0 && e.deltaY !== 0) {
-            bottomContainer.scrollBy({
-                left: e.deltaY,
-            });
-        } else if (e.deltaX !== 0 && e.deltaY === 0) {
-            bottomContainer.scrollBy({
-                left: e.deltaX,
-            });
-        }
-        if (bottomPanelScrollBar) {
-            bottomPanelScrollBar.style.left = `${bottomContainer.scrollLeft / bottomContainer.scrollWidth * 100}%`;
-        }
-    }, { passive: false });
+            if (e.deltaX === 0 && e.deltaY !== 0) {
+                bottomContainer.scrollBy({
+                    left: e.deltaY,
+                });
+            } else if (e.deltaX !== 0 && e.deltaY === 0) {
+                bottomContainer.scrollBy({
+                    left: e.deltaX,
+                });
+            }
+            if (bottomPanelScrollBar) {
+                bottomPanelScrollBar.style.left = `${(bottomContainer.scrollLeft / bottomContainer.scrollWidth) * 100}%`;
+            }
+        },
+        { passive: false },
+    );
 
     function moveHandler(e: MouseEvent) {
-        if (!currImage.value) return;
+        if (!currImage.value) {
+            return;
+        }
         imageLeft.value = e.clientX - offsetX;
         imageTop.value = e.clientY - offsetY;
     }
@@ -316,7 +403,9 @@ watch(curr, function () {
 
 watch(imageTop, function (newTop) {
     if (vliMode.value) {
-        if (!currImage.value || !imageTop.value || !newTop) return;
+        if (!currImage.value || !imageTop.value || !newTop) {
+            return;
+        }
 
         if (newTop > imageProps.value.vliMaxTop) {
             imageTop.value = imageProps.value.vliMaxTop;
@@ -332,7 +421,7 @@ watch(vliMode, function (newMode) {
     if (newMode && currImage.value && !imageTop.value) {
         imageTop.value = Math.max(
             imageProps.value.vliMinTop,
-            -(currImage.value.naturalHeight * (1 - scale.value) / 2),
+            -((currImage.value.naturalHeight * (1 - scale.value)) / 2),
         );
     }
 });
@@ -344,12 +433,16 @@ function unload() {
 
 /** 上一张照片 */
 function listBack() {
-    if (curr.value > 0) curr.value--;
+    if (curr.value > 0) {
+        curr.value--;
+    }
 }
 
 /** 下一张照片 */
 function listForward() {
-    if (curr.value < imageArray.length - 1) curr.value++;
+    if (curr.value < imageArray.length - 1) {
+        curr.value++;
+    }
 }
 
 /** 缩放图片 */
@@ -370,13 +463,17 @@ function rotateImage(delta: number) {
 
 /** 鼠标滚轮事件 */
 function imageWheel(e: WheelEvent) {
-    if (!currImage.value) return;
+    if (!currImage.value) {
+        return;
+    }
 
     if (!vliMode.value) {
         zoomImage(-e.deltaY / 1000);
     } else {
-        if (!imageTop.value) imageTop.value = 0;
-        imageTop.value += -e.deltaY / 1000 * window.innerHeight;
+        if (!imageTop.value) {
+            imageTop.value = 0;
+        }
+        imageTop.value += (-e.deltaY / 1000) * window.innerHeight;
     }
 }
 
@@ -393,7 +490,7 @@ function clickModal(e: MouseEvent) {
  */
 function lockControlsTemporarily(
     direction: keyof ControlDirectionMap<any> | "all",
-    timeout: number
+    timeout: number,
 ) {
     if (direction !== "all") {
         lock(direction);
@@ -434,17 +531,17 @@ function verifyPos(pos = lastMousePos) {
     };
 
     distanceToLeft <= SHOW_CONTROLS_THRESHOLD_X || lockControls.value.left
-        ? calcValue.left = true
-        : calcValue.left = false;
+        ? (calcValue.left = true)
+        : (calcValue.left = false);
     distanceToRight <= SHOW_CONTROLS_THRESHOLD_X || lockControls.value.right
-        ? calcValue.right = true
-        : calcValue.right = false;
+        ? (calcValue.right = true)
+        : (calcValue.right = false);
     distanceToTop <= SHOW_CONTROLS_THRESHOLD_Y || lockControls.value.top
-        ? calcValue.top = true
-        : calcValue.top = false;
+        ? (calcValue.top = true)
+        : (calcValue.top = false);
     distanceToBottom <= SHOW_CONTROLS_THRESHOLD_Y || lockControls.value.bottom
-        ? calcValue.bottom = true
-        : calcValue.bottom = false;
+        ? (calcValue.bottom = true)
+        : (calcValue.bottom = false);
 
     return calcValue;
 }

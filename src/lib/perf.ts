@@ -1,7 +1,8 @@
 import _ from "lodash";
 import { currentPageType } from "./api/remixed";
 import { threadFloorsObserver } from "./observers";
-import { PerfType, perfProfile } from "./user-values";
+import type { PerfType } from "./user-values";
+import { perfProfile } from "./user-values";
 import { waitUntil } from "./utils";
 
 export function loadPerf() {
@@ -19,7 +20,7 @@ export function setPerfAttr() {
         performance: "perf-performance",
     };
 
-    _.forEach(document.documentElement.attributes, attr => {
+    _.forEach(document.documentElement.attributes, (attr) => {
         if (_.startsWith(attr.name, "perf-")) {
             document.documentElement.removeAttribute(attr.name);
         }
@@ -29,11 +30,13 @@ export function setPerfAttr() {
 
 /**
  * 帖子页面懒加载性能配置
- * 
+ *
  * 针对不同性能配置，对楼中楼懒加载范围进行调整。高性能模式下会直接加载整页的评论，以减少视觉抖动；而节能配置被设定为贴吧默认值 (500).
  */
 export async function setThreadLazyload() {
-    if (currentPageType() !== "thread") return;
+    if (currentPageType() !== "thread") {
+        return;
+    }
     const lazyloadDiff: Record<PerfType, number> = {
         default: 1000,
         saver: 500,

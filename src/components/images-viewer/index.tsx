@@ -1,5 +1,6 @@
 import { renderDialog } from "@/lib/render";
-import ImagesViewer, { ImagesViewerOpts } from "./images-viewer.vue";
+import type { ImagesViewerOpts } from "./images-viewer.vue";
+import ImagesViewer from "./images-viewer.vue";
 
 export default ImagesViewer;
 export * from "./images-viewer.vue";

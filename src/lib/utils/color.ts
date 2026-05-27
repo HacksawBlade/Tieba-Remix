@@ -20,7 +20,9 @@ export function colorToRGBA(color: string): Maybe<RGBA> {
     document.body.appendChild(elem);
     const computedColor = window.getComputedStyle(elem).color;
     document.body.removeChild(elem);
-    const rgbaMatch = computedColor.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)$/);
+    const rgbaMatch = computedColor.match(
+        /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)$/,
+    );
     if (rgbaMatch) {
         return {
             r: parseInt(rgbaMatch[1], 10),
@@ -33,9 +35,10 @@ export function colorToRGBA(color: string): Maybe<RGBA> {
 
 export function hexToRGBA(hex: string): RGBA {
     const hexValue = _.startsWith(hex, "#") ? _.trimStart(hex, "#") : hex;
-    const tokenConverter = hexValue.length <= 4
-        ? (chunk: string[]) => parseInt(_.repeat(chunk[0], 2), 16)
-        : (chunk: string[]) => parseInt(_.join(chunk, ""), 16);
+    const tokenConverter =
+        hexValue.length <= 4
+            ? (chunk: string[]) => parseInt(_.repeat(chunk[0], 2), 16)
+            : (chunk: string[]) => parseInt(_.join(chunk, ""), 16);
     const chunkSize = hexValue.length <= 4 ? 1 : 2;
     const chunks = _.chunk(hexValue, chunkSize);
     return {

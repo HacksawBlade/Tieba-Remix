@@ -1,18 +1,19 @@
 import _ from "lodash";
-import { TiebaAbstract, TiebaComponent } from "../api/abstract";
+import type { TiebaAbstract } from "../api/abstract";
+import { TiebaComponent } from "../api/abstract";
 import { dom, domrd } from "../elemental";
 
 export const floatButtonMap = {
-    "auxiliary": "tbui_fbar_auxiliaryCare",
-    "down": "tbui_fbar_down",
-    "post": "tbui_fbar_post",
-    "props": "tbui_fbar_props",
-    "tsukkomi": "tbui_fbar_tsukkomi",
-    "share": "tbui_fbar_share",
-    "favor": "tbui_fbar_favor",
-    "feedback": "tbui_fbar_feedback",
-    "top": "tbui_fbar_top",
-    "other": "*",
+    auxiliary: "tbui_fbar_auxiliaryCare",
+    down: "tbui_fbar_down",
+    post: "tbui_fbar_post",
+    props: "tbui_fbar_props",
+    tsukkomi: "tbui_fbar_tsukkomi",
+    share: "tbui_fbar_share",
+    favor: "tbui_fbar_favor",
+    feedback: "tbui_fbar_feedback",
+    top: "tbui_fbar_top",
+    other: "*",
 };
 
 export class FloatBar extends TiebaComponent<"ul"> {
@@ -21,35 +22,48 @@ export class FloatBar extends TiebaComponent<"ul"> {
      * @returns FloatBarButton[]
      */
     public buttons(): FloatButton[] {
-        if (!this.get()) return [];
-        return Array.from(dom<"li">(".tbui_aside_fbar_button", floatBar.get(), [])).map(el => ({
-            el: el,
-            type: (function () {
-                for (let i = 0; i < el.classList.length; i++) {
-                    const cls = el.classList[i];
-                    if (!cls.includes("tbui_fbar_")) continue;
+        if (!this.get()) {
+            return [];
+        }
+        return Array.from(dom<"li">(".tbui_aside_fbar_button", floatBar.get(), [])).map(
+            (el) => ({
+                el: el,
+                type: (function () {
+                    for (let i = 0; i < el.classList.length; i++) {
+                        const cls = el.classList[i];
+                        if (!cls.includes("tbui_fbar_")) {
+                            continue;
+                        }
 
-                    const key = _.findKey(floatButtonMap, (value) => value === cls);
-                    if (key) {
-                        return key as FloatButtonKey;
+                        const key = _.findKey(floatButtonMap, (value) => value === cls);
+                        if (key) {
+                            return key as FloatButtonKey;
+                        }
                     }
-                }
-                return "other";
-            })(),
-        }));
+                    return "other";
+                })(),
+            }),
+        );
     }
 
     public add(
-        type: FloatButtonKey, event: (() => void),
-        className?: string, icon?: string, index = 0
+        type: FloatButtonKey,
+        event: () => void,
+        className?: string,
+        icon?: string,
+        index = 0,
     ) {
         const anchor = domrd("a", {
             href: "javascript:;",
         });
 
-        const el = domrd("li", {
-            class: "tbui_aside_fbar_button",
-        }, [anchor]);
+        const el = domrd(
+            "li",
+            {
+                class: "tbui_aside_fbar_button",
+            },
+            [anchor],
+        );
 
         // const el =
         //     <li class="tbui_aside_fbar_button">
@@ -61,8 +75,9 @@ export class FloatBar extends TiebaComponent<"ul"> {
         if (type !== "other") {
             el.classList.add(floatButtonMap[type]);
         }
-        if (className)
+        if (className) {
             el.classList.add(className);
+        }
         floatBar.get().insertBefore(el, floatBar.get().children[index]);
         setFloatButtonIcon(anchor, icon);
 

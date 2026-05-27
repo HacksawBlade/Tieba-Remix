@@ -68,28 +68,41 @@ export function checkDuplicate<T>(arr1: Array<T>, arr2: Array<T>) {
     const set1 = new Set(arr1);
     const set2 = new Set(arr2);
     for (const el of set2) {
-        if (set1.has(el))
+        if (set1.has(el)) {
             return true;
+        }
     }
     return false;
 }
 
 /**
  * 依据相对于当前的时间偏移量生成时间戳
- * @param year 
- * @param month 
- * @param day 
- * @param hours 
- * @param minutes 
- * @param seconds 
+ * @param year
+ * @param month
+ * @param day
+ * @param hours
+ * @param minutes
+ * @param seconds
  * @returns 时间戳
  */
 export function spawnOffsetTS(
-    year = 0, month = 0, day = 0,
-    hours = 0, minutes = 0, seconds = 0) {
+    year = 0,
+    month = 0,
+    day = 0,
+    hours = 0,
+    minutes = 0,
+    seconds = 0,
+) {
     const now = new Date();
-    const offset = new Date(now.getFullYear() + year, now.getMonth() + month, now.getDate() + day,
-        now.getHours() + hours, now.getMinutes() + minutes, now.getSeconds() + seconds, 0);
+    const offset = new Date(
+        now.getFullYear() + year,
+        now.getMonth() + month,
+        now.getDate() + day,
+        now.getHours() + hours,
+        now.getMinutes() + minutes,
+        now.getSeconds() + seconds,
+        0,
+    );
     return offset.getTime();
 }
 
@@ -101,7 +114,9 @@ export function spawnOffsetTS(
 export function requestBody(body: LiteralObject) {
     let reqBody = "";
     _.forOwn(body, (value, key) => {
-        if (value === null || value === undefined) value = "";
+        if (value === null || value === undefined) {
+            value = "";
+        }
         reqBody += `${key}=${value}&`;
     });
     return reqBody.slice(0, -1);
@@ -111,9 +126,9 @@ export function requestBody(body: LiteralObject) {
  * 等待条件函数为真时再执行操作
  * @param condition 条件函数
  * @param timeout 超时时限，单位：毫秒，默认无限等待
- * @returns 
+ * @returns
  */
-export function waitUntil(pred: (() => boolean), timeout = Infinity) {
+export function waitUntil(pred: () => boolean, timeout = Infinity) {
     return new Promise<void>((resolve, reject) => {
         const startTime = performance.now();
         let id = -1;
@@ -155,14 +170,16 @@ export function outputFile(filename: string, content: string) {
 }
 
 export async function selectLocalFile<T extends Maybe<string | ArrayBuffer>>(
-    mode: "text" | "base64" = "text"
+    mode: "text" | "base64" = "text",
 ): Promise<T> {
     return new Promise((resolve, reject) => {
         const input = document.createElement("input");
         input.type = "file";
 
         input.addEventListener("change", function () {
-            if (!input.files) return;
+            if (!input.files) {
+                return;
+            }
             const file = input.files[0];
             const reader = new FileReader();
 
@@ -199,5 +216,5 @@ export async function selectLocalFile<T extends Maybe<string | ArrayBuffer>>(
  * @returns 若 参数 1 为 参数 2 的超集，返回 `true`
  */
 export function isSuperset<T>(superset: Set<T>, subset: Set<T>) {
-    return _.every([...subset], element => superset.has(element));
+    return _.every([...subset], (element) => superset.has(element));
 }

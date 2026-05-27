@@ -1,7 +1,13 @@
 <template>
     <div class="layout-custom-back">
-        <img v-show="imageData" class="custom-image" :src="imageData ?? ''" title="自定义背景" alt="自定义背景"
-            :style="`opacity: ${+alphaValue / 100}`">
+        <img
+            v-show="imageData"
+            class="custom-image"
+            :src="imageData ?? ''"
+            title="自定义背景"
+            alt="自定义背景"
+            :style="`opacity: ${+alphaValue / 100}`"
+        />
         <div class="custom-back-buttons">
             <UserButton @click="clearImage">清除</UserButton>
             <UserButton @click="selectImageFile">上传图片</UserButton>
@@ -20,21 +26,26 @@
 <script lang="ts" setup>
 import { customBackground } from "@/lib/user-values";
 import { selectLocalFile } from "@/lib/utils";
-import { UserButton, UserTextbox } from "user-view";
+import type { UserTextbox } from "user-view";
+import { UserButton } from "user-view";
 import { onMounted, ref, watch } from "vue";
 
 const imageData = ref<Maybe<string>>(customBackground.get());
 const alphaValue = ref("100");
 const imageAlphaInput = ref<InstanceType<typeof UserTextbox>>();
 
-watch(imageData, newValue => {
+watch(imageData, (newValue) => {
     customBackground.set(newValue);
 });
 
-watch(alphaValue, newValue => {
+watch(alphaValue, (newValue) => {
     const inputElement = imageAlphaInput.value?.$el as HTMLInputElement;
-    if (newValue === "" || +newValue < 0) alphaValue.value = "0", inputElement.value = "0";
-    if (+newValue > 100) alphaValue.value = "100", inputElement.value = "100";
+    if (newValue === "" || +newValue < 0) {
+        ((alphaValue.value = "0"), (inputElement.value = "0"));
+    }
+    if (+newValue > 100) {
+        ((alphaValue.value = "100"), (inputElement.value = "100"));
+    }
 });
 
 onMounted(async function () {
@@ -46,7 +57,7 @@ async function clearImage() {
 }
 
 async function selectImageFile() {
-    imageData.value = await selectLocalFile("base64") as Maybe<string>;
+    imageData.value = (await selectLocalFile("base64")) as Maybe<string>;
 }
 </script>
 

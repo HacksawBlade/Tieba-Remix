@@ -40,4 +40,4 @@ export class FrameInterval {
     public then(thenfn: Callback) {
         this.thenfn = thenfn;
     }
-}  
+}

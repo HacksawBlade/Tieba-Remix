@@ -1,19 +1,43 @@
 <template>
-    <UserDialog ref="dialog" title="编辑" :dialog-buttons="[
-        { text: '确定', event: submit, style: 'themed' },
-        { text: '取消', event: unload },
-    ]" :default-payload="{ ...props.rule }">
+    <UserDialog
+        ref="dialog"
+        title="编辑"
+        :dialog-buttons="[
+            { text: '确定', event: submit, style: 'themed' },
+            { text: '取消', event: unload },
+        ]"
+        :default-payload="{ ...props.rule }"
+    >
         <div id="shield-editor">
             <div id="shield-editor-rule-control">
                 <label for="shield-editor-rule">规则</label>
-                <UserTextbox v-model="ruleRef.content" id="shield-editor-rule" muti-lines @keypress="keyPressHandler" />
+                <UserTextbox
+                    v-model="ruleRef.content"
+                    id="shield-editor-rule"
+                    muti-lines
+                    @keypress="keyPressHandler"
+                />
             </div>
             <div id="shield-editor-toggle-control">
-                <UserCheck v-model="ruleRef.toggle" id="shield-editor-toggle" text="启用" />
-                <UserCheck v-model="useRegex" id="shield-editor-regex" text="正则表达式" />
-                <UserCheck v-model="userScope" id="shield-editor-user" text="屏蔽用户名" />
+                <UserCheck
+                    v-model="ruleRef.toggle"
+                    id="shield-editor-toggle"
+                    text="启用"
+                />
+                <UserCheck
+                    v-model="useRegex"
+                    id="shield-editor-regex"
+                    text="正则表达式"
+                />
+                <UserCheck
+                    v-model="userScope"
+                    id="shield-editor-user"
+                    text="屏蔽用户名"
+                />
             </div>
-            <UserButton id="shield-editor-delete" @click="deleteRule">删除规则</UserButton>
+            <UserButton id="shield-editor-delete" @click="deleteRule"
+                >删除规则</UserButton
+            >
         </div>
     </UserDialog>
 </template>
@@ -21,7 +45,7 @@
 <script lang="tsx" setup>
 import { UserButton, UserCheck, UserDialog, UserTextbox } from "user-view";
 import { ref } from "vue";
-import { ShieldRule } from "./shield";
+import type { ShieldRule } from "./shield";
 
 interface ShieldEditorOpts {
     rule: ShieldRule;

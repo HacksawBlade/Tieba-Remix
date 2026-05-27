@@ -78,8 +78,12 @@
     }
 }
 
-@mixin raster-effect($back-color: var(--trans-page-background),
-    $base-color: var(--page-background), $size: 4px, $radius: 4px) {
+@mixin raster-effect(
+    $back-color: var(--trans-page-background),
+    $base-color: var(--page-background),
+    $size: 4px,
+    $radius: 4px
+) {
     html:not([perf-saver]) & {
         backdrop-filter: saturate(0.8) blur($radius);
         background-color: $back-color;

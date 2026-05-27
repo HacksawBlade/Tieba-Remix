@@ -1,27 +1,46 @@
 <template>
     <div class="shield-container">
         <div v-if="shieldListRef.length > 0" class="words-container">
-            <UserButton v-for="(sh, index) in shieldListRef" class="shield-elem" :class="{
-                'content-scope': sh.scope === 'content',
-                'user-scope': sh.scope === 'username',
-                'disabled': !sh.toggle,
-            }" @click="editRule(sh, index)">
-                <div class="icon">{{ sh.scope === "content" ? "chat" : "account_circle" }}</div>
+            <UserButton
+                v-for="(sh, index) in shieldListRef"
+                class="shield-elem"
+                :class="{
+                    'content-scope': sh.scope === 'content',
+                    'user-scope': sh.scope === 'username',
+                    disabled: !sh.toggle,
+                }"
+                @click="editRule(sh, index)"
+            >
+                <div class="icon">
+                    {{ sh.scope === "content" ? "chat" : "account_circle" }}
+                </div>
                 <p class="content">{{ sh.content }}</p>
             </UserButton>
-            <UserButton class="remove-all shield-elem icon" @click="removeAllWithConfirm">delete</UserButton>
+            <UserButton class="remove-all shield-elem icon" @click="removeAllWithConfirm"
+                >delete</UserButton
+            >
         </div>
         <div v-else class="empty-list-container">当前没有记录屏蔽规则</div>
 
         <div class="shield-controls">
-            <UserTextbox v-model="inputRule" muti-lines class="shield-input" placeholder="输入屏蔽规则，按下 [ENTER] 提交。"
-                @keypress="inputKeyPress">
+            <UserTextbox
+                v-model="inputRule"
+                muti-lines
+                class="shield-input"
+                placeholder="输入屏蔽规则，按下 [ENTER] 提交。"
+                @keypress="inputKeyPress"
+            >
             </UserTextbox>
 
             <div class="submit-controls">
                 <UserCheck v-model="useRegex" id="use-regex" text="正则表达式" />
                 <UserCheck v-model="userScope" id="user-scope" text="屏蔽用户名" />
-                <UserButton class="submit-button" :shadow-border="true" :theme-style="true" @click="updateShieldList">确定
+                <UserButton
+                    class="submit-button"
+                    :shadow-border="true"
+                    :theme-style="true"
+                    @click="updateShieldList"
+                    >确定
                 </UserButton>
             </div>
         </div>
@@ -32,7 +51,8 @@
 import { renderDialog } from "@/lib/render";
 import { UserButton, UserCheck, UserTextbox, messageBox } from "user-view";
 import { ref } from "vue";
-import { ShieldRule, shieldList } from "./shield";
+import type { ShieldRule } from "./shield";
+import { shieldList } from "./shield";
 import ShieldEditor from "./shield-editor.vue";
 
 const shieldListRef = ref<ShieldRule[]>(shieldList.get());
@@ -48,17 +68,21 @@ function inputKeyPress(e: KeyboardEvent) {
 }
 
 function editRule(rule: ShieldRule, index: number) {
-    renderDialog(ShieldEditor, { rule }, {
-        unloaded(rule?: ShieldRule) {
-            if (!rule) {
-                shieldListRef.value.splice(index, 1);
+    renderDialog(
+        ShieldEditor,
+        { rule },
+        {
+            unloaded(rule?: ShieldRule) {
+                if (!rule) {
+                    shieldListRef.value.splice(index, 1);
+                    shieldList.set(shieldListRef.value);
+                    return;
+                }
+                shieldListRef.value[index] = rule;
                 shieldList.set(shieldListRef.value);
-                return;
-            }
-            shieldListRef.value[index] = rule;
-            shieldList.set(shieldListRef.value);
+            },
         },
-    });
+    );
 }
 
 function removeAll() {
@@ -67,16 +91,20 @@ function removeAll() {
 }
 
 async function removeAllWithConfirm() {
-    if (await messageBox({
-        content: "该操作将无法恢复，确定要删除所有屏蔽规则吗？",
-        type: "forceTrueFalse",
-    }) === "positive") {
+    if (
+        (await messageBox({
+            content: "该操作将无法恢复，确定要删除所有屏蔽规则吗？",
+            type: "forceTrueFalse",
+        })) === "positive"
+    ) {
         removeAll();
     }
 }
 
 function updateShieldList() {
-    if (inputRule.value.length <= 0) return;
+    if (inputRule.value.length <= 0) {
+        return;
+    }
 
     const rule: ShieldRule = {
         content: inputRule.value,

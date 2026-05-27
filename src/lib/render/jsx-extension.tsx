@@ -1,5 +1,6 @@
-import { VNode, render } from "vue";
-import { JSX } from "vue/jsx-runtime";
+import type { VNode } from "vue";
+import { render } from "vue";
+import type { JSX } from "vue/jsx-runtime";
 import { domrd } from "../elemental";
 
 export interface RenderedJSX<T extends Element = Element> {
@@ -8,7 +9,10 @@ export interface RenderedJSX<T extends Element = Element> {
     remove(): void;
 }
 
-export function renderJSX<T extends Element>(jsxel: JSX.Element, parent: Element): RenderedJSX<T> {
+export function renderJSX<T extends Element>(
+    jsxel: JSX.Element,
+    parent: Element,
+): RenderedJSX<T> {
     render(jsxel, parent);
     const root = parent.firstChild as T;
     return {
@@ -16,7 +20,9 @@ export function renderJSX<T extends Element>(jsxel: JSX.Element, parent: Element
         vnode: jsxel,
         remove() {
             render(null, parent);
-            if (root.parentNode) root.remove();
+            if (root.parentNode) {
+                root.remove();
+            }
         },
     };
 }
@@ -25,7 +31,11 @@ function createJSXWrapper() {
     return domrd("div", { class: "jsx-wrapper" });
 }
 
-export function insertJSX<T extends Element>(jsxel: JSX.Element, parent: Element, position?: Node) {
+export function insertJSX<T extends Element>(
+    jsxel: JSX.Element,
+    parent: Element,
+    position?: Node,
+) {
     const jsxWrapper = createJSXWrapper();
     return renderJSX<T>(jsxel, parent.insertBefore(jsxWrapper, position ?? null));
 }

@@ -6,14 +6,22 @@
                     <div class="title">设置</div>
 
                     <!-- 搜索文本框 -->
-                    <UserTextbox v-model="searchText" class="search-box" placeholder="输入需要搜索的设置"
-                        @update:model-value="debSearchKey"></UserTextbox>
+                    <UserTextbox
+                        v-model="searchText"
+                        class="search-box"
+                        placeholder="输入需要搜索的设置"
+                        @update:model-value="debSearchKey"
+                    ></UserTextbox>
                 </div>
 
                 <div class="left-panel">
-                    <UserButton v-for="setting in userSettings" class="key-button main-key"
-                        :class="{ 'selected': selectedKey?.name === setting.name }" @click="selectMainKey(setting)"
-                        no-border="all">
+                    <UserButton
+                        v-for="setting in userSettings"
+                        class="key-button main-key"
+                        :class="{ selected: selectedKey?.name === setting.name }"
+                        @click="selectMainKey(setting)"
+                        no-border="all"
+                    >
                         <div class="main-key-selected"></div>
                         <div class="icon">{{ setting.icon }}</div>
 
@@ -26,67 +34,126 @@
             </div>
 
             <div class="middle-container" v-show="selectedKey">
-                <UserButton v-for="setting in selectedKey?.sub" class="key-button sub-key"
-                    :class="{ 'selected': selectedSubKey?.name === setting.name }" @click="selectSubKey(setting)"
-                    no-border="all">
+                <UserButton
+                    v-for="setting in selectedKey?.sub"
+                    class="key-button sub-key"
+                    :class="{ selected: selectedSubKey?.name === setting.name }"
+                    @click="selectSubKey(setting)"
+                    no-border="all"
+                >
                     <div class="key-title">{{ setting.name }}</div>
                 </UserButton>
             </div>
 
             <div class="right-container">
-                <div :key="Math.random()" v-if="selectedSubKey?.name" v-for="content in selectedSubKey.content"
-                    class="setting-content">
-                    <h3 v-if="content?.title" class="content-title">{{ content?.title }}</h3>
-                    <p v-if="content?.description" class="content-desc">
-                    <p v-if="content?.description" v-for="line in content.description.split('\n')" class="line">
-                        {{ line }}
-                    </p>
-                    </p>
+                <div
+                    :key="Math.random()"
+                    v-if="selectedSubKey?.name"
+                    v-for="content in selectedSubKey.content"
+                    class="setting-content"
+                >
+                    <h3 v-if="content?.title" class="content-title">
+                        {{ content?.title }}
+                    </h3>
+                    <div v-if="content?.description" class="content-desc">
+                        <p
+                            v-if="content?.description"
+                            v-for="line in content.description.split('\n')"
+                            class="line"
+                        >
+                            {{ line }}
+                        </p>
+                    </div>
 
-                    <div v-if="content?.widgets" v-for="widget in content.widgets" class="setting-control">
+                    <div
+                        v-if="content?.widgets"
+                        v-for="widget in content.widgets"
+                        class="setting-control"
+                    >
                         <!-- Toggle -->
-                        <UserCheck v-if="widget.type === 'toggle'" class="settings-toggle"
+                        <UserCheck
+                            v-if="widget.type === 'toggle'"
+                            class="settings-toggle"
                             :model-value="widget.init ? widget.init() : undefined"
-                            :text="typeof widget.content === 'string' ? widget.content : undefined"
-                            @change="widget.event" />
+                            :text="
+                                typeof widget.content === 'string'
+                                    ? widget.content
+                                    : undefined
+                            "
+                            @change="widget.event"
+                        />
 
                         <!-- Icon -->
-                        <div v-if="widget.type === 'icon'" class="icon-component icon">{{ widget.content }}
+                        <div v-if="widget.type === 'icon'" class="icon-component icon">
+                            {{ widget.content }}
                         </div>
 
                         <!-- Button -->
-                        <UserButton v-if="widget.type === 'button'" @click="widget.event" shadow-border>
-                            {{ widget.content }}</UserButton>
+                        <UserButton
+                            v-if="widget.type === 'button'"
+                            @click="widget.event"
+                            shadow-border
+                        >
+                            {{ widget.content }}</UserButton
+                        >
 
                         <!-- Select -->
-                        <UserSelect v-if="widget.type === 'select' && Array.isArray(widget.content)"
-                            class="settings-select" :data="widget.content as UserSelectItem[]"
-                            :default-value="widget.init?.()" @change="widget.event" />
+                        <UserSelect
+                            v-if="
+                                widget.type === 'select' && Array.isArray(widget.content)
+                            "
+                            class="settings-select"
+                            :data="widget.content as UserSelectItem[]"
+                            :default-value="widget.init?.()"
+                            @change="widget.event"
+                        />
 
                         <!-- SubTitle -->
-                        <h4 v-if="widget.type === 'subTitle'" class="content-sub-title">{{ widget.content }}</h4>
+                        <h4 v-if="widget.type === 'subTitle'" class="content-sub-title">
+                            {{ widget.content }}
+                        </h4>
 
                         <!-- Description -->
                         <div v-if="widget.type === 'desc'" class="content-desc">
-                            <div v-if="widget.content && typeof widget.content === 'string'"
-                                v-for="line in widget.content.split('\n')" class="line">
+                            <div
+                                v-if="
+                                    widget.content && typeof widget.content === 'string'
+                                "
+                                v-for="line in widget.content.split('\n')"
+                                class="line"
+                            >
                                 {{ line }}
                             </div>
                         </div>
 
                         <!-- Textbox & TextArea -->
-                        <UserTextbox v-if="_.includes(['textbox', 'textarea'], widget.type)" class="content-textbox"
-                            :class="{ 'textarea': widget.type === 'textarea' }"
-                            :value="widget.init ? widget.init() : ''" :muti-lines="widget.type === 'textarea'"
-                            :placeholder="widget.placeHolder" @change="widget.event">
+                        <UserTextbox
+                            v-if="_.includes(['textbox', 'textarea'], widget.type)"
+                            class="content-textbox"
+                            :class="{ textarea: widget.type === 'textarea' }"
+                            :value="widget.init ? widget.init() : ''"
+                            :muti-lines="widget.type === 'textarea'"
+                            :placeholder="widget.placeHolder"
+                            @change="widget.event"
+                        >
                         </UserTextbox>
 
                         <!-- Image -->
-                        <img v-if="widget.type === 'image'" class="content-image" :src="widget.content?.toString()"
-                            :alt="widget.altContent" :title="widget.altContent" @load="widget.init">
+                        <img
+                            v-if="widget.type === 'image'"
+                            class="content-image"
+                            :src="widget.content?.toString()"
+                            :alt="widget.altContent"
+                            :title="widget.altContent"
+                            @load="widget.init"
+                        />
 
                         <!-- Component -->
-                        <component v-if="widget.component" :is="widget?.component" @change-view="changeView">
+                        <component
+                            v-if="widget.component"
+                            :is="widget?.component"
+                            @change-view="changeView"
+                        >
                         </component>
                     </div>
                 </div>
@@ -97,10 +164,11 @@
 </template>
 
 <script lang="tsx" setup>
-import { SupportedComponent } from "@/ex";
+import type { SupportedComponent } from "@/ex";
 import { getUserSettings } from "@/lib/common/settings";
 import _ from "lodash";
-import { UserButton, UserCheck, UserDialog, UserDialogOpts, UserSelect, UserSelectItem, UserTextbox } from "user-view";
+import type { UserDialogOpts, UserSelectItem } from "user-view";
+import { UserButton, UserCheck, UserDialog, UserSelect, UserTextbox } from "user-view";
 import { ref } from "vue";
 
 export interface UserSettings {
@@ -116,27 +184,37 @@ export interface SettingKey {
 export interface MainSettingKey extends SettingKey {
     sub: {
         [props: string]: SubSettingKey;
-    }
+    };
 }
 
 export interface SubSettingKey extends SettingKey {
     content: {
         [props: string]: SettingContent | undefined;
-    }
+    };
 }
 
 export interface SettingContent {
     title?: string;
     description?: string;
     widgets?: {
-        type: "toggle" | "icon" | "button" | "select" | "subTitle" | "desc" | "textbox" | "textarea" | "image" | "component";
-        init?: (() => any);
-        event?: ((e: any) => any);
+        type:
+            | "toggle"
+            | "icon"
+            | "button"
+            | "select"
+            | "subTitle"
+            | "desc"
+            | "textbox"
+            | "textarea"
+            | "image"
+            | "component";
+        init?: () => any;
+        event?: (e: any) => any;
         content?: string | LiteralObject | Array<unknown>;
         component?: SupportedComponent;
         placeHolder?: string;
         altContent?: string;
-    }[]
+    }[];
 }
 
 const userSettings = getUserSettings();
@@ -188,18 +266,29 @@ function searchKey() {
         return;
     }
 
-    if (!_.find(userSettings, (mainKey) => {
-        if (_.find(mainKey.sub, (subKey) => {
-            if (subKey.name.toLowerCase().includes(searchText.value.toLowerCase())) {
-                selectedKey.value = mainKey;
-                selectedSubKey.value = subKey;
+    if (
+        !_.find(userSettings, (mainKey) => {
+            if (
+                _.find(mainKey.sub, (subKey) => {
+                    if (
+                        subKey.name.toLowerCase().includes(searchText.value.toLowerCase())
+                    ) {
+                        selectedKey.value = mainKey;
+                        selectedSubKey.value = subKey;
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
+            ) {
                 return true;
             } else {
                 return false;
             }
-        })) return true;
-        else return false;
-    })) clearSelections();
+        })
+    ) {
+        clearSelections();
+    }
 }
 
 const debSearchKey = _.debounce(searchKey, 500);
@@ -238,7 +327,9 @@ $wrapper-padding: 16px;
 
     .icon {
         font-size: 20px;
-        font-variation-settings: "FILL" 0, "wght" 300;
+        font-variation-settings:
+            "FILL" 0,
+            "wght" 300;
         transition:
             all var(--default-duration),
             margin-left var(--fast-duration) ease-out;
@@ -296,7 +387,10 @@ $wrapper-padding: 16px;
 
             .icon {
                 margin-left: 4px;
-                font-variation-settings: "FILL" 1, "GRAD" 48, "wght" 300;
+                font-variation-settings:
+                    "FILL" 1,
+                    "GRAD" 48,
+                    "wght" 300;
                 font-weight: var(--font-weight-normal);
             }
 
