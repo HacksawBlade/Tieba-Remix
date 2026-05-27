@@ -2,6 +2,7 @@
     "name": "tieba-remix",
     "private": true,
     "type": "module",
+    "packageManager": "pnpm@11.0.8",
     "scripts": {
         "dev": "vite",
         "build": "vue-tsc --noEmit && vite build",
