@@ -13,7 +13,14 @@
         <div class="script-info">
             <div class="author-info">
                 <div class="version">{{ scriptInfo.script.version }}</div>
-                <div class="author">@{{ scriptInfo.script.author }}</div>
+                <UserButton
+                    class="author anchor-underline"
+                    is-anchor
+                    no-border="all"
+                    :href="OwnerProfile"
+                    target="_blank"
+                    >@{{ Owner }}</UserButton
+                >
             </div>
 
             <div class="about-desc">
@@ -29,7 +36,8 @@
                 :is-anchor="true"
                 :href="GithubRepo"
                 :shadow-border="true"
-                target="_balnk">开放源代码
+                target="_balnk"
+                >开放源代码
             </UserButton>
 
             <UserButton
@@ -46,7 +54,7 @@
 
 <script lang="ts" setup>
 import { GM_info } from "$";
-import { GithubRepo, MainTitle } from "@/lib/user-values";
+import { GithubRepo, MainTitle, Owner, OwnerProfile } from "@/lib/user-values";
 import { UserButton } from "user-view";
 
 const scriptInfo = GM_info;
@@ -92,7 +100,12 @@ const emit = defineEmits(["changeView"]);
         .author-info {
             display: flex;
             align-items: baseline;
+            font-family: var(--code-monospace);
             gap: 8px;
+
+            .author {
+                color: var(--tieba-theme-fore);
+            }
         }
     }
 

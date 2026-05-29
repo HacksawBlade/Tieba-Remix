@@ -11,6 +11,7 @@ export const Owner = "0x0b1ade";
 export const RepoName = "Tieba-Remix";
 export const GithubRepo = `https://github.com/${Owner}/${RepoName}`;
 export const GiteeRepo = `https://gitee.com/${Owner}/${RepoName}`;
+export const OwnerProfile = `https://github.com/${Owner}`;
 export const BaiduPassport = "https://passport.baidu.com/";
 
 export const REMIXED =
