@@ -343,10 +343,8 @@ interface MasonryElement<T extends HTMLElement = HTMLElement> {
 
 function parseOptions(options: MasonryOptions) {
     options.gap = options.gap ?? 0;
-    options.autoExec = options.autoExec === undefined ? true : options.autoExec;
-    options.fixScrollOffset =
-        options.fixScrollOffset === undefined ? false : options.fixScrollOffset;
-
+    options.autoExec = options.autoExec ?? true;
+    options.fixScrollOffset = options.fixScrollOffset ?? false;
     return options;
 }
 

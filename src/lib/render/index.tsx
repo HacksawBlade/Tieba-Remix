@@ -139,16 +139,14 @@ export function userDialog<ContentOpts extends LiteralObject>(
 export function removeDefault() {
     _.forEach(document.head.children, (el) => {
         if (
-            el &&
-            el.tagName.toUpperCase() === "LINK" &&
+            el?.tagName.toUpperCase() === "LINK" &&
             _.includes(el.getAttribute("href"), "static-common/style")
         ) {
             el.remove();
         }
 
         if (
-            el &&
-            el.tagName.toUpperCase() === "SCRIPT" &&
+            el?.tagName.toUpperCase() === "SCRIPT" &&
             _.includes(el.getAttribute("src"), "static-common/lib")
         ) {
             el.remove();
@@ -158,15 +156,15 @@ export function removeDefault() {
     // document.getElementById("com_userbar")?.remove();
 
     _.forEach(document.body.children, (el) => {
-        if (el && el.tagName.toUpperCase() === "STYLE") {
+        if (el?.tagName.toUpperCase() === "STYLE") {
             el.remove();
         }
 
-        if (el && el.tagName.toUpperCase() === "SCRIPT") {
+        if (el?.tagName.toUpperCase() === "SCRIPT") {
             el.remove();
         }
 
-        if (el && el.tagName.toUpperCase() === "IFRAME") {
+        if (el?.tagName.toUpperCase() === "IFRAME") {
             el.remove();
         }
 

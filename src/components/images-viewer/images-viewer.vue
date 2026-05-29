@@ -459,9 +459,7 @@ function imageWheel(e: WheelEvent) {
     if (!vliMode.value) {
         zoomImage(-e.deltaY / 1000);
     } else {
-        if (!imageTop.value) {
-            imageTop.value = 0;
-        }
+        imageTop.value ??= 0;
         imageTop.value += (-e.deltaY / 1000) * window.innerHeight;
     }
 }

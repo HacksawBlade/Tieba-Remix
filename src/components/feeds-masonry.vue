@@ -125,9 +125,7 @@ watch(hasMoreFeeds, (newVal) => {
  * @param newFeeds 指定追加的贴子
  */
 async function addFeeds(newFeeds?: TiebaPost[]) {
-    if (!newFeeds) {
-        newFeeds = [];
-    }
+    newFeeds ??= [];
     if (isFetchingFeeds) {
         return;
     }

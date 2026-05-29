@@ -86,7 +86,7 @@ export class FloatBar extends TiebaComponent<"ul"> {
         function setFloatButtonIcon(el: HTMLAnchorElement, icon?: string) {
             el.classList.add("icon");
             el.classList.add("tbui_aside_fbar_button");
-            el.innerHTML = icon ? icon : "";
+            el.innerHTML = icon ?? "";
         }
     }
 

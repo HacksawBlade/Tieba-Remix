@@ -58,9 +58,7 @@ export function matchShield(
     }
 
     // 可选参数
-    if (rule.ignoreCase === undefined) {
-        rule.ignoreCase = true;
-    }
+    rule.ignoreCase ??= true;
 
     // 字符串
     if (rule.type === "text") {

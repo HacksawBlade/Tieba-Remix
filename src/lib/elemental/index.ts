@@ -138,7 +138,7 @@ export function getNodeAttrsDeeply(node: HTMLElement) {
                 if (isLiteralObject(obj)) {
                     des[attr.name] = obj;
                 }
-            } catch (error) {
+            } catch (_e) {
                 des[attr.name] = attr.value;
             }
         } else {
@@ -195,7 +195,7 @@ export function domrd<T extends keyof HTMLElementTagNameMap>(
     children: (Node | string)[] | string = [],
     doc?: Document,
 ): HTMLElementTagNameMap[T] {
-    const DOC = doc ? doc : document;
+    const DOC = doc ?? document;
     const elem = DOC.createElement(tag);
 
     if (attrs) {

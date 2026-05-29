@@ -23,8 +23,8 @@ export const REMIXED =
     "██║  ██║███████╗██║ ╚═╝ ██║██║██╔╝ ██╗███████╗██████╔╝\n" +
     "╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚══════╝╚═════╝ \n";
 
-const userKeyEvents = ["getter", "setter"] as const;
-type UserKeyEvent = (typeof userKeyEvents)[number];
+const _USER_KEY_EVENTS = ["getter", "setter"] as const;
+type UserKeyEvent = (typeof _USER_KEY_EVENTS)[number];
 type UserKeyEventsListener<T> = Record<UserKeyEvent, (value: T) => unknown>;
 type UserKeyEventsListeners<T> = Record<UserKeyEvent, Array<(value: T) => unknown>>;
 export class UserKey<T, LegacyType = unknown> {
@@ -105,7 +105,7 @@ export class UserKeyTS<T, LegacyType = unknown> extends UserKey<T, LegacyType> {
         migration?: (maybeLegacy: T | LegacyType) => T,
     ) {
         super(key, defaultValue, listeners, migration);
-        this.defaultInvalid = invalidfn ? invalidfn : this.defaultInvalid;
+        this.defaultInvalid = invalidfn ?? this.defaultInvalid;
     }
 
     public get() {
@@ -129,18 +129,14 @@ export class UserKeyTS<T, LegacyType = unknown> extends UserKey<T, LegacyType> {
      * @param invalidTime 失效时间，默认为函数执行 12 小时后
      */
     public set(value: T, invalidTime?: number) {
-        setUserValueTS(
-            this.key,
-            value,
-            invalidTime ? invalidTime : this.defaultInvalid(),
-        );
+        setUserValueTS(this.key, value, invalidTime ?? this.defaultInvalid());
         this.dispatchEvent("setter", value);
     }
 
     public merge(value: Partial<T>, invalidTime?: number) {
         if (isLiteralObject(value)) {
             const merged = { ...this.get(), ...value };
-            this.set(merged, invalidTime ? invalidTime : this.defaultInvalid());
+            this.set(merged, invalidTime ?? this.defaultInvalid());
             this.dispatchEvent("setter", merged);
         }
     }
@@ -148,7 +144,7 @@ export class UserKeyTS<T, LegacyType = unknown> extends UserKey<T, LegacyType> {
     public mergeDeeply(value: Partial<T>, invalidTime?: number) {
         if (isLiteralObject(value)) {
             const merged = _.merge(this.get(), value);
-            this.set(merged, invalidTime ? invalidTime : this.defaultInvalid());
+            this.set(merged, invalidTime ?? this.defaultInvalid());
             this.dispatchEvent("setter", merged);
         }
     }
@@ -358,7 +354,7 @@ export function getUserValueTS<T>(key: string, def: T): T {
         } else {
             return def;
         }
-    } catch (error) {
+    } catch (_e) {
         return def;
     }
 }

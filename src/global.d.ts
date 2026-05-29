@@ -108,14 +108,6 @@ interface Coord {
     y: number;
 }
 
-declare global {
-    interface Global {
-        none: undefined;
-    }
-
-    const globalThis: Global;
-}
-
 interface EventRecord {
     target: EventTarget;
     type: string;

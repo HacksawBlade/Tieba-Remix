@@ -57,7 +57,7 @@ export function AllModules() {
  * @returns 整合后的错误信息
  */
 export function errorMessage(error: Error) {
-    const errBody = error.stack ? error.stack : error.message;
+    const errBody = error.stack ?? error.message;
     return `${GM_info.script.name} ${GM_info.script.version}\n${errBody}`;
 }
 
@@ -117,9 +117,7 @@ export function spawnOffsetTS(
 export function requestBody(body: LiteralObject) {
     let reqBody = "";
     _.forOwn(body, (value, key) => {
-        if (value === null || value === undefined) {
-            value = "";
-        }
+        value ??= "";
         reqBody += `${key}=${value}&`;
     });
     return reqBody.slice(0, -1);

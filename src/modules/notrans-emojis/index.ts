@@ -306,7 +306,7 @@ function main() {
                     updateEmojis(el);
                 },
             );
-        } catch (error) {
+        } catch (_e) {
             _.forEach(dom(".p_author_name, .at, .lzl_content_main", []), (el) => {
                 if (_.includes(el.classList, "nicknameEmoji")) {
                     updateEmojis(el);
@@ -330,7 +330,7 @@ function main() {
                     updateEmojis(el);
                 },
             );
-        } catch (error) {
+        } catch (_e) {
             _.forEach(dom(".newlist .post_author, .userinfo_username", []), (el) => {
                 if (_.includes(el.classList, "nicknameEmoji")) {
                     updateEmojis(el);
@@ -345,7 +345,7 @@ function main() {
             _.forEach(dom(".threadlist_author a:has(.nicknameEmoji)", []), (el) => {
                 updateEmojis(el);
             });
-        } catch (error) {
+        } catch (_e) {
             _.forEach(dom(".threadlist_author a", []), (el) => {
                 if (_.includes(el.classList, "nicknameEmoji")) {
                     updateEmojis(el);
