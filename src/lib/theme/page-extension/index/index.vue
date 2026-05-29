@@ -213,7 +213,7 @@ const configMenu = ref<DropdownMenu[]>();
 const profileMenu = ref<DropdownMenu[]>();
 const topicList = ref<TopicList[]>([]);
 const feedsIntersecting = ref(false);
-const feedsMasonry = ref<InstanceType<typeof FeedsMasonry>>({} as any);
+const feedsMasonry = ref({} as InstanceType<typeof FeedsMasonry>);
 const signedForums = ref(0);
 const homeSections = computed<Record<HomeSectionKey, HomeSection>>(() => ({
     followed: {
@@ -451,9 +451,7 @@ function getFollowedInstance() {
                     }
                 });
                 // 排序关注吧
-                followed.value.like_forum.sort(
-                    (a, b) => parseInt(b.user_exp) - parseInt(a.user_exp),
-                );
+                followed.value.like_forum.sort((a, b) => +b.user_exp - +a.user_exp);
             }
         },
     );

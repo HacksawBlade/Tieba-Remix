@@ -21,7 +21,12 @@ export class EventProxy {
             return;
         }
         target.addEventListener(type, callback as EventListener, options);
-        this.records.push({ target, type, callback, options });
+        this.records.push({
+            target,
+            type,
+            callback: callback as EventListener,
+            options,
+        });
     }
 
     /** 销毁通过该代理注册的所有事件 */

@@ -10,12 +10,12 @@ export function getFloatCoord(
     mode: FloatMode,
 ): Coord;
 
-export function getFloatCoord(...args: any[]): Coord {
+export function getFloatCoord(...args: unknown[]): Coord {
     if (args[0] instanceof HTMLElement) {
-        return getFloatCoord1(args[0], args[1], args[2]);
+        return getFloatCoord1(args[0], args[1] as Coord, args[2] as FloatMode);
     }
     if (typeof args[0] === "number" && typeof args[1] === "number") {
-        return getFloatCoord2(args[0], args[1], args[2], args[3]);
+        return getFloatCoord2(args[0], args[1], args[2] as Coord, args[3] as FloatMode);
     }
     return { x: 0, y: 0 };
 }

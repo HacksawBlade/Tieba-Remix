@@ -79,7 +79,7 @@ function main(): void {
                     return;
                 }
 
-                const lvl = parseInt(_.defaults(elem.textContent, "0"));
+                const lvl = +_.defaults(elem.textContent, "0");
                 if (lvl >= 1 && lvl <= 3) {
                     elem.classList.add(lvlGreen);
                 } else if (lvl >= 4 && lvl <= 9) {

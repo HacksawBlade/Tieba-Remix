@@ -140,7 +140,7 @@ export function threadParser(param: Document | string): TiebaThread {
             profile: {
                 avatar: avatars[i],
                 nameAnchor: nameAnchors[i],
-                level: parseInt(levels[i].innerText),
+                level: +levels[i].innerText,
                 badgeTitle: badgeTitles[i].innerText,
             },
             tail: {

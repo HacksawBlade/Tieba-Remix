@@ -68,7 +68,7 @@
                         <UserCheck
                             v-if="widget.type === 'toggle'"
                             class="settings-toggle"
-                            :model-value="widget.init ? widget.init() : undefined"
+                            :model-value="widget.init?.()"
                             :text="
                                 typeof widget.content === 'string'
                                     ? widget.content
@@ -195,8 +195,9 @@ export interface SettingContent {
             | "textarea"
             | "image"
             | "component";
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         init?: () => any;
-        event?: (e: any) => any;
+        event?: (e: any) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
         content?: string | LiteralObject | Array<unknown>;
         component?: SupportedComponent;
         placeHolder?: string;

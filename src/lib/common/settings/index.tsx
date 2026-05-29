@@ -419,7 +419,7 @@ export const getUserSettings = _.once(
 
                 if (index === 1) {
                     const accuObject = toSubSettingKey(accu);
-                    accu = {} as any;
+                    accu = {} as unknown as UserModule;
                     accu[accuObject.name] = accuObject;
                 }
 

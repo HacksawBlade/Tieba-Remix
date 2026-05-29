@@ -318,7 +318,11 @@ export default async function () {
                                     { postId: +(imageClone.dataset.pid ?? 0) },
                                 ) +
                                 _.findIndex(
-                                    dom<"img">(".thread-image", postContent!, []),
+                                    dom<"img">(
+                                        ".thread-image",
+                                        postContent as HTMLElement,
+                                        [],
+                                    ),
                                     (img) => img === imageClone,
                                 )
                             }`;

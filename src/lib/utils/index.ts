@@ -27,7 +27,10 @@ export function cookies(key?: string) {
  * @param api 需要调用的接口，理论上所有的 `Promise<Response>` 都是被接受的
  * @returns 该请求返回的 json
  */
-export async function requestInstance(api: Promise<Response>): Promise<any> {
+export async function requestInstance(
+    api: Promise<Response>,
+): // eslint-disable-next-line @typescript-eslint/no-explicit-any
+Promise<any> {
     try {
         const response = await api;
         if (response.ok) {
@@ -154,8 +157,8 @@ export function waitUntil(pred: () => boolean, timeout = Infinity) {
     });
 }
 
-export function isLiteralObject(obj: any): boolean {
-    return obj && typeof obj === "object" && !Array.isArray(obj);
+export function isLiteralObject(obj: unknown): boolean {
+    return obj !== null && typeof obj === "object" && !Array.isArray(obj);
 }
 
 export function outputFile(filename: string, content: string) {

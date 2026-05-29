@@ -3,7 +3,7 @@ declare module "*.json";
 type Maybe<T> = T | undefined;
 
 interface LiteralObject {
-    [prop: string]: T;
+    [prop: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 type ValueOf<T> = T[keyof T];
@@ -24,7 +24,7 @@ type PageType = "index" | "thread" | "forum" | "user" | "unhandled";
 
 /** 用户模块 */
 interface UserModule {
-    [prop: string]: any;
+    [prop: string]: unknown;
 
     id: string;
     /** 需要显示给用户的模块名称 */
@@ -39,6 +39,7 @@ interface UserModule {
     runAt: "immediately" | "afterHead" | "DOMLoaded" | "loaded";
 
     entry: () => void;
+    settings?: Record<string, unknown>;
 }
 
 /** 贴子 */
@@ -118,7 +119,7 @@ declare global {
 interface EventRecord {
     target: EventTarget;
     type: string;
-    callback: ((e: any) => void) | EventListenerObject;
+    callback: EventListener | EventListenerObject;
     options?: EventListenerOptions | boolean;
 }
 

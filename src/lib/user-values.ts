@@ -254,8 +254,8 @@ export const neverFallbackToLegacy = new UserKey("neverFallbackToLegacy", false)
 
 export const SymbolFont = "Material Symbols";
 
-export const currentStorageBase = new Map<string, any>();
-export type CurrentStorageEntry<T = any> = [string, T];
+export const currentStorageBase = new Map<string, unknown>();
+export type CurrentStorageEntry<T = unknown> = [string, T];
 
 export const HOME_FEED_IMAGES: CurrentStorageEntry<Record<number, ThreadPicture[]>> = [
     "home_feed_images",
@@ -289,10 +289,10 @@ export const currentStorage = {
     keys(): IterableIterator<string> {
         return currentStorageBase.keys();
     },
-    values(): IterableIterator<any> {
+    values(): IterableIterator<unknown> {
         return currentStorageBase.values();
     },
-    forEach(callback: (value: any, key: string) => void): void {
+    forEach(callback: (value: unknown, key: string) => void): void {
         currentStorageBase.forEach(callback);
     },
     size(): number {
@@ -377,7 +377,7 @@ export function setUserValueTS<T>(key: string, value: T, invalidTime: number): v
  */
 export function setUserValueTS<T>(key: string, value: UserValueTS<T>): void;
 
-export function setUserValueTS(key: string, value: any, invalidTime?: number): void {
+export function setUserValueTS(key: string, value: unknown, invalidTime?: number): void {
     try {
         if (invalidTime) {
             // 时间戳 + 值

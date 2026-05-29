@@ -10,13 +10,13 @@ import { disabledModules } from "../user-values";
  * @returns 所有解析后的模块
  */
 export function parseUserModules(
-    glob: Record<string, () => Promise<any>>,
+    glob: Record<string, () => Promise<unknown>>,
     callbackfn?: (module: UserModule) => void,
 ): UserModule[] {
     const modules: UserModule[] = [];
 
     _.forEach(glob, async (moduleExport) => {
-        const currentModule = (await moduleExport()).default as UserModule;
+        const currentModule = ((await moduleExport()) as { default: UserModule }).default;
         const disabledSet = new Set(disabledModules.get());
 
         // 先判断模块是否开启

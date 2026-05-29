@@ -73,7 +73,7 @@ export function createRenderWrapper(id: string, style?: CSSRule) {
     };
 }
 
-export interface DialogEvents<PayloadType = any> {
+export interface DialogEvents<PayloadType = unknown> {
     beforeRender(): void;
     rendered(rendered: RenderedComponent): void;
     beforeUnload(rendered: RenderedComponent): void;
@@ -82,13 +82,12 @@ export interface DialogEvents<PayloadType = any> {
 }
 
 /**
- * 渲染对话框。只有以 `<UserDialog>` 及其继承组件为唯一根节点的组件才能作为对话框被正确渲染。
  * @param content 对话框内容组件
  * @param opts 组件选项
  * @param events 对话框事件绑定
  * @returns 对话框组件实例
  */
-export function renderDialog<ContentOpts extends LiteralObject, PayloadType = any>(
+export function renderDialog<ContentOpts extends LiteralObject, PayloadType = unknown>(
     content: SupportedComponent,
     opts?: ContentOpts,
     events?: Partial<DialogEvents<PayloadType>>,
@@ -197,10 +196,7 @@ export function fallbackDialog() {
                     event() {
                         const backToOldLocator = dom("use[*|href='#back_old']");
                         if (backToOldLocator) {
-                            findParent(
-                                dom("use[*|href='#back_old']")!,
-                                "menu-item",
-                            )?.click();
+                            findParent(backToOldLocator, "menu-item")?.click();
                             return true;
                         } else {
                             toast({
