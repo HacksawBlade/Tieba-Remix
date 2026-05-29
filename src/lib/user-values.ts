@@ -246,7 +246,18 @@ export const monospaceFonts = new UserKey<string[]>("monospaceFonts", [
     "monospace",
 ]);
 /** 导航栏模式 */
-export const navBarHideMode = new UserKey<NavBarHideMode>("navBarHideMode", "fold");
+export const navBarHideMode = new UserKey<NavBarHideMode>(
+    "navBarHideMode",
+    "hideWhenScroll",
+    undefined,
+    (v) => {
+        if (v === "fold" || v === "alwaysFold") return "hideWhenScroll";
+        const valid: NavBarHideMode[] = ["hideWhenScroll", "fixedOnTop", "never"];
+        return valid.includes(v as NavBarHideMode)
+            ? (v as NavBarHideMode)
+            : "hideWhenScroll";
+    },
+);
 /** 自定义样式 */
 export const customStyle = new UserKey<string>("customStyle", "");
 export const fontWeights = new UserKey("fontWeights", {

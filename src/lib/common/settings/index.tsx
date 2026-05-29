@@ -323,19 +323,9 @@ export const getUserSettings = _.once(
                                     type: "select",
                                     content: [
                                         {
-                                            value: "fold",
-                                            text: "滚动折叠",
-                                            desc: "当页面以一定速度向下滚动时，会将导航栏折叠，只会占据很小的屏幕空间，但能更方便地重新访问导航栏。",
-                                        },
-                                        {
-                                            value: "alwaysFold",
-                                            text: "始终折叠",
-                                            desc: "导航栏始终保持折叠状态。",
-                                        },
-                                        {
                                             value: "hideWhenScroll",
                                             text: "滚动隐藏",
-                                            desc: "当页面以一定速度向下滚动时，彻底隐藏导航栏，重新访问导航栏则需要以一定速度向上滚动页面。",
+                                            desc: "当页面以一定速度向下滚动时，彻底隐藏导航栏；将光标移至屏幕顶部边缘可临时显示，或以一定速度向上滚动可重新固定显示。",
                                         },
                                         {
                                             value: "fixedOnTop",
