@@ -35,9 +35,10 @@ export async function loadDynamicCSS() {
     const mainHSLA = rgbaToHSLA(mainRGBA);
 
     const darkL = mainHSLA.l < 20 ? 55 : mainHSLA.l < 40 ? 60 : mainHSLA.l < 60 ? 70 : 75;
+    const darkS = Math.max(mainHSLA.s * 1.1, 0);
     const darkHSLA: HSLA = {
         h: mainHSLA.h,
-        s: mainHSLA.s,
+        s: darkS,
         l: darkL,
         a: 1,
     };
@@ -64,8 +65,8 @@ export async function loadDynamicCSS() {
             "--user-theme-active": `hsl(${darkHSLA.h}deg ${_.clamp(darkHSLA.s + 25, 0, 100)}% ${_.clamp(darkHSLA.l + 18, 0, 100)}%)`,
             "--tieba-theme-background": `hsl(${darkHSLA.h}deg ${darkHSLA.s}% ${darkHSLA.l}% / 24%)`,
             "--user-theme-back": `hsl(${darkHSLA.h}deg ${darkHSLA.s}% ${darkHSLA.l}% / 24%)`,
-            "--tieba-theme-fore": `hsl(${darkHSLA.h}deg ${_.clamp(darkHSLA.s, 0, 100)}% ${_.clamp(darkHSLA.l + 20, 65, 90)}%)`,
-            "--user-theme-fore": `hsl(${darkHSLA.h}deg ${_.clamp(darkHSLA.s, 0, 100)}% ${_.clamp(darkHSLA.l + 20, 65, 90)}%)`,
+            "--tieba-theme-fore": `hsl(${darkHSLA.h}deg ${_.clamp(darkS * 1.15, 0, 100)}% ${_.clamp(darkL + 12, 55, 85)}%)`,
+            "--user-theme-fore": `hsl(${darkHSLA.h}deg ${_.clamp(darkS * 1.15, 0, 100)}% ${_.clamp(darkL + 12, 55, 85)}%)`,
         },
 
         ".light-theme": {
