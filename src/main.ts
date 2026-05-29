@@ -1,8 +1,15 @@
 import { GM_registerMenuCommand } from "$";
 import _ from "lodash";
+import { toast } from "user-view";
 import "user-view/build/index.css";
 import Settings from "./components/settings.vue";
-import { checkUpdateAndNotify, currentPageType, setTheme } from "./lib/api/remixed";
+import {
+    backupUserConfigs,
+    checkUpdateAndNotify,
+    currentPageType,
+    restoreUserConfigs,
+    setTheme,
+} from "./lib/api/remixed";
 import { parseUserModules } from "./lib/common/packer";
 import {
     forumThreadsObserver,
@@ -105,6 +112,15 @@ function legacyTiebaLauncher() {
     loadPerf();
 
     GM_registerMenuCommand("设置", () => renderDialog(Settings));
+    GM_registerMenuCommand("备份用户配置", backupUserConfigs);
+    GM_registerMenuCommand("恢复用户配置", () => {
+        toast({
+            type: "warning",
+            message:
+                "若未弹出文件对话框，请先点击网页任意位置再使用该功能，或是直接从设置中恢复",
+        });
+        restoreUserConfigs();
+    });
 }
 
 function cosTiebaLauncher() {

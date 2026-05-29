@@ -281,7 +281,19 @@ export function backupUserConfigs() {
 
 export async function restoreUserConfigs() {
     const backupData = JSON.parse(await selectLocalFile());
-    _.forEach(Object.entries(backupData), ([key, value]) => {
-        GM_setValue(key, value);
+    const restoredKeys: string[] = [];
+    try {
+        _.forEach(Object.entries(backupData), ([key, value]) => {
+            restoredKeys.push(key);
+            GM_setValue(key, value);
+        });
+    } catch (_e) {
+        toast({ type: "error", message: `配置 ${restoredKeys.pop()} 恢复失败` });
+    }
+    userDialog(<p>{restoredKeys.join("\n")}</p>, {
+        title: `成功恢复 ${restoredKeys.length} 个配置`,
+        containerStyle: { width: "360px", maxWidth: "60vw" },
+        contentStyle: { whiteSpace: "pre-wrap", fontFamily: "var(--code-monospace)" },
+        dialogButtons: [{ text: "确定", style: "themed", event: () => true }],
     });
 }
