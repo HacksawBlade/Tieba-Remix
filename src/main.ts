@@ -5,6 +5,7 @@ import "user-view/build/index.css";
 import Settings from "./components/settings.vue";
 import {
     backupUserConfigs,
+    checkMultiInstances,
     checkUpdateAndNotify,
     currentPageType,
     restoreUserConfigs,
@@ -56,7 +57,13 @@ window.addEventListener(
     { once: true },
 );
 
-console.info(REMIXED);
+window.addEventListener(
+    "load",
+    () => {
+        checkMultiInstances();
+    },
+    { once: true },
+);
 
 function legacyTiebaLauncher() {
     Promise.all([
@@ -86,9 +93,13 @@ function legacyTiebaLauncher() {
         }
     });
 
-    window.addEventListener("load", () => {
-        checkUpdateAndNotify();
-    });
+    window.addEventListener(
+        "load",
+        () => {
+            checkUpdateAndNotify();
+        },
+        { once: true },
+    );
 
     // 收缩视图检测
     waitUntil(() => !_.isNil(document.body)).then(() => {
@@ -129,3 +140,5 @@ function cosTiebaLauncher() {
         fallbackDialog();
     }
 }
+
+console.info(REMIXED);

@@ -282,18 +282,85 @@ export function backupUserConfigs() {
 export async function restoreUserConfigs() {
     const backupData = JSON.parse(await selectLocalFile());
     const restoredKeys: string[] = [];
-    try {
-        _.forEach(Object.entries(backupData), ([key, value]) => {
+    _.forEach(Object.entries(backupData), ([key, value]) => {
+        try {
             restoredKeys.push(key);
             GM_setValue(key, value);
-        });
-    } catch (_e) {
-        toast({ type: "error", message: `配置 ${restoredKeys.pop()} 恢复失败` });
-    }
+        } catch (_e) {
+            toast({ type: "error", message: `配置 ${restoredKeys.pop()} 恢复失败` });
+        }
+    });
     userDialog(<p>{restoredKeys.join("\n")}</p>, {
         title: `成功恢复 ${restoredKeys.length} 个配置`,
         containerStyle: { width: "360px", maxWidth: "60vw" },
         contentStyle: { whiteSpace: "pre-wrap", fontFamily: "var(--code-monospace)" },
         dialogButtons: [{ text: "确定", style: "themed", event: () => true }],
     });
+}
+
+/**
+ * 检测是否同时运行多个脚本实例，优先使用旧实例打开对话框
+ */
+export function checkMultiInstances() {
+    const CHECK_DELAY = 1000;
+
+    waitUntil(() => document.querySelectorAll("#nav-wrapper").length > 0).then(
+        async () => {
+            await new Promise((resolve) => setTimeout(resolve, CHECK_DELAY));
+            if (!_.isNil(document.documentElement.dataset.remixed)) return;
+            document.documentElement.dataset.remixed = GM_info.script.version;
+
+            if (document.querySelectorAll("#nav-wrapper").length > 1) {
+                userDialog(
+                    <div class="markdown">
+                        <p>
+                            检测到多个脚本实例正在同时运行，请前往用户脚本管理器中禁用所有多余项！若需要保留自定义配置，请继续阅读下列内容。
+                        </p>
+                        <hr />
+                        <p>请执行以下两种操作的任意一种：</p>
+                        <ul>
+                            <li>使用脚本自带的 备份/恢复 功能（设置面板中）——</li>
+                            <ol>
+                                <li>
+                                    在脚本管理器中手动禁用新脚本，刷新页面后使用旧脚本的备份功能；
+                                </li>
+                                <li>检查备份文件是否准确；</li>
+                                <li>
+                                    禁用旧脚本，启用新脚本，刷新页面。从新脚本的恢复功能中导入备份文件；
+                                </li>
+                            </ol>
+
+                            <li>手动数据迁移——</li>
+                            <ol>
+                                <li>
+                                    直接在脚本管理器中将旧脚本的内部存储数据复制到新脚本中，并禁用旧脚本；
+                                </li>
+                            </ol>
+                        </ul>
+                        <p>
+                            若曾经完全使用默认配置运行脚本，则备份文件几乎为空是正常的。
+                        </p>
+                    </div>,
+                    {
+                        title: "禁用多余的脚本实例",
+                        force: true,
+                        contentStyle: {
+                            width: "500px",
+                            maxWidth: "60vw",
+                        },
+                        dialogButtons: [
+                            {
+                                text: "已禁用旧脚本",
+                                style: "themed",
+                                event() {
+                                    location.reload();
+                                    return true;
+                                },
+                            },
+                        ],
+                    },
+                );
+            }
+        },
+    );
 }
