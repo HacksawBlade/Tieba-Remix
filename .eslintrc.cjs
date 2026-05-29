@@ -18,7 +18,7 @@ module.exports = {
             },
         },
         {
-            files: ["*.cjs"],
+            files: ["*.cjs", "vite.config.*"],
             parserOptions: {
                 project: null,
             },
