@@ -61,6 +61,7 @@ window.addEventListener(
     "load",
     () => {
         checkMultiInstances();
+        checkUpdateAndNotify();
     },
     { once: true },
 );
@@ -92,14 +93,6 @@ function legacyTiebaLauncher() {
             forumThreadsObserver.observe();
         }
     });
-
-    window.addEventListener(
-        "load",
-        () => {
-            checkUpdateAndNotify();
-        },
-        { once: true },
-    );
 
     // 收缩视图检测
     waitUntil(() => !_.isNil(document.body)).then(() => {

@@ -7,7 +7,7 @@ import { UserConfig, defineConfig } from "vite";
 import monkey, { MonkeyOption, cdn, util } from "vite-plugin-monkey";
 
 const scriptOptions: MonkeyOption = {
-    entry: "src/main.ts",
+    entry: "src/main.tsx",
     userscript: {
         name: "Tieba Remix",
         namespace: "https://github.com/0x0b1ade/Tieba-Remix",
@@ -15,8 +15,10 @@ const scriptOptions: MonkeyOption = {
         description: "贴吧网页端重塑",
         author: "锯条",
         license: "MIT",
-        updateURL: "https://gitee.com/0x0b1ade/Tieba-Remix/raw/beta/build/tieba-remix.user.js",
-        downloadURL: "https://gitee.com/0x0b1ade/Tieba-Remix/raw/beta/build/tieba-remix.user.js",
+        updateURL:
+            "https://gitee.com/0x0b1ade/Tieba-Remix/raw/beta/build/tieba-remix.user.js",
+        downloadURL:
+            "https://gitee.com/0x0b1ade/Tieba-Remix/raw/beta/build/tieba-remix.user.js",
         icon: "https://gitee.com/0x0b1ade/Tieba-Remix/raw/master/assets/images/main/icon16.png",
         icon64: "https://gitee.com/0x0b1ade/Tieba-Remix/raw/master/assets/images/main/icon64.png",
         match: [
@@ -32,7 +34,8 @@ const scriptOptions: MonkeyOption = {
     },
     build: {
         externalGlobals: {
-            "vue": cdn.jsdelivrFastly("Vue", "dist/vue.global.prod.js")
+            "vue": cdn
+                .jsdelivrFastly("Vue", "dist/vue.global.prod.js")
                 .concat(util.dataUrl(";window.Vue=Vue;")),
             "marked": cdn.jsdelivrFastly("marked", "lib/marked.umd.min.js"),
             "lodash": cdn.jsdelivrFastly("_", "lodash.min.js"),
@@ -45,7 +48,7 @@ const scriptOptions: MonkeyOption = {
 const commonConfig = defineConfig({
     build: {
         lib: {
-            entry: "./src/main.ts",
+            entry: "src/main.tsx",
             name: "TiebaRemix",
             formats: ["iife"],
             fileName: () => `tieba-remix.user.js`,
@@ -74,15 +77,10 @@ const commonConfig = defineConfig({
             },
         },
         postcss: {
-            plugins: [
-                postcssPresetEnv(),
-            ],
+            plugins: [postcssPresetEnv()],
         },
     },
-    plugins: [
-        vue(),
-        vueJSX({}),
-    ],
+    plugins: [vue(), vueJSX({})],
     resolve: {
         alias: [
             {
@@ -114,9 +112,7 @@ const devConfig = defineConfig({
         minify: false,
         cssMinify: false,
     },
-    plugins: [
-        monkey(scriptOptions),
-    ],
+    plugins: [monkey(scriptOptions)],
 });
 
 const forkConfig = defineConfig({
@@ -124,9 +120,7 @@ const forkConfig = defineConfig({
         minify: false,
         cssMinify: false,
     },
-    plugins: [
-        monkey(scriptOptions),
-    ],
+    plugins: [monkey(scriptOptions)],
 });
 
 const prodConfig = defineConfig({
@@ -137,16 +131,11 @@ const prodConfig = defineConfig({
             sourceMap: false,
             toplevel: true,
             compress: {
-                pure_funcs: [
-                    "console.log",
-                    "deb",
-                ],
+                pure_funcs: ["console.log", "deb"],
             },
         },
     },
-    plugins: [
-        monkey(scriptOptions),
-    ],
+    plugins: [monkey(scriptOptions)],
 });
 
 const viteConfig: Record<string, Record<string, () => UserConfig>> = {
