@@ -252,7 +252,7 @@ export function setTheme(theme: ReturnType<typeof themeType.get>) {
         document.documentElement.classList.remove("dark-theme");
         document.documentElement.classList.remove("dark");
 
-        waitUntil(() => !_.isNil(document.body)).then(function () {
+        waitUntil(() => !_.isNil(document.body)).then(() => {
             document.body.classList.remove("dark-theme");
         });
     }
@@ -262,7 +262,7 @@ export function setTheme(theme: ReturnType<typeof themeType.get>) {
         document.documentElement.classList.remove("light-theme");
         document.documentElement.classList.add("dark");
 
-        waitUntil(() => !_.isNil(document.body)).then(function () {
+        waitUntil(() => !_.isNil(document.body)).then(() => {
             document.body.classList.add("dark-theme");
         });
     }
@@ -271,9 +271,7 @@ export function setTheme(theme: ReturnType<typeof themeType.get>) {
 export function backupUserConfigs() {
     const excluded = ["unreadFeeds", "latestRelease", "showUpdateToday"];
     const userKeys = _.filter(GM_listValues(), (key) => !_.includes(excluded, key));
-    const userValues = _.map(userKeys, (key) => {
-        return GM_getValue(key);
-    });
+    const userValues = _.map(userKeys, (key) => GM_getValue(key));
     const configs = _.zipObject(userKeys, userValues);
     outputFile(
         `tieba-remix-backup@${new Date().getTime()}.json`,

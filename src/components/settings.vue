@@ -10,8 +10,7 @@
                         v-model="searchText"
                         class="search-box"
                         placeholder="输入需要搜索的设置"
-                        @update:model-value="debSearchKey"
-                    ></UserTextbox>
+                        @update:model-value="debSearchKey"></UserTextbox>
                 </div>
 
                 <div class="left-panel">
@@ -20,8 +19,7 @@
                         class="key-button main-key"
                         :class="{ selected: selectedKey?.name === setting.name }"
                         @click="selectMainKey(setting)"
-                        no-border="all"
-                    >
+                        no-border="all">
                         <div class="main-key-selected"></div>
                         <div class="icon">{{ setting.icon }}</div>
 
@@ -39,8 +37,7 @@
                     class="key-button sub-key"
                     :class="{ selected: selectedSubKey?.name === setting.name }"
                     @click="selectSubKey(setting)"
-                    no-border="all"
-                >
+                    no-border="all">
                     <div class="key-title">{{ setting.name }}</div>
                 </UserButton>
             </div>
@@ -50,8 +47,7 @@
                     :key="Math.random()"
                     v-if="selectedSubKey?.name"
                     v-for="content in selectedSubKey.content"
-                    class="setting-content"
-                >
+                    class="setting-content">
                     <h3 v-if="content?.title" class="content-title">
                         {{ content?.title }}
                     </h3>
@@ -59,8 +55,7 @@
                         <p
                             v-if="content?.description"
                             v-for="line in content.description.split('\n')"
-                            class="line"
-                        >
+                            class="line">
                             {{ line }}
                         </p>
                     </div>
@@ -68,8 +63,7 @@
                     <div
                         v-if="content?.widgets"
                         v-for="widget in content.widgets"
-                        class="setting-control"
-                    >
+                        class="setting-control">
                         <!-- Toggle -->
                         <UserCheck
                             v-if="widget.type === 'toggle'"
@@ -80,8 +74,7 @@
                                     ? widget.content
                                     : undefined
                             "
-                            @change="widget.event"
-                        />
+                            @change="widget.event" />
 
                         <!-- Icon -->
                         <div v-if="widget.type === 'icon'" class="icon-component icon">
@@ -92,8 +85,7 @@
                         <UserButton
                             v-if="widget.type === 'button'"
                             @click="widget.event"
-                            shadow-border
-                        >
+                            shadow-border>
                             {{ widget.content }}</UserButton
                         >
 
@@ -105,8 +97,7 @@
                             class="settings-select"
                             :data="widget.content as UserSelectItem[]"
                             :default-value="widget.init?.()"
-                            @change="widget.event"
-                        />
+                            @change="widget.event" />
 
                         <!-- SubTitle -->
                         <h4 v-if="widget.type === 'subTitle'" class="content-sub-title">
@@ -120,8 +111,7 @@
                                     widget.content && typeof widget.content === 'string'
                                 "
                                 v-for="line in widget.content.split('\n')"
-                                class="line"
-                            >
+                                class="line">
                                 {{ line }}
                             </div>
                         </div>
@@ -134,8 +124,7 @@
                             :value="widget.init ? widget.init() : ''"
                             :muti-lines="widget.type === 'textarea'"
                             :placeholder="widget.placeHolder"
-                            @change="widget.event"
-                        >
+                            @change="widget.event">
                         </UserTextbox>
 
                         <!-- Image -->
@@ -145,15 +134,13 @@
                             :src="widget.content?.toString()"
                             :alt="widget.altContent"
                             :title="widget.altContent"
-                            @load="widget.init"
-                        />
+                            @load="widget.init" />
 
                         <!-- Component -->
                         <component
                             v-if="widget.component"
                             :is="widget?.component"
-                            @change-view="changeView"
-                        >
+                            @change-view="changeView">
                         </component>
                     </div>
                 </div>

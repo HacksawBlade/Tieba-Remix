@@ -6,8 +6,7 @@
                     ref="currImage"
                     class="curr-image changing"
                     :src="imageArray[curr]"
-                    :style="parseCSSRule(imageStyle)"
-                />
+                    :style="parseCSSRule(imageStyle)" />
             </div>
 
             <div class="control-panel head-controls" :class="{ hide: !showControls.top }">
@@ -21,15 +20,13 @@
                 <UserButton
                     class="zoom-in head-btn icon"
                     title="缩小"
-                    @click="zoomImage(0.5)"
-                >
+                    @click="zoomImage(0.5)">
                     zoom_in
                 </UserButton>
                 <UserButton
                     class="zoom-out head-btn icon"
                     title="放大"
-                    @click="zoomImage(-0.5)"
-                >
+                    @click="zoomImage(-0.5)">
                     zoom_out
                 </UserButton>
                 <span class="zoom-size">{{ _.round(scale * 100) + "%" }}</span>
@@ -37,15 +34,13 @@
                 <UserButton
                     class="turn-left head-btn icon"
                     title="逆时针旋转"
-                    @click="rotateImage(-90)"
-                >
+                    @click="rotateImage(-90)">
                     undo
                 </UserButton>
                 <UserButton
                     class="turn-right head-btn icon"
                     title="顺时针旋转"
-                    @click="rotateImage(90)"
-                >
+                    @click="rotateImage(90)">
                     redo
                 </UserButton>
                 <span>|</span>
@@ -59,8 +54,7 @@
                 class="control-panel back icon"
                 :class="{ hide: !showControls.left }"
                 title="上一张"
-                @click="listBack"
-            >
+                @click="listBack">
                 chevron_left
             </UserButton>
             <UserButton
@@ -68,30 +62,26 @@
                 class="control-panel forward icon"
                 :class="{ hide: !showControls.right }"
                 title="下一张"
-                @click="listForward"
-            >
+                @click="listForward">
                 chevron_right
             </UserButton>
 
             <div
                 ref="bottomPanel"
                 class="control-panel bottom-controls-wrapper"
-                :class="{ hide: !showControls.bottom }"
-            >
+                :class="{ hide: !showControls.bottom }">
                 <div class="bottom-controls-container">
                     <div ref="thumbContainer" class="thumb-container">
                         <UserButton
                             v-for="(thumb, index) in thumbArray"
                             class="bottom-btn"
                             :class="{ selected: index === curr }"
-                            no-border="all"
-                        >
+                            no-border="all">
                             <img
                                 class="image-list"
                                 alt=""
                                 :data-lazyload="thumb"
-                                @click="curr = index"
-                            />
+                                @click="curr = index" />
                         </UserButton>
                     </div>
                 </div>
@@ -174,18 +164,16 @@ const lockControls = ref<ControlDirectionMap<boolean>>({
 });
 const vliMode = ref(false);
 
-const imageStyle = computed<CSSRule>(() => {
-    return {
-        transform: `scale(${scale.value}) rotate(${deg.value}deg)`,
-        left: `${imageLeft.value}px`,
-        top: `${imageTop.value}px`,
-        transition: vliMode.value
-            ? "all 0.4s ease, left 0s, top 0.1s ease-out"
-            : "all 0.4s ease, left 0s, top 0s",
-    };
-});
+const imageStyle = computed<CSSRule>(() => ({
+    transform: `scale(${scale.value}) rotate(${deg.value}deg)`,
+    left: `${imageLeft.value}px`,
+    top: `${imageTop.value}px`,
+    transition: vliMode.value
+        ? "all 0.4s ease, left 0s, top 0.1s ease-out"
+        : "all 0.4s ease, left 0s, top 0s",
+}));
 
-const imageProps = computed(function () {
+const imageProps = computed(() => {
     const naturalHeight = currImage.value?.naturalHeight ?? 0;
     return {
         naturalHeight: naturalHeight ?? 0,
@@ -247,7 +235,7 @@ onMounted(async () => {
         window,
         "mousemove",
         _.throttle(
-            function (e: MouseEvent) {
+            (e: MouseEvent) => {
                 const { clientX, clientY } = e;
                 lastMousePos = { x: clientX, y: clientY };
                 showControls.value = verifyPos();
@@ -280,7 +268,7 @@ onMounted(async () => {
         document.removeEventListener("mousemove", moveHandler);
     });
 
-    evproxy.on(currImage.value, "load", function () {
+    evproxy.on(currImage.value, "load", () => {
         if (!currImage.value) {
             return;
         }
@@ -316,7 +304,7 @@ onMounted(async () => {
         currImage.value.classList.remove("changing");
     });
 
-    evproxy.on(currImage.value, "transitionend", function () {
+    evproxy.on(currImage.value, "transitionend", () => {
         if (Math.abs(deg.value) >= 360) {
             currImage.value?.classList.add("changing");
             deg.value = Math.abs(deg.value) % 360;
@@ -389,19 +377,19 @@ onMounted(async () => {
     }
 });
 
-onUnmounted(function () {
+onUnmounted(() => {
     evproxy.release();
     thumbLazyloadObserver.disconnect();
 });
 
-watch(curr, function () {
+watch(curr, () => {
     currImage.value?.classList.add("changing");
     deg.value = 0;
     imageLeft.value = undefined;
     imageTop.value = undefined;
 });
 
-watch(imageTop, function (newTop) {
+watch(imageTop, (newTop) => {
     if (vliMode.value) {
         if (!currImage.value || !imageTop.value || !newTop) {
             return;
@@ -416,7 +404,7 @@ watch(imageTop, function (newTop) {
     }
 });
 
-watch(vliMode, function (newMode) {
+watch(vliMode, (newMode) => {
     lockControlsTemporarily("top", DEFAULT_HIDE_CONTROLS_DELAY);
     if (newMode && currImage.value && !imageTop.value) {
         imageTop.value = Math.max(

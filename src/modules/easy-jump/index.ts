@@ -14,7 +14,7 @@ export default {
 } as UserModule;
 
 async function main() {
-    afterHead(function () {
+    afterHead(() => {
         injectCSSRule("html", {
             backgroundColor: "var(--page-background)",
         });

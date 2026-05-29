@@ -42,17 +42,17 @@ export default async function () {
 
     overwriteCSS(threadStyle, compactStyle, commentsStyle);
 
-    await waitUntil(() => !_.isNil(document.body)).then(function () {
+    await waitUntil(() => !_.isNil(document.body)).then(() => {
         // document.body.insertBefore(mainWrapper, document.body.firstChild);
         if (compactLayout.get()) {
             document.body.toggleAttribute("compact-layout");
         }
     });
 
-    waitUntil(() => !_.isNil(floatBar.get())).then(function () {
+    waitUntil(() => !_.isNil(floatBar.get())).then(() => {
         floatBar.add(
             "other",
-            function () {
+            () => {
                 renderDialog<TogglePanelProps>(TogglePanel, {
                     toggles: [
                         {
@@ -139,8 +139,7 @@ export default async function () {
                     <a
                         class="forum-name anchor-noback"
                         href={`/f?kw=${PageData.forum.name_url}`}
-                        target="_blank"
-                    >
+                        target="_blank">
                         {PageData.forum.forum_name} 吧
                     </a>
 
@@ -148,8 +147,7 @@ export default async function () {
                         <UserButton
                             class="icon forum-button add-forum-button"
                             noBorder
-                            onClick={() => dom<"button">("#j_head_focus_btn")?.click()}
-                        >
+                            onClick={() => dom<"button">("#j_head_focus_btn")?.click()}>
                             {PageData.user.is_like ? "check" : "add"}
                         </UserButton>
                     </div>
@@ -164,7 +162,7 @@ export default async function () {
             target: await asyncdom<"button">(".forum-wrapper-button"),
             content: `关注 ${PageData.forum.member_count}, 帖子 ${PageData.forum.post_num}`,
         });
-        dom<"button">(".sign-in-button")?.addEventListener("click", function () {
+        dom<"button">(".sign-in-button")?.addEventListener("click", () => {
             dom<"button">(".j_signbtn")?.click();
         });
 
@@ -174,8 +172,8 @@ export default async function () {
         // 由于一些动态加载行为，在 DOMContentLoaded 后判断举报按钮中的文字节点是否存在更为妥当
         document.addEventListener(
             "DOMContentLoaded",
-            function () {
-                threadFloorsObserver.addEvent(function () {
+            () => {
+                threadFloorsObserver.addEvent(() => {
                     _.forEach(dom<"a">(".j_jb_ele a", []), (el) => {
                         if (el.lastChild?.nodeType !== Node.TEXT_NODE) {
                             el.appendChild(new Text("举报"));
@@ -195,7 +193,7 @@ export default async function () {
             { once: true },
         );
 
-        threadFloorsObserver.addEvent(function () {
+        threadFloorsObserver.addEvent(() => {
             if (dom(".d_author", []).length === 0) {
                 return;
             }
@@ -230,8 +228,7 @@ export default async function () {
 
             appendJSX(
                 <div
-                    class={`floor-badge level-${levelToClass(thread.cotents[index].profile.level)}`}
-                >
+                    class={`floor-badge level-${levelToClass(thread.cotents[index].profile.level)}`}>
                     <div class="badge-level">{thread.cotents[index].profile.level}</div>
                     <div class="badge-title">
                         {thread.cotents[index].profile.badgeTitle}
@@ -249,8 +246,8 @@ export default async function () {
 
         // 头像 lazy load
         const avatarObserver = new IntersectionObserver(
-            function (entries, observer) {
-                _.forEach(entries, function (entry) {
+            (entries, observer) => {
+                _.forEach(entries, (entry) => {
                     if (entry.isIntersecting) {
                         const avatar = entry.target.children[0] as HTMLImageElement;
                         const lazyLink = avatar.getAttribute("data-tb-lazyload");
@@ -287,7 +284,7 @@ export default async function () {
                 const postContent = findParent(el, "d_post_content");
 
                 imageClone.dataset.pid = _(postContent?.id).split("_").last();
-                imageClone.addEventListener("click", async function () {
+                imageClone.addEventListener("click", async () => {
                     if (!_.isNil(currentStorage.get(THREAD_IMAGES))) {
                         showImage();
                     } else {
@@ -388,8 +385,7 @@ export default async function () {
                         width: "100%",
                         padding: "0",
                         ...additionalStyles,
-                    })}
-                >
+                    })}>
                     {{
                         tailSlot: () => `回帖 ${PageData.thread.reply_num - 1}`,
                     }}
@@ -413,9 +409,7 @@ export default async function () {
             floatBar.add("post", showEditor, undefined, undefined, 2);
         }
 
-        const postButton = _.find(floatBar.buttons(), (button) => {
-            return button.type === "post";
-        });
+        const postButton = _.find(floatBar.buttons(), (button) => button.type === "post");
         postButton?.el.addEventListener("click", showEditor);
 
         // 添加末尾帖子回复入口

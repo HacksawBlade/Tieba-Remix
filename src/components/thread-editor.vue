@@ -13,8 +13,7 @@
                 v-if="type === 'thread'"
                 class="title-editor"
                 placeholder="输入标题"
-                lodash-style
-            ></UserTextbox>
+                lodash-style></UserTextbox>
 
             <div ref="editorSlot" id="thread-editor-slot"></div>
 
@@ -101,7 +100,7 @@ const originParent = ref<HTMLDivElement>();
 //     },
 // };
 
-onMounted(async function () {
+onMounted(async () => {
     await nextTick();
 
     if (!editorSlot.value) {

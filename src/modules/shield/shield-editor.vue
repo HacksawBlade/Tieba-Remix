@@ -6,8 +6,7 @@
             { text: '确定', event: submit, style: 'themed' },
             { text: '取消', event: unload },
         ]"
-        :default-payload="{ ...props.rule }"
-    >
+        :default-payload="{ ...props.rule }">
         <div id="shield-editor">
             <div id="shield-editor-rule-control">
                 <label for="shield-editor-rule">规则</label>
@@ -15,25 +14,21 @@
                     v-model="ruleRef.content"
                     id="shield-editor-rule"
                     muti-lines
-                    @keypress="keyPressHandler"
-                />
+                    @keypress="keyPressHandler" />
             </div>
             <div id="shield-editor-toggle-control">
                 <UserCheck
                     v-model="ruleRef.toggle"
                     id="shield-editor-toggle"
-                    text="启用"
-                />
+                    text="启用" />
                 <UserCheck
                     v-model="useRegex"
                     id="shield-editor-regex"
-                    text="正则表达式"
-                />
+                    text="正则表达式" />
                 <UserCheck
                     v-model="userScope"
                     id="shield-editor-user"
-                    text="屏蔽用户名"
-                />
+                    text="屏蔽用户名" />
             </div>
             <UserButton id="shield-editor-delete" @click="deleteRule"
                 >删除规则</UserButton

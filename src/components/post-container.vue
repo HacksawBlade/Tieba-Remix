@@ -8,16 +8,14 @@
         :class="{
             dynamic: props.dynamic,
             'assets-loaded': loadedAssets === props.post.images.length,
-        }"
-    >
+        }">
         <div>
             <UserButton
                 :is-anchor="true"
                 class="forum-btn"
                 :shadow-border="true"
                 :href="props.post.forum.href"
-                target="_blank"
-            >
+                target="_blank">
                 {{ props.post.forum.name + " 吧" }}
             </UserButton>
         </div>
@@ -34,13 +32,11 @@
                 v-for="(image, index) in props.post.images"
                 class="img-button"
                 @click="showImage($event, index)"
-                no-border="all"
-            >
+                no-border="all">
                 <img
                     class="post-img"
                     :src="isIntersecting ? image.original : image.thumb"
-                    @load="addLoadedPost"
-                />
+                    @load="addLoadedPost" />
             </UserButton>
         </div>
 
@@ -50,16 +46,14 @@
                 :is-anchor="true"
                 :href="props.post.author.href"
                 target="_blank"
-                :shadow-border="true"
-            >
+                :shadow-border="true">
                 <img
                     class="author-portrait"
                     :src="
                         isIntersecting
                             ? tiebaAPI.URL_profile(props.post.author.portrait)
                             : ''
-                    "
-                />
+                    " />
                 <div class="author-info">
                     <div class="author-name">{{ props.post.author.name }}</div>
                     <div class="post-time">{{ props.post.time }}</div>
@@ -154,11 +148,12 @@ async function showImage(e: MouseEvent, index: number) {
         const response: GetThreadImagesResponse = await (
             await tiebaAPI.getThreadImages(+props.post.id, true)
         ).json();
-        const pictureList: ThreadPicture[] = _(response!.data.pic_list)
+
+        const pictureList: ThreadPicture[] = _(response.data.pic_list)
             .keys()
-            .sortBy((key) => parseInt(key.slice(1)))
+            .sortBy((key) => +key.slice(1))
             .map((key) => {
-                const value = response!.data.pic_list[key];
+                const value = response.data.pic_list[key];
                 return {
                     original: highQualityImage.get()
                         ? value.img.original.waterurl

@@ -10,8 +10,7 @@
                         placeholder="搜索 贴吧"
                         autocomplete="none"
                         @focus="searchBoxFocus"
-                        @input="searchMatch"
-                    >
+                        @input="searchMatch">
                     </UserTextbox>
 
                     <UserButton class="search-button" :theme-style="true" no-border
@@ -21,16 +20,14 @@
                     <!-- 搜索建议组件 -->
                     <div
                         v-show="suggToggle && suggestions.length > 0"
-                        class="search-suggestions"
-                    >
+                        class="search-suggestions">
                         <UserButton
                             :is-anchor="true"
                             class="search-elem"
                             v-for="sugg in suggestions"
                             :href="sugg.href"
                             target="_blank"
-                            no-border
-                        >
+                            no-border>
                             <img class="sugg-img" :src="sugg.image" alt="" />
                             <div class="sugg-content">
                                 <p class="sugg-title">{{ sugg.title }}</p>
@@ -52,8 +49,7 @@
                         :key="key"
                         :class="{ active: currentSection === key }"
                         no-border="all"
-                        @click="currentSection = key"
-                    >
+                        @click="currentSection = key">
                         <span class="icon">{{ toggle.icon }}</span>
                         <span v-show="key === currentSection" class="name">{{
                             toggle.name
@@ -66,8 +62,7 @@
                         class="home-section-button"
                         title="设置"
                         no-border="all"
-                        @click="renderDialog(Settings)"
-                    >
+                        @click="renderDialog(Settings)">
                         <span class="icon">settings</span>
                     </UserButton>
                 </div>
@@ -75,16 +70,14 @@
                 <div
                     v-show="homeSections[currentSection].moreOpts"
                     class="home-section-container"
-                    style="margin-left: auto"
-                >
+                    style="margin-left: auto">
                     <UserButton
                         v-for="opt in homeSections[currentSection].moreOpts"
                         class="home-section-button"
                         :title="opt.name"
                         :key="opt.name"
                         no-border="all"
-                        @click="opt.event()"
-                    >
+                        @click="opt.event()">
                         <span class="icon">{{ opt.icon }}</span>
                     </UserButton>
                 </div>
@@ -92,8 +85,7 @@
 
             <div
                 v-show="followed && currentSection === 'followed'"
-                class="block-wrapper followed-container"
-            >
+                class="block-wrapper followed-container">
                 <div class="block-container followed-list">
                     <UserButton
                         v-for="forum in followed?.like_forum"
@@ -102,14 +94,12 @@
                         :shadow-border="true"
                         :href="tiebaAPI.URL_forum(forum.forum_name)"
                         target="_blank"
-                        no-border
-                    >
+                        no-border>
                         <div v-if="forum.is_sign === 1" class="icon signed">check</div>
                         <div class="forum-title">{{ forum.forum_name }}</div>
                         <div
                             class="forum-level"
-                            :class="'level-' + levelToClass(forum.user_level)"
-                        >
+                            :class="'level-' + levelToClass(forum.user_level)">
                             {{ forum.user_level }}
                         </div>
                     </UserButton>
@@ -118,8 +108,7 @@
 
             <div
                 v-show="topicList.length > 0 && currentSection === 'topicList'"
-                class="block-wrapper topic-container"
-            >
+                class="block-wrapper topic-container">
                 <div class="block-container topic-list">
                     <UserButton
                         v-for="topic in _.take(topicList, 10)"
@@ -127,8 +116,7 @@
                         class="topic-btn"
                         :shadow-border="true"
                         :href="topic.topic_url"
-                        target="_blank"
-                    >
+                        target="_blank">
                         <img class="topic-img" :src="topic.topic_pic" />
                         <div class="topic-content">
                             <div class="topic-title">
@@ -153,15 +141,13 @@
         <div
             ref="masonryContainer"
             v-if="currentSection === 'feeds'"
-            class="masonry-container"
-        >
+            class="masonry-container">
             <FeedsMasonry
                 ref="feedsMasonry"
                 v-show="currentSection === 'feeds'"
                 :init-feeds="initFeeds"
                 :auto-update="currentSection === 'feeds'"
-                show-progress
-            ></FeedsMasonry>
+                show-progress></FeedsMasonry>
 
             <div v-show="initFeeds.length === 0" class="empty-container">
                 <p class="no-feed-content">没有更多了</p>
@@ -263,13 +249,11 @@ const homeSections = computed<Record<HomeSectionKey, HomeSection>>(() => ({
     },
 }));
 const currentSection = ref<HomeSectionKey>("followed");
-const homeSectionToggles = computed<Record<HomeSectionKey, boolean>>(() => {
-    return {
-        followed: currentSection.value === "followed",
-        feeds: currentSection.value === "feeds",
-        topicList: currentSection.value === "topicList",
-    };
-});
+const homeSectionToggles = computed<Record<HomeSectionKey, boolean>>(() => ({
+    followed: currentSection.value === "followed",
+    feeds: currentSection.value === "feeds",
+    topicList: currentSection.value === "topicList",
+}));
 
 initFeeds.value = unreadFeeds.get();
 

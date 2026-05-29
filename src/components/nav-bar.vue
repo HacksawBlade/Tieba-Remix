@@ -8,8 +8,7 @@
             'blur-effect': !experimental.get().rasterEffect,
             'raster-effect': experimental.get().rasterEffect,
             'fixed-on-top': hideMode === 'fixedOnTop',
-        }"
-    >
+        }">
         <div v-show="teiggerHide" id="fold-bar"></div>
 
         <div id="nav-container">
@@ -18,8 +17,7 @@
                     class="nav-button nav-title-container"
                     is-anchor
                     href="/"
-                    no-border="all"
-                >
+                    no-border="all">
                     <!-- <img
                         :src="getResource('/assets/images/main/icon64.png')"
                         alt=""
@@ -34,13 +32,11 @@
                     <template v-for="(menu, key) in middleMenu" :key="key">
                         <UserButton
                             class="menu-trigger middle-menu-trigger"
-                            no-border="all"
-                        >
+                            no-border="all">
                             {{ key }}
                             <DropdownMenu
                                 class="nav-menu"
-                                :menu-items="menu"
-                            ></DropdownMenu>
+                                :menu-items="menu"></DropdownMenu>
                         </UserButton>
                     </template>
                 </div>
@@ -53,8 +49,7 @@
                 <UserButton
                     class="nav-button menu-trigger menu-button"
                     shadow-border
-                    no-border="all"
-                >
+                    no-border="all">
                     <div class="icon">menu</div>
                     <DropdownMenu class="nav-menu" :menu-items="extendMenu!">
                     </DropdownMenu>
@@ -104,9 +99,9 @@ const userMenu = ref<DropdownMenu[]>([]);
 const extendMenu = ref<DropdownMenu[]>([]);
 
 init();
-onMounted(async function () {
+onMounted(async () => {
     {
-        waitUntil(() => userPortrait.value !== "").then(function () {
+        waitUntil(() => userPortrait.value !== "").then(() => {
             if (navAvatar.value) {
                 navAvatar.value.src = tiebaAPI.URL_profile(userPortrait.value);
             }
@@ -123,7 +118,7 @@ async function init() {
     const navBarElement = dom("#nav-bar");
     if (navBarElement) {
         _.forEach(dom<"button">(".menu-trigger", navBarElement, []), (el) => {
-            el.addEventListener("mousemove", function (e) {
+            el.addEventListener("mousemove", (e) => {
                 e.stopPropagation();
                 const menu = el.lastElementChild as HTMLElement;
 
@@ -151,7 +146,7 @@ async function init() {
                 timeout = 1000;
             let lastScrollY = window.scrollY;
             let timer = -1;
-            const handle = _.throttle(function () {
+            const handle = _.throttle(() => {
                 if (window.scrollY > lastScrollY + threshold) {
                     navBar.value?.classList.add(modeClass);
                     teiggerHide.value = true;

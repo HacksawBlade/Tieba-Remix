@@ -10,17 +10,15 @@ export type CSSObject = Record<string, CSSRule>;
  * @param cssObject 描述 CSS 选择器 + 规则 的对象
  */
 export function parseMultiCSS(cssObject: CSSObject) {
-    return _.flatMapDeep(cssObject, (value, key) => {
-        return [
-            `${key} {`,
-            ..._.flatMapDeep(
-                value,
-                (v, k) => `${_.startsWith(k, "--") ? k : _.kebabCase(k)}: ${v};`,
-            ),
-            "}",
-            "",
-        ];
-    }).join("\n");
+    return _.flatMapDeep(cssObject, (value, key) => [
+        `${key} {`,
+        ..._.flatMapDeep(
+            value,
+            (v, k) => `${_.startsWith(k, "--") ? k : _.kebabCase(k)}: ${v};`,
+        ),
+        "}",
+        "",
+    ]).join("\n");
 }
 
 export function parseCSSRule(cssRule: CSSRule): string {

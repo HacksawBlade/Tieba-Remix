@@ -17,7 +17,7 @@ export function headerProgress(
     const timeoutTimer = setTimeout(() => {
         rendered.root.remove();
     }, timeout);
-    waitUntil(() => rendered.root.style.width === "100vw", timeout).then(function () {
+    waitUntil(() => rendered.root.style.width === "100vw", timeout).then(() => {
         setTimeout(() => {
             rendered.root.remove();
             clearTimeout(timeoutTimer);

@@ -10,8 +10,7 @@
             :class="{ animation: props.animation }"
             dynamic
             shadow-border
-            @assets-loaded="addToLoaded"
-        >
+            @assets-loaded="addToLoaded">
         </PostContainer>
     </div>
 </template>
@@ -66,7 +65,7 @@ const evproxy = new EventProxy();
 evproxy.on(
     window,
     "resize",
-    _.throttle(function () {
+    _.throttle(() => {
         flexMasonry.adjustWidth();
         if (flexMasonry.columns !== flexMasonry.calcColumns()) {
             flexMasonry.exec();
@@ -169,7 +168,7 @@ async function addFeeds(newFeeds?: TiebaPost[]) {
     feeds.value.push(...newFeeds);
 
     await waitUntil(() => currentLoadedFeeds.length >= (newFeeds ?? []).length);
-    renderMasonry().then(function () {
+    renderMasonry().then(() => {
         unreadFeeds.set(
             newFeeds ? _.takeRight(newFeeds, 10) : [],
             spawnOffsetTS(0, 0, 0, unreadTTL),

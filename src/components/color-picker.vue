@@ -27,11 +27,11 @@ const debouncedUpdate = _.debounce(() => {
     emit("change", model.value);
 }, DEBOUNCE_TIME);
 
-onBeforeUnmount(function () {
+onBeforeUnmount(() => {
     debouncedUpdate.cancel();
 });
 
-watch(model, function () {
+watch(model, () => {
     debouncedUpdate();
 });
 </script>

@@ -71,7 +71,7 @@ const toolkitFeatures = {
     /** 重新加载错误头像 */
     reloadAvatars() {
         const observer = new IntersectionObserver(
-            function (entries) {
+            (entries) => {
                 _.forEach(entries, (entry) => {
                     if (entry.isIntersecting) {
                         const avatar = entry.target as HTMLImageElement;
@@ -101,7 +101,7 @@ const toolkitFeatures = {
             { threshold: 0 },
         );
 
-        threadCommentsObserver.addEvent(function () {
+        threadCommentsObserver.addEvent(() => {
             const avatars = dom<"img">(
                 ".lzl_single_post img:not(.BDE_Smiley, [data-loaded])",
                 [],

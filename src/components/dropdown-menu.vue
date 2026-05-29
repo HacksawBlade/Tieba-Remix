@@ -12,8 +12,7 @@
                     :href="menuItem.href ? menuItem.href : 'javascript:;'"
                     @click="menuItem.click"
                     :target="menuItem.href ? '_blank' : ''"
-                    no-border
-                >
+                    no-border>
                     <div v-if="menuItem.icon" class="icon">{{ menuItem.icon }}</div>
                     <div class="menu-title">
                         {{ menuItem.title }}

@@ -7,8 +7,7 @@
                 cy="50"
                 r="40"
                 fill="none"
-                stroke-width="8"
-            ></circle>
+                stroke-width="8"></circle>
         </svg>
     </UserDialog>
 </template>

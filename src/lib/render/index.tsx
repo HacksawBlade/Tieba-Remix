@@ -28,10 +28,11 @@ export function renderComponent<T extends LiteralObject>(
 }
 
 /** 获取垂直滚动条的宽度。对应的 CSS 变量为 `--scrollbar-width` */
-export const scrollbarWidth = _.once(function () {
-    // 仅在文档宽度不超过窗口宽度（或文档 overflow-x: hidden）时是正确的
-    return window.innerWidth - document.documentElement.clientWidth;
-});
+export const scrollbarWidth = _.once(
+    () =>
+        // 仅在文档宽度不超过窗口宽度（或文档 overflow-x: hidden）时是正确的
+        window.innerWidth - document.documentElement.clientWidth,
+);
 
 export function renderPage(root: Component, rootProps?: LiteralObject) {
     if (document.getElementsByTagName("body").length === 0) {

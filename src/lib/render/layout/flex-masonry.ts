@@ -197,7 +197,7 @@ export class FlexMasonry {
     public calcColumns() {
         this._columns = Math.ceil(
             (this.container.clientWidth - this.columnWidth) /
-            (this.columnWidth + this.gap[0]),
+                (this.columnWidth + this.gap[0]),
         );
         return this._columns;
     }
@@ -207,12 +207,13 @@ export class FlexMasonry {
      * @param el 要添加的元素
      */
     public appendElement(...elems: Element[]) {
-        const masonryElements = elems.map((el) => {
-            return {
-                element: el,
-                cachedHeight: el.clientHeight,
-            } as MasonryElement;
-        });
+        const masonryElements = elems.map(
+            (el) =>
+                ({
+                    element: el,
+                    cachedHeight: el.clientHeight,
+                }) as MasonryElement,
+        );
 
         this._appendElement(...masonryElements);
         this.items.push(...masonryElements);

@@ -81,7 +81,7 @@ export async function loadDynamicCSS() {
 
     window.addEventListener(
         "load",
-        function () {
+        () => {
             GM_addStyle(
                 parseMultiCSS({
                     ":root": {
@@ -139,7 +139,7 @@ export async function setCustomBackground() {
         backgroundSize: "cover !important",
     });
 
-    waitUntil(() => !_.isNil(document.body)).then(function () {
+    waitUntil(() => !_.isNil(document.body)).then(() => {
         if (customBackground.get()) {
             document.body.classList.add("custom-background");
         } else {

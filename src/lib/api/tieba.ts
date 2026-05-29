@@ -616,8 +616,8 @@ export async function getFeedList(
 export function addFloorInstance(content: string) {
     return tiebaAPI.addFloor(
         PageData.tbs,
-        PageData.forum.name,
-        parseInt(PageData.forum.id),
+        PageData.forum.forum_name,
+        +PageData.forum.id,
         PageData.thread.thread_id,
         content,
         PageData.thread.reply_num + 1,
@@ -997,7 +997,7 @@ export async function getAllThreadImages(
     ): ThreadPicture[] {
         return _(picList)
             .keys()
-            .sortBy((key) => parseInt(key.slice(1)))
+            .sortBy((key) => +key.slice(1))
             .map((key) => {
                 const value = picList[key];
                 return {

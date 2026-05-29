@@ -176,19 +176,19 @@ export async function selectLocalFile<T extends Maybe<string | ArrayBuffer>>(
         const input = document.createElement("input");
         input.type = "file";
 
-        input.addEventListener("change", function () {
+        input.addEventListener("change", () => {
             if (!input.files) {
                 return;
             }
             const file = input.files[0];
             const reader = new FileReader();
 
-            reader.addEventListener("loadend", function () {
+            reader.addEventListener("loadend", () => {
                 const base64String = reader.result;
                 resolve(base64String as T);
             });
 
-            reader.addEventListener("error", function () {
+            reader.addEventListener("error", () => {
                 reject(new Error());
             });
 

@@ -20,8 +20,7 @@
                 "
                 class="pager-button pager-back-button icon"
                 no-border
-                @click="pagerChange('prev', Math.max(1, current - pagerCount))"
-            >
+                @click="pagerChange('prev', Math.max(1, current - pagerCount))">
                 keyboard_double_arrow_left
             </UserButton>
 
@@ -32,8 +31,7 @@
                 :class="{ fill: fill, 'curr-pager-button': displayNumber === current }"
                 @click="pagerChange('page', displayNumber)"
                 no-border="all"
-                :disabled="displayNumber === current"
-            >
+                :disabled="displayNumber === current">
                 {{ displayNumber }}
             </UserButton>
 
@@ -41,8 +39,7 @@
                 v-show="total - pagerCount > 1 && total - current > pagerCount / 2"
                 class="pager-button pager-forward-button icon"
                 no-border
-                @click="pagerChange('next', Math.min(total, current + pagerCount))"
-            >
+                @click="pagerChange('next', Math.min(total, current + pagerCount))">
                 keyboard_double_arrow_right
             </UserButton>
             <UserButton
@@ -51,8 +48,7 @@
                 "
                 class="pager-button pager-tail-button"
                 no-border
-                @click="pagerChange('tail', total)"
-            >
+                @click="pagerChange('tail', total)">
                 {{ total }}</UserButton
             >
         </div>
@@ -65,8 +61,7 @@
                 v-model="jumperValue"
                 class="jumper"
                 @update:model-value="emit('update:jumperValue', jumperValue)"
-                @keydown.enter="handleJumperEnter"
-            >
+                @keydown.enter="handleJumperEnter">
             </UserTextbox>
             页
         </div>

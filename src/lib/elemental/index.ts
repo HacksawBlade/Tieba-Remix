@@ -233,9 +233,7 @@ export function findParent<T extends keyof HTMLElementTagNameMap>(
         switch (mode) {
             case "selector": {
                 const allValid = new Set(dom(trait, []));
-                return (parent: HTMLElement) => {
-                    return allValid.has(parent);
-                };
+                return (parent: HTMLElement) => allValid.has(parent);
             }
 
             case "className": {

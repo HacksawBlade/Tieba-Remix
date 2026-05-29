@@ -3,8 +3,7 @@
         ref="headerProgress"
         id="header-progress"
         :class="{ complete: valueRef >= 100 }"
-        :style="`width: ${valueRef}vw;`"
-    ></div>
+        :style="`width: ${valueRef}vw;`"></div>
 </template>
 
 <script lang="ts" setup>
@@ -20,7 +19,7 @@ const props = defineProps<HeaderProgressProps>();
 const headerProgress = ref<HTMLDivElement>();
 const valueRef = ref(0);
 
-onMounted(function () {
+onMounted(() => {
     if (headerProgress.value) {
         new FrameInterval(calcValue).until(() => valueRef.value >= 100);
     }

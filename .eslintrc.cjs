@@ -17,12 +17,6 @@ module.exports = {
                 "@typescript-eslint/no-unused-vars": "off",
             },
         },
-        {
-            files: ["*.cjs", "vite.config.*"],
-            parserOptions: {
-                project: null,
-            },
-        },
     ],
     parserOptions: {
         parser: "@typescript-eslint/parser",
@@ -36,25 +30,20 @@ module.exports = {
     },
     plugins: ["@typescript-eslint", "eslint-plugin-vue"],
     rules: {
-        "@typescript-eslint/triple-slash-reference": "off" /* ref */,
+        "@typescript-eslint/triple-slash-reference": "off", // ref
         "no-var": "error",
         strict: "error",
-        "spaced-comment": "off",
         "no-undef": "off",
-        radix: "off" /* praseInt radix */,
-        "@typescript-eslint/no-unused-expressions": "off" /* 禁止无效表达式 */,
-        "no-param-reassign": "off",
-        "@typescript-eslint/no-non-null-asserted-optional-chain":
-            "off" /* 变量不能为 null */,
-        "@typescript-eslint/ban-ts-comment": "off" /* ts ignore 等 */,
+        "radix": ["error", "always"],
+        "@typescript-eslint/no-unused-expressions": "off", // 禁止无效表达式
+        "@typescript-eslint/ban-ts-comment": "off", // ts ignore 等
         "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
         eqeqeq: "error",
-        "@typescript-eslint/no-var-requires": "off",
-        "@typescript-eslint/no-explicit-any": "off",
         "prefer-template": "error",
-        "@typescript-eslint/no-non-null-assertion": "off" /* 禁止使用 ! */,
+        "prefer-arrow-callback": ["error", { allowNamedFunctions: false }],
+        "arrow-body-style": ["error", "as-needed"],
         "@typescript-eslint/consistent-type-imports": "error",
-        curly: "error",
+        curly: ["error", "multi-line"],
         "@typescript-eslint/prefer-optional-chain": "error",
         "@typescript-eslint/prefer-nullish-coalescing": "error",
         "@typescript-eslint/return-await": ["error", "in-try-catch"],

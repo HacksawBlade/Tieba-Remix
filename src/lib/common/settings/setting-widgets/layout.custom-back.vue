@@ -6,8 +6,7 @@
             :src="imageData ?? ''"
             title="自定义背景"
             alt="自定义背景"
-            :style="`opacity: ${+alphaValue / 100}`"
-        />
+            :style="`opacity: ${+alphaValue / 100}`" />
         <div class="custom-back-buttons">
             <UserButton @click="clearImage">清除</UserButton>
             <UserButton @click="selectImageFile">上传图片</UserButton>
@@ -48,7 +47,7 @@ watch(alphaValue, (newValue) => {
     }
 });
 
-onMounted(async function () {
+onMounted(async () => {
     imageData.value = customBackground.get();
 });
 

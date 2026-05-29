@@ -39,7 +39,7 @@ if (usingLegacyTieba.get()) {
 
 window.addEventListener(
     "load",
-    function () {
+    () => {
         const newBody = document.getElementsByClassName("cos-tieba");
         if (newBody.length) {
             cosTiebaLauncher();
@@ -62,7 +62,7 @@ function legacyTiebaLauncher() {
         }),
     ]);
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", () => {
         if (currentPageType() === "thread") {
             threadFloorsObserver.observe();
             threadCommentsObserver.observe();
@@ -79,16 +79,16 @@ function legacyTiebaLauncher() {
         }
     });
 
-    window.addEventListener("load", function () {
+    window.addEventListener("load", () => {
         checkUpdateAndNotify();
     });
 
     // 收缩视图检测
-    waitUntil(() => !_.isNil(document.body)).then(function () {
+    waitUntil(() => !_.isNil(document.body)).then(() => {
         if (wideScreen.get().noLimit) {
             document.body.classList.add("shrink-view");
         } else {
-            const shrinkListener = _.throttle(function () {
+            const shrinkListener = _.throttle(() => {
                 if (window.innerWidth <= wideScreen.get().maxWidth) {
                     document.body.classList.add("shrink-view");
                 } else {

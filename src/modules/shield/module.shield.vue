@@ -9,8 +9,7 @@
                     'user-scope': sh.scope === 'username',
                     disabled: !sh.toggle,
                 }"
-                @click="editRule(sh, index)"
-            >
+                @click="editRule(sh, index)">
                 <div class="icon">
                     {{ sh.scope === "content" ? "chat" : "account_circle" }}
                 </div>
@@ -28,8 +27,7 @@
                 muti-lines
                 class="shield-input"
                 placeholder="输入屏蔽规则，按下 [ENTER] 提交。"
-                @keypress="inputKeyPress"
-            >
+                @keypress="inputKeyPress">
             </UserTextbox>
 
             <div class="submit-controls">

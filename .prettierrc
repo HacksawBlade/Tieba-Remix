@@ -6,5 +6,6 @@
     "printWidth": 90,
     "endOfLine": "lf",
     "arrowParens": "always",
-    "bracketSameLine": true
+    "bracketSameLine": true,
+    "quoteProps": "preserve"
 }
