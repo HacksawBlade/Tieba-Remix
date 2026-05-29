@@ -49,14 +49,22 @@
         font-size: 18px;
     }
 
-    ul {
-        padding: 0;
+    ul,
+    ol {
+        padding-left: 1em;
         margin: 6px 0;
     }
 
     li {
         margin: 6px 0 6px 22px;
+    }
+
+    ul li {
         list-style: disc;
+    }
+
+    ol li {
+        list-style: decimal;
     }
 
     li::marker {
