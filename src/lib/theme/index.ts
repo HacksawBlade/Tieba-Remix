@@ -11,8 +11,6 @@ import tiebaHomeStyle from "@/stylesheets/tieba/tieba-home.scss?inline";
 import tiebaMainStyle from "@/stylesheets/tieba/tieba-main.scss?inline";
 import tiebaThreadStyle from "@/stylesheets/tieba/tieba-thread.scss?inline";
 import _ from "lodash";
-import { getResource } from "../api/remixed";
-import { domrd } from "../elemental";
 import { injectCSSRule, overwriteCSS, parseMultiCSS } from "../elemental/styles";
 import { scrollbarWidth } from "../render";
 import {
@@ -113,19 +111,19 @@ export async function loadMainCSS() {
         tiebaThreadStyle,
     );
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
-            document.head.appendChild(
-                domrd("link", {
-                    type: "image/icon",
-                    rel: "shortcut icon",
-                    href: getResource("/assets/images/main/favicon32.ico"),
-                }),
-            );
-        },
-        { once: true },
-    );
+    // document.addEventListener(
+    //     "DOMContentLoaded",
+    //     function () {
+    //         document.head.appendChild(
+    //             domrd("link", {
+    //                 type: "image/icon",
+    //                 rel: "shortcut icon",
+    //                 href: getResource("/assets/images/main/favicon32.ico"),
+    //             }),
+    //         );
+    //     },
+    //     { once: true },
+    // );
 }
 
 let customBackgroundElement: Maybe<HTMLStyleElement> = undefined;

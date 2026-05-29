@@ -67,9 +67,9 @@ export function currentPageType(): PageType {
 
 export async function getLatestReleaseFromGitee(
     forceUpdate = false,
-): Promise<Maybe<GiteeRelease>> {
+): Promise<GiteeRelease | string[]> {
     if (latestRelease.get() && !forceUpdate) {
-        return latestRelease.get();
+        return latestRelease.get() ?? [];
     } else {
         const TTL = (function () {
             switch (updateConfig.get().time) {
@@ -85,24 +85,37 @@ export async function getLatestReleaseFromGitee(
         })();
 
         if (TTL < 0) {
-            return;
+            return [];
         }
 
-        const updateUrl = `https://gitee.com/api/v5/repos/${Owner}/${RepoName}/releases/latest/`;
+        const updateUrls = [
+            `https://gitee.com/api/v5/repos/${Owner}/${RepoName}/releases/latest/`,
+            "https://gitee.com/api/v5/repos/HacksawBlade/Tieba-Remix/releases/latest/",
+        ];
 
-        const response = await fetch(updateUrl);
-
-        if (response.ok) {
-            const result = await response.json();
-            if ((result as GiteeReleaseNotFound).message) {
-                return;
+        const result = await (async () => {
+            const errRecoder: string[] = [];
+            for (const url of updateUrls) {
+                try {
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        return (await response.json()) as GiteeRelease;
+                    } else {
+                        errRecoder.push(
+                            ((await response.json()) as GiteeReleaseNotFound).message,
+                        );
+                    }
+                } catch (_e) {
+                    _e;
+                }
             }
+            return errRecoder;
+        })();
 
+        if (!_.isArray(result)) {
             latestRelease.set(result, spawnOffsetTS(0, 0, 0, TTL));
-            return result;
-        } else {
-            return;
         }
+        return result;
     }
 }
 
@@ -126,7 +139,10 @@ export function checkUpdateAndNotify(showLatest = false) {
     }
 
     getLatestReleaseFromGitee().then((latestRelease) => {
-        if (latestRelease && latestRelease.tag_name.slice(1) !== GM_info.script.version) {
+        if (
+            !_.isArray(latestRelease) &&
+            latestRelease.tag_name.slice(1) !== GM_info.script.version
+        ) {
             // 忽略当前版本
             if (ignoredTag.get() === latestRelease.tag_name) {
                 return;

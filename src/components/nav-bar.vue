@@ -20,11 +20,11 @@
                     href="/"
                     no-border="all"
                 >
-                    <img
+                    <!-- <img
                         :src="getResource('/assets/images/main/icon64.png')"
                         alt=""
                         class="nav-icon"
-                    />
+                    /> -->
                     <p class="nav-title">贴吧</p>
                 </UserButton>
             </div>
@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts" setup>
-import { checkUpdateAndNotify, getResource } from "@/lib/api/remixed";
+import { checkUpdateAndNotify } from "@/lib/api/remixed";
 import { tiebaAPI } from "@/lib/api/tieba";
 import { dom } from "@/lib/elemental";
 import { renderDialog } from "@/lib/render";

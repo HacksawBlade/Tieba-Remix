@@ -3,8 +3,7 @@
         <div
             v-if="isLatest !== undefined"
             class="latest-info"
-            :class="{ 'is-latest': isLatest }"
-        >
+            :class="{ 'is-latest': isLatest }">
             <div class="icon">{{ isLatest ? "check" : "warning" }}</div>
             <div class="content">{{ isLatest ? "当前是最新版本" : "检测到新版本" }}</div>
         </div>
@@ -19,15 +18,13 @@
                 v-if="release?.author.avatar_url"
                 :src="release?.author.avatar_url"
                 alt=""
-                class="avatar"
-            />
+                class="avatar" />
             <div class="owner">{{ release?.author.name }}</div>
         </div>
 
         <div
             class="release-body markdown"
-            v-html="release?.body ? marked(release?.body) : ''"
-        ></div>
+            v-html="release?.body ? marked(release?.body) : ''"></div>
 
         <div class="update-controls">
             <UserButton
@@ -43,7 +40,7 @@
 
     <div v-else class="forbidden-wrapper">
         <div class="icon">warning</div>
-        <div class="forbidden-text">请求过于频繁，请稍后重试</div>
+        <div class="forbidden-text">{{ forbiddenText }}</div>
     </div>
 </template>
 
@@ -51,24 +48,27 @@
 import { GM_info } from "$";
 import { getLatestReleaseFromGitee } from "@/lib/api/remixed";
 import type { GiteeRelease } from "@/lib/user-values";
+import _ from "lodash";
 import { marked } from "marked";
 import { UserButton } from "user-view";
 import { onMounted, ref } from "vue";
 
 const release = ref<GiteeRelease>();
 const forbidden = ref(false);
+const forbiddenText = ref("");
 const isLatest = ref<boolean>();
 
 const scriptInfo = GM_info;
 
 onMounted(async () => {
     const latest = await getLatestReleaseFromGitee();
-    if (latest) {
+    if (_.isArray(latest)) {
+        forbidden.value = true;
+        forbiddenText.value = latest.join("\n");
+    } else {
         forbidden.value = false;
         release.value = latest;
         isLatest.value = `v${scriptInfo.script.version}` >= release.value.tag_name;
-    } else {
-        forbidden.value = true;
     }
 });
 </script>
@@ -162,6 +162,12 @@ onMounted(async () => {
 
     .icon {
         font-size: 64px;
+    }
+
+    .forbidden-text {
+        color: var(--light-fore);
+        text-align: center;
+        white-space: pre-wrap;
     }
 }
 </style>

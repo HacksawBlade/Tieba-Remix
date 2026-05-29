@@ -1,11 +1,11 @@
 <template>
     <div class="about-wrapper">
         <div class="main-title">
-            <img
+            <!-- <img
                 :src="getResource('/assets/images/main/icon.png')"
                 alt="icon"
                 class="main-icon"
-            />
+            /> -->
 
             <div class="title">{{ MainTitle }}</div>
         </div>
@@ -29,15 +29,13 @@
                 :is-anchor="true"
                 :href="GithubRepo"
                 :shadow-border="true"
-                target="_balnk"
-                >开放源代码
+                target="_balnk">开放源代码
             </UserButton>
 
             <UserButton
                 class="about-button update"
                 :shadow-border="true"
-                @click="emit('changeView', 'about', 'update')"
-            >
+                @click="emit('changeView', 'about', 'update')">
                 检查更新
             </UserButton>
         </div>
@@ -48,7 +46,6 @@
 
 <script lang="ts" setup>
 import { GM_info } from "$";
-import { getResource } from "@/lib/api/remixed";
 import { GithubRepo, MainTitle } from "@/lib/user-values";
 import { UserButton } from "user-view";
 
@@ -81,6 +78,7 @@ const emit = defineEmits(["changeView"]);
             font-size: 32px;
             font-style: italic;
             font-weight: var(--font-weight-bold);
+            text-decoration: underline var(--tieba-theme-color);
         }
     }
 
