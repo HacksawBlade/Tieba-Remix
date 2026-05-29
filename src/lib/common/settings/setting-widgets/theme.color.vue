@@ -1,7 +1,6 @@
 <template>
     <div class="theme-color-component">
-        <ColorPicker text="浅色主题" v-model="lightTheme" @change="changeThemeColor" />
-        <ColorPicker text="深色主题" v-model="darkTheme" @change="changeThemeColor" />
+        <ColorPicker text="主题色" v-model="theme" @change="changeThemeColor" />
         <UserButton class="reset-button" @click="resetThemeColor">重置</UserButton>
     </div>
 </template>
@@ -12,20 +11,15 @@ import { themeColor } from "@/lib/user-values";
 import { UserButton } from "user-view";
 import { ref } from "vue";
 
-const lightTheme = ref(themeColor.get().light);
-const darkTheme = ref(themeColor.get().dark);
+const theme = ref(themeColor.get());
 
 function changeThemeColor() {
-    themeColor.set({
-        dark: darkTheme.value,
-        light: lightTheme.value,
-    });
+    themeColor.set(theme.value);
 }
 
 function resetThemeColor() {
     themeColor.remove();
-    lightTheme.value = themeColor.get().light;
-    darkTheme.value = themeColor.get().dark;
+    theme.value = themeColor.get();
 }
 </script>
 

@@ -9,8 +9,8 @@ export interface RGBA {
 
 export interface HSLA {
     h: number;
-    s: string;
-    l: string;
+    s: number;
+    l: number;
     a: number;
 }
 
@@ -85,8 +85,8 @@ export function rgbaToHSLA(rgba: RGBA): HSLA {
 
     return {
         h: _.round(hue, 2),
-        s: `${_.round(saturation * 100)}%`,
-        l: `${_.round(lightness * 100)}%`,
+        s: _.round(saturation * 100),
+        l: _.round(lightness * 100),
         a: rgba.a,
     };
 }

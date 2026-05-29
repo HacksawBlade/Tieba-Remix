@@ -22,12 +22,12 @@
     --border-color: rgb(96 96 96 / 60%);
     --light-border-color: rgb(96 96 96 / 20%);
 
-    --tieba-theme-color: rgb(113 97 193);
-    --trans-tieba-theme-color: rgb(113 97 193 / 60%);
-    --tieba-theme-hover: rgb(149 128 254);
-    --tieba-theme-active: rgb(172 156 253);
-    --tieba-theme-background: rgb(113 97 193 / 20%);
-    --tieba-theme-fore: rgb(150 128 255);
+    --tieba-theme-color: hsl(250deg 49% 70%);
+    --trans-tieba-theme-color: hsl(250deg 49% 70% / 60%);
+    --tieba-theme-hover: hsl(250deg 64% 80%);
+    --tieba-theme-active: hsl(250deg 74% 88%);
+    --tieba-theme-background: hsl(250deg 49% 70% / 20%);
+    --tieba-theme-fore: hsl(250deg 49% 90%);
 
     --level-green-background: rgb(96 153 59 / 10%);
     --level-green-fore: rgb(133 206 84);
@@ -65,12 +65,12 @@
     --border-color: rgb(185 185 185 / 60%);
     --light-border-color: rgb(185 185 185 / 20%);
 
-    --tieba-theme-color: rgb(97 78 194);
-    --trans-tieba-theme-color: rgb(97 78 194 / 60%);
-    --tieba-theme-hover: rgb(119 105 194);
-    --tieba-theme-active: rgb(150 134 232);
-    --tieba-theme-background: rgb(97 78 194 / 20%);
-    --tieba-theme-fore: rgb(58 46 116);
+    --tieba-theme-color: #614ec2;
+    --trans-tieba-theme-color: hsl(250deg 49% 53% / 60%);
+    --tieba-theme-hover: hsl(250deg 34% 45%);
+    --tieba-theme-active: hsl(250deg 24% 38%);
+    --tieba-theme-background: hsl(250deg 49% 53% / 20%);
+    --tieba-theme-fore: hsl(250deg 49% 28%);
 
     --level-green-background: rgb(84 130 53 / 10%);
     --level-green-fore: rgb(51 78 32);

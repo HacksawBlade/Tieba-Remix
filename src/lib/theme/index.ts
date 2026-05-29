@@ -23,17 +23,24 @@ import {
     wideScreen,
 } from "../user-values";
 import { waitUntil } from "../utils";
+import type { HSLA } from "../utils/color";
 import { hexToRGBA, rgbaToHSLA } from "../utils/color";
 
 export const darkPrefers = matchMedia("(prefers-color-scheme: dark)");
 
 /** 动态样式 */
 export async function loadDynamicCSS() {
-    const theme = themeColor.get();
-    const darkRGBA = hexToRGBA(theme.dark);
-    const lightRGBA = hexToRGBA(theme.light);
-    const darkHSLA = rgbaToHSLA(darkRGBA);
-    const lightHSLA = rgbaToHSLA(lightRGBA);
+    const mainColor = themeColor.get();
+    const mainRGBA = hexToRGBA(mainColor);
+    const mainHSLA = rgbaToHSLA(mainRGBA);
+
+    const darkL = mainHSLA.l < 20 ? 55 : mainHSLA.l < 40 ? 60 : mainHSLA.l < 60 ? 70 : 75;
+    const darkHSLA: HSLA = {
+        h: mainHSLA.h,
+        s: mainHSLA.s,
+        l: darkL,
+        a: 1,
+    };
 
     const dynCSS = parseMultiCSS({
         ":root": {
@@ -47,33 +54,33 @@ export async function loadDynamicCSS() {
         },
 
         ".dark-theme": {
-            "--tieba-theme-color": theme.dark,
-            "--user-theme": theme.dark,
-            "--trans-tieba-theme-color": `rgb(${darkRGBA.r} ${darkRGBA.g} ${darkRGBA.b} / 80%)`,
-            "--user-theme-transp": `rgb(${darkRGBA.r} ${darkRGBA.g} ${darkRGBA.b} / 80%)`,
-            "--tieba-theme-hover": `hsl(${darkHSLA.h}deg ${+darkHSLA.s + 40}% ${+darkHSLA.l + 10}%)`,
-            "--user-theme-hover": `hsl(${darkHSLA.h}deg ${+darkHSLA.s + 40}% ${+darkHSLA.l + 10}%)`,
-            "--tieba-theme-active": `hsl(${darkHSLA.h}deg ${+darkHSLA.s + 50}% ${+darkHSLA.l + 20}%)`,
-            "--user-theme-active": `hsl(${darkHSLA.h}deg ${+darkHSLA.s + 50}% ${+darkHSLA.l + 20}%)`,
-            "--tieba-theme-background": `rgb(${darkRGBA.r} ${darkRGBA.g} ${darkRGBA.b} / 24%)`,
-            "--user-theme-back": `rgb(${darkRGBA.r} ${darkRGBA.g} ${darkRGBA.b} / 24%)`,
-            "--tieba-theme-fore": `hsl(${darkHSLA.h}deg 100% 75%)`,
-            "--user-theme-fore": `hsl(${darkHSLA.h}deg 100% 75%)`,
+            "--tieba-theme-color": `hsl(${darkHSLA.h}deg ${darkHSLA.s}% ${darkHSLA.l}%)`,
+            "--user-theme": `hsl(${darkHSLA.h}deg ${darkHSLA.s}% ${darkHSLA.l}%)`,
+            "--trans-tieba-theme-color": `hsl(${darkHSLA.h}deg ${darkHSLA.s}% ${darkHSLA.l}% / 80%)`,
+            "--user-theme-transp": `hsl(${darkHSLA.h}deg ${darkHSLA.s}% ${darkHSLA.l}% / 80%)`,
+            "--tieba-theme-hover": `hsl(${darkHSLA.h}deg ${_.clamp(darkHSLA.s + 15, 0, 100)}% ${_.clamp(darkHSLA.l + 10, 0, 100)}%)`,
+            "--user-theme-hover": `hsl(${darkHSLA.h}deg ${_.clamp(darkHSLA.s + 15, 0, 100)}% ${_.clamp(darkHSLA.l + 10, 0, 100)}%)`,
+            "--tieba-theme-active": `hsl(${darkHSLA.h}deg ${_.clamp(darkHSLA.s + 25, 0, 100)}% ${_.clamp(darkHSLA.l + 18, 0, 100)}%)`,
+            "--user-theme-active": `hsl(${darkHSLA.h}deg ${_.clamp(darkHSLA.s + 25, 0, 100)}% ${_.clamp(darkHSLA.l + 18, 0, 100)}%)`,
+            "--tieba-theme-background": `hsl(${darkHSLA.h}deg ${darkHSLA.s}% ${darkHSLA.l}% / 24%)`,
+            "--user-theme-back": `hsl(${darkHSLA.h}deg ${darkHSLA.s}% ${darkHSLA.l}% / 24%)`,
+            "--tieba-theme-fore": `hsl(${darkHSLA.h}deg ${_.clamp(darkHSLA.s, 0, 100)}% ${_.clamp(darkHSLA.l + 20, 65, 90)}%)`,
+            "--user-theme-fore": `hsl(${darkHSLA.h}deg ${_.clamp(darkHSLA.s, 0, 100)}% ${_.clamp(darkHSLA.l + 20, 65, 90)}%)`,
         },
 
         ".light-theme": {
-            "--tieba-theme-color": theme.light,
-            "--user-theme": theme.light,
-            "--trans-tieba-theme-color": `rgb(${lightRGBA.r} ${lightRGBA.g} ${lightRGBA.b} / 80%)`,
-            "--user-theme-transp": `rgb(${lightRGBA.r} ${lightRGBA.g} ${lightRGBA.b} / 80%)`,
-            "--tieba-theme-hover": `hsl(${lightHSLA.h}deg ${+lightHSLA.s - 40}% ${+lightHSLA.l - 10}%)`,
-            "--user-theme-hover": `hsl(${lightHSLA.h}deg ${+lightHSLA.s - 40}% ${+lightHSLA.l - 10}%)`,
-            "--tieba-theme-active": `hsl(${lightHSLA.h}deg ${+lightHSLA.s - 50}% ${+lightHSLA.l - 20}%)`,
-            "--user-theme-active": `hsl(${lightHSLA.h}deg ${+lightHSLA.s - 50}% ${+lightHSLA.l - 20}%)`,
-            "--tieba-theme-background": `rgb(${lightRGBA.r} ${lightRGBA.g} ${lightRGBA.b} / 24%)`,
-            "--user-theme-back": `rgb(${lightRGBA.r} ${lightRGBA.g} ${lightRGBA.b} / 24%)`,
-            "--tieba-theme-fore": `hsl(${lightHSLA.h}deg 60% 32%)`,
-            "--user-theme-fore": `hsl(${lightHSLA.h}deg 60% 32%)`,
+            "--tieba-theme-color": mainColor,
+            "--user-theme": mainColor,
+            "--trans-tieba-theme-color": `hsl(${mainHSLA.h}deg ${mainHSLA.s}% ${mainHSLA.l}% / 80%)`,
+            "--user-theme-transp": `hsl(${mainHSLA.h}deg ${mainHSLA.s}% ${mainHSLA.l}% / 80%)`,
+            "--tieba-theme-hover": `hsl(${mainHSLA.h}deg ${_.clamp(mainHSLA.s - 15, 0, 100)}% ${_.clamp(mainHSLA.l - 8, 0, 100)}%)`,
+            "--user-theme-hover": `hsl(${mainHSLA.h}deg ${_.clamp(mainHSLA.s - 15, 0, 100)}% ${_.clamp(mainHSLA.l - 8, 0, 100)}%)`,
+            "--tieba-theme-active": `hsl(${mainHSLA.h}deg ${_.clamp(mainHSLA.s - 25, 0, 100)}% ${_.clamp(mainHSLA.l - 15, 0, 100)}%)`,
+            "--user-theme-active": `hsl(${mainHSLA.h}deg ${_.clamp(mainHSLA.s - 25, 0, 100)}% ${_.clamp(mainHSLA.l - 15, 0, 100)}%)`,
+            "--tieba-theme-background": `hsl(${mainHSLA.h}deg ${mainHSLA.s}% ${mainHSLA.l}% / 10%)`,
+            "--user-theme-back": `hsl(${mainHSLA.h}deg ${mainHSLA.s}% ${mainHSLA.l}% / 10%)`,
+            "--tieba-theme-fore": `hsl(${mainHSLA.h}deg ${_.clamp(mainHSLA.s, 0, 100)}% ${_.clamp(mainHSLA.l - 25, 12, 35)}%)`,
+            "--user-theme-fore": `hsl(${mainHSLA.h}deg ${_.clamp(mainHSLA.s, 0, 100)}% ${_.clamp(mainHSLA.l - 25, 12, 35)}%)`,
         },
     });
 

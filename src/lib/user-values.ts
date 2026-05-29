@@ -3,7 +3,7 @@ import type { NavBarHideMode } from "@/components/nav-bar.vue";
 import _ from "lodash";
 import { setTheme } from "./api/remixed";
 import { setPerfAttr } from "./perf";
-import { setCustomBackground } from "./theme";
+import { loadDynamicCSS, setCustomBackground } from "./theme";
 import { isLiteralObject, spawnOffsetTS } from "./utils";
 
 export const MainTitle = "Tieba Remix";
@@ -204,10 +204,22 @@ export const wideScreen = new UserKey("wideScreen", {
     noLimit: false,
 });
 /** 主题色 */
-export const themeColor = new UserKey("themeColor", {
-    light: "#614ec2",
-    dark: "#7161c1",
-});
+export const themeColor = new UserKey<string>(
+    "themeColor",
+    "#614ec2",
+    {
+        setter() {
+            loadDynamicCSS();
+        },
+    },
+    (maybeLegacy) => {
+        if (typeof maybeLegacy === "string") return maybeLegacy;
+        if (isLiteralObject(maybeLegacy) && "light" in (maybeLegacy as object)) {
+            return (maybeLegacy as Record<string, unknown>).light as string;
+        }
+        return "#614ec2";
+    },
+);
 /** 用户自定义背景图 */
 export const customBackground = new UserKey<Maybe<string>>(
     "customBackground",
