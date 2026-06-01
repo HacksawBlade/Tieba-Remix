@@ -193,10 +193,6 @@ async function unload() {
 </style>
 
 <style lang="scss">
-body {
-    overflow: hidden scroll;
-}
-
 #thread-editor {
     #ueditor_replace {
         font-size: 16px;
