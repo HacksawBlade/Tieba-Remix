@@ -11,6 +11,7 @@ export default [
             "**/@debug*",
             "**/@deprecated*",
             "**/build/**",
+            "vite.config.*",
         ],
     },
     js.configs.recommended,
