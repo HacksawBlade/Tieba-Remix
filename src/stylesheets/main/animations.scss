@@ -48,8 +48,9 @@
 
 @keyframes kf-dialog-in {
     0% {
+        filter: blur(var(--blur-dialog));
         opacity: 0;
-        transform: scale(1.2);
+        transform: scale(0.9);
     }
 
     100% {
@@ -65,8 +66,9 @@
     }
 
     100% {
+        filter: blur(var(--blur-dialog));
         opacity: 0;
-        transform: scale(1.2);
+        transform: scale(0.9);
     }
 }
 

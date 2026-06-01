@@ -4,4 +4,9 @@
     --default-duration: 0.4s;
     --slow-duration: 0.6s;
     --xslow-duration: 0.8s;
+    --blur-dialog: 0px;
+}
+
+[perf-performance] {
+    --blur-dialog: 4px;
 }
