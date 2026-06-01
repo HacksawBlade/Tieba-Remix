@@ -16,11 +16,11 @@ const scriptOptions: MonkeyOption = {
         author: "锯条",
         license: "MIT",
         updateURL:
-            "https://gitee.com/0x0b1ade/Tieba-Remix/raw/beta/build/tieba-remix.user.js",
+            "https://gitee.com/HacksawBlade/Tieba-Remix/raw/beta/build/tieba-remix.user.js",
         downloadURL:
-            "https://gitee.com/0x0b1ade/Tieba-Remix/raw/beta/build/tieba-remix.user.js",
-        icon: "https://gitee.com/0x0b1ade/Tieba-Remix/raw/master/assets/images/main/icon16.png",
-        icon64: "https://gitee.com/0x0b1ade/Tieba-Remix/raw/master/assets/images/main/icon64.png",
+            "https://gitee.com/HacksawBlade/Tieba-Remix/raw/beta/build/tieba-remix.user.js",
+        icon: "https://gitee.com/HacksawBlade/Tieba-Remix/raw/master/assets/images/main/icon16.png",
+        icon64: "https://gitee.com/HacksawBlade/Tieba-Remix/raw/master/assets/images/main/icon64.png",
         match: [
             "*://tieba.baidu.com/",
             "*://tieba.baidu.com/index.*",

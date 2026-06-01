@@ -6,13 +6,13 @@ import { setPerfAttr } from "./perf";
 import { loadDynamicCSS, setCustomBackground } from "./theme";
 import { isLiteralObject, spawnOffsetTS } from "./utils";
 
-export const MainTitle = "Tieba Remix";
-export const Owner = "0x0b1ade";
-export const RepoName = "Tieba-Remix";
-export const GithubRepo = `https://github.com/${Owner}/${RepoName}`;
-export const GiteeRepo = `https://gitee.com/${Owner}/${RepoName}`;
-export const OwnerProfile = `https://github.com/${Owner}`;
-export const BaiduPassport = "https://passport.baidu.com/";
+export const MainTitle = "Tieba Remix" as const;
+export const Owner = "0x0b1ade" as const;
+export const RepoName = "Tieba-Remix" as const;
+export const GithubRepo = `https://github.com/${Owner}/${RepoName}` as const;
+export const GiteeRepo = `https://gitee.com/HacksawBlade/${RepoName}` as const;
+export const OwnerProfile = `https://github.com/${Owner}` as const;
+export const BaiduPassport = "https://passport.baidu.com/" as const;
 
 export const REMIXED =
     "\n" +

@@ -2,8 +2,6 @@ import { GM_getValue, GM_info, GM_listValues, GM_openInTab, GM_setValue } from "
 import type { GiteeRelease, GiteeReleaseNotFound, themeType } from "@/lib/user-values";
 import {
     GiteeRepo,
-    Owner,
-    RepoName,
     ignoredTag,
     latestRelease,
     showUpdateToday,
@@ -89,7 +87,6 @@ export async function getLatestReleaseFromGitee(
         }
 
         const updateUrls = [
-            `https://gitee.com/api/v5/repos/${Owner}/${RepoName}/releases/latest/`,
             "https://gitee.com/api/v5/repos/HacksawBlade/Tieba-Remix/releases/latest/",
         ];
 
