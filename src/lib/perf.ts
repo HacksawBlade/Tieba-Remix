@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { currentPageType } from "./api/remixed";
 import { threadFloorsObserver } from "./observers";
 import type { PerfType } from "./user-values";
@@ -14,18 +13,7 @@ export function loadPerf() {
  * 根据性能配置对 `<html>` 标签添加对应的属性开关，供 CSS 等进行使用
  */
 export function setPerfAttr() {
-    const perfAttr: Record<PerfType, string> = {
-        default: "perf-default",
-        saver: "perf-saver",
-        performance: "perf-performance",
-    };
-
-    _.forEach(document.documentElement.attributes, (attr) => {
-        if (_.startsWith(attr.name, "perf-")) {
-            document.documentElement.removeAttribute(attr.name);
-        }
-    });
-    document.documentElement.toggleAttribute(perfAttr[perfProfile.get()]);
+    document.documentElement.dataset.perf = perfProfile.get();
 }
 
 /**

@@ -7,6 +7,6 @@
     --blur-dialog: 0px;
 }
 
-[perf-performance] {
+html[data-perf="performance"] {
     --blur-dialog: 4px;
 }

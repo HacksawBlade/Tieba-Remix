@@ -69,7 +69,7 @@
 }
 
 @mixin blur-effect($radius: 24px) {
-    html:not([perf-saver]) & {
+    html:not([data-perf="saver"]) & {
         backdrop-filter: blur($radius);
     }
 
@@ -84,7 +84,7 @@
     $size: 4px,
     $radius: 4px
 ) {
-    html:not([perf-saver]) & {
+    html:not([data-perf="saver"]) & {
         backdrop-filter: saturate(0.8) blur($radius);
         background-color: $back-color;
         background-image: radial-gradient(transparent 1px, $base-color 1px);
