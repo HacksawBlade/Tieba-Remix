@@ -20,7 +20,7 @@ import {
 } from "./lib/observers";
 import { loadPerf } from "./lib/perf";
 import { fallbackDialog, renderDialog } from "./lib/render";
-import { darkPrefers, loadDynamicCSS, loadMainCSS } from "./lib/theme";
+import { darkPrefers, loadDynamicCSS, loadEssentialCSS, loadMainCSS } from "./lib/theme";
 import index from "./lib/theme/page-extension/index";
 import thread from "./lib/theme/page-extension/thread";
 import {
@@ -67,6 +67,7 @@ window.addEventListener(
 );
 
 function legacyTiebaLauncher() {
+    loadEssentialCSS();
     Promise.all([
         loadMainCSS(),
         loadDynamicCSS(),
@@ -128,6 +129,7 @@ function legacyTiebaLauncher() {
 }
 
 function cosTiebaLauncher() {
+    loadEssentialCSS();
     Promise.all([loadDynamicCSS()]);
     if (!neverFallbackToLegacy.get()) {
         fallbackDialog();

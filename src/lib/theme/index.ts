@@ -107,11 +107,13 @@ export async function loadDynamicCSS() {
     }
 }
 
+export function loadEssentialCSS() {
+    overwriteCSS(paletteStyle, universalStyle);
+}
+
 export async function loadMainCSS() {
     overwriteCSS(
-        paletteStyle,
         baseStyle,
-        universalStyle,
         tiebaErrorStyle,
         tiebaForumStyle,
         tiebaHomeStyle,
