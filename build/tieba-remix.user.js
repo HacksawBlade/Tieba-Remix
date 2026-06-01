@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Tieba Remix
 // @namespace    https://github.com/0x0b1ade/Tieba-Remix
-// @version      0.4.8-beta
+// @version      0.4.9-beta
 // @author       锯条
 // @description  贴吧网页端重塑
 // @license      MIT
