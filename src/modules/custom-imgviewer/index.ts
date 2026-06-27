@@ -10,7 +10,7 @@ export default {
     contributors: [{ name: Owner, url: OwnerProfile }],
     brief: "替换为脚本内置的图片查看器",
     description: "将贴吧默认的图片查看器替换为脚本内置的版本",
-    scope: ["thread"],
+    scope: ["index", "thread"],
     runAt: "DOMLoaded",
     compatibility: "current",
     init,
@@ -21,18 +21,14 @@ export default {
 const IMG_SELECTOR = ".content-container .lazy-img-wrapper img" as const;
 const IMG_CARD_SELECTOR = ".image-card-wrapper";
 const evproxy = new EventProxy();
-let tid: number;
 
-async function init() {
-    updateTid();
-    if (_.isNil(tid)) return;
-
+function init() {
     evproxy.on(
         document,
         "click",
         async (e) => {
             const img = (e.target as Element).closest<HTMLImageElement>(IMG_SELECTOR);
-            if (!img) return;
+            if (_.isNil(img)) return;
             e.preventDefault();
             e.stopPropagation();
 
@@ -64,9 +60,10 @@ function fini() {
 
 function update() {
     fini();
-    updateTid();
+    init();
 }
 
-function updateTid() {
-    tid = +(location.pathname.match(/^\/p\/(\d+)/)?.[1] ?? 0);
-}
+// function getTid(): Maybe<number> {
+//     const newTid = location.pathname.match(/^\/p\/(\d+)/)?.[1];
+//     return newTid ? +newTid : VOID;
+// }
