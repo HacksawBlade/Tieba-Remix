@@ -46,6 +46,9 @@ const scriptOptions: MonkeyOption = {
 };
 
 const commonConfig = defineConfig({
+    define: {
+        VOID: "void 0",
+    },
     build: {
         lib: {
             entry: "src/main.tsx",

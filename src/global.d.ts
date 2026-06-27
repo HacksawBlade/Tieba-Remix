@@ -1,5 +1,7 @@
 declare module "*.json";
 
+declare const VOID: undefined;
+
 type Maybe<T> = T | undefined;
 
 interface LiteralObject {
