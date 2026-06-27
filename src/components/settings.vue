@@ -402,7 +402,7 @@ $wrapper-padding: 16px;
         text-decoration: none;
         transition:
             all var(--default-duration),
-            font-weight 0;
+            font-weight 0s;
 
         &.disabled {
             color: var(--light-fore);
@@ -448,6 +448,11 @@ $wrapper-padding: 16px;
             .search-box {
                 padding: 6px;
                 font-size: 14px;
+
+                // HACK: 不知道谁把全局 placeholder 改成红色了😅
+                &::placeholder {
+                    color: var(--minimal-fore);
+                }
             }
         }
 
