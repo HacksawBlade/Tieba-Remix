@@ -72,6 +72,8 @@ async function loadUserModulesImpl(): Promise<LoadedUserModules> {
             if (!shouldRun(umodule, url)) {
                 umodule.fini?.();
                 activeInsts.delete(ns);
+            } else {
+                umodule.update?.();
             }
         }
 
