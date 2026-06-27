@@ -88,13 +88,13 @@ async function loadUserModulesImpl(): Promise<LoadedUserModules> {
 
             const launcher: Record<UserModule["runAt"], () => void> = {
                 immediately: doInit,
-                afterHead: () => {
+                afterHead() {
                     afterHead(doInit);
                 },
-                DOMLoaded: () => {
+                DOMLoaded() {
                     onDOMReady(doInit);
                 },
-                idle: () => {
+                idle() {
                     onPageLoaded(doInit);
                 },
             };
