@@ -2,6 +2,7 @@ import type { UserModuleEx } from "@/ex";
 import { currentPageType } from "@/lib/api/remixed";
 import { dom } from "@/lib/elemental";
 import { Owner, OwnerProfile, UserKey } from "@/lib/user-values";
+import { asyncdom } from "libelemental";
 import type { UserSelectItem } from "user-view";
 
 /** 帖子排序行为 */
@@ -156,7 +157,8 @@ function applyForumPrefer() {
     );
 }
 
-function applyImpl(map: Record<string, string>, selector: string, key: string) {
+async function applyImpl(map: Record<string, string>, selector: string, key: string) {
+    await asyncdom(selector, void 0, 1000);
     const items = dom(selector, []);
     for (const item of items) {
         if (item.textContent?.includes(map[key])) {
