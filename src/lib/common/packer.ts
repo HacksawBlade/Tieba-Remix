@@ -16,6 +16,7 @@ type LoadedUserModules = Record<
     {
         ctx: UserModule;
         isMounted(): boolean;
+        isCompatible(): boolean;
     }
 >;
 
@@ -45,6 +46,7 @@ async function loadUserModulesImpl(): Promise<LoadedUserModules> {
         loadedModules[mdef.namespace] = {
             ctx: mdef,
             isMounted: () => activeInsts.has(mdef.namespace),
+            isCompatible: () => isCompatible(mdef),
         };
     }
 

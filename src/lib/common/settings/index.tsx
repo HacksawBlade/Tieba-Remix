@@ -359,67 +359,56 @@ export const getUserSettings = _.once(
             description: "用户模块管理及部署",
             sub: _(await loadUserModules())
                 .values()
-                .map((m) => m.ctx)
-                .reduce((accu, curr, index) => {
-                    function toSubSettingKey(umodule: UserModule): SubSettingKey {
-                        return {
-                            name: umodule.title,
-                            description: umodule.brief,
-                            content: {
-                                "module-info": {
-                                    title: umodule.title,
-                                    description: `${umodule.namespace} ${umodule.version}`,
-                                    widgets: [
-                                        {
-                                            type: "toggle",
-                                            content: umodule.description,
-                                            init() {
-                                                return _.includes(
+                .map((entry) => {
+                    const umodule = entry.ctx;
+                    return {
+                        name: umodule.title,
+                        description: umodule.brief,
+                        disabled: !entry.isCompatible(),
+                        content: {
+                            "module-info": {
+                                title: umodule.title,
+                                description: `${umodule.namespace} ${umodule.version}`,
+                                widgets: [
+                                    {
+                                        type: "toggle",
+                                        content: umodule.description,
+                                        init() {
+                                            return !_.includes(
+                                                disabledModules.get(),
+                                                umodule.namespace,
+                                            );
+                                        },
+                                        event() {
+                                            if (
+                                                _.includes(
                                                     disabledModules.get(),
                                                     umodule.namespace,
                                                 )
-                                                    ? false
-                                                    : true;
-                                            },
-                                            event() {
-                                                if (
-                                                    _.includes(
-                                                        disabledModules.get(),
-                                                        umodule.namespace,
-                                                    )
-                                                ) {
-                                                    const newSet = new Set(
-                                                        disabledModules.get(),
-                                                    );
-                                                    newSet.delete(umodule.namespace);
-                                                    disabledModules.set([...newSet]);
-                                                    return true;
-                                                } else {
-                                                    disabledModules.set([
-                                                        umodule.namespace,
-                                                        ...disabledModules.get(),
-                                                    ]);
-                                                    return false;
-                                                }
-                                            },
+                                            ) {
+                                                const newSet = new Set(
+                                                    disabledModules.get(),
+                                                );
+                                                newSet.delete(umodule.namespace);
+                                                disabledModules.set([...newSet]);
+                                                return true;
+                                            } else {
+                                                disabledModules.set([
+                                                    umodule.namespace,
+                                                    ...disabledModules.get(),
+                                                ]);
+                                                return false;
+                                            }
                                         },
-                                    ],
-                                },
-
-                                ...(umodule as UserModuleEx).settings,
+                                    },
+                                ],
                             },
-                        };
-                    }
-
-                    if (index === 1) {
-                        const accuObject = toSubSettingKey(accu);
-                        accu = {} as unknown as UserModule;
-                        accu[accuObject.name] = accuObject;
-                    }
-
-                    accu[curr.title] = toSubSettingKey(curr);
-                    return accu;
-                }) as MainSettingKey["sub"],
+                            ...(umodule as UserModuleEx).settings,
+                        },
+                    } satisfies SubSettingKey;
+                })
+                .keyBy("name")
+                .value() satisfies MainSettingKey["sub"],
         },
 
         performance: {

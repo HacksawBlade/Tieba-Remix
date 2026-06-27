@@ -35,10 +35,15 @@
                 <UserButton
                     v-for="setting in selectedKey?.sub"
                     class="key-button sub-key"
-                    :class="{ selected: selectedSubKey?.name === setting.name }"
+                    :class="{
+                        selected: selectedSubKey?.name === setting.name,
+                        disabled: setting.disabled,
+                    }"
                     @click="selectSubKey(setting)"
                     no-border="all">
-                    <div class="key-title">{{ setting.name }}</div>
+                    <div class="key-title">
+                        {{ setting.name }}
+                    </div>
                 </UserButton>
             </div>
 
@@ -166,6 +171,7 @@ export interface SettingKey {
     name: string;
     icon?: string;
     description?: string;
+    disabled?: boolean;
 }
 
 export interface MainSettingKey extends SettingKey {
@@ -394,11 +400,19 @@ $wrapper-padding: 16px;
 
     &.sub-key {
         text-decoration: none;
-        transition: var(--default-duration);
+        transition:
+            all var(--default-duration),
+            font-weight 0;
+
+        &.disabled {
+            color: var(--light-fore);
+            text-decoration: line-through 2px;
+        }
 
         &.selected {
+            background-color: var(--user-theme-back);
             color: var(--tieba-theme-fore);
-            text-decoration: underline var(--tieba-theme-color) 2px;
+            font-weight: var(--font-weight-bold);
         }
     }
 }
@@ -464,7 +478,7 @@ $wrapper-padding: 16px;
             }
         }
 
-        .sub-key:not(:hover, :active, :focus) {
+        .sub-key:not(:hover, :active, :focus, .selected) {
             background-color: unset;
         }
     }
