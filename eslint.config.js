@@ -18,9 +18,10 @@ export default [
     ...tseslint.configs.recommended,
     ...pluginVue.configs["flat/base"],
     {
-        files: ["**/*.ts", "**/*.tsx", "**/*.vue"],
+        files: ["**/*.ts", "**/*.tsx"],
         languageOptions: {
             parserOptions: {
+                parser: tseslint.parser,
                 project: "tsconfig.json",
             },
         },
@@ -30,6 +31,7 @@ export default [
         languageOptions: {
             parserOptions: {
                 parser: tseslint.parser,
+                project: "tsconfig.json",
                 extraFileExtensions: [".vue"],
             },
         },
