@@ -98,6 +98,8 @@ export default {
     },
 } satisfies UserModuleEx;
 
+const AWAIT_TIMEOUT = 4000;
+
 function init() {
     const ctx: Partial<Record<PageType, [() => void, () => void]>> = {
         "thread": [applyThreadOrder, applyThreadPrefer],
@@ -124,8 +126,8 @@ function applyThreadOrder() {
 
 async function applyThreadPrefer() {
     const preferMap: Record<ThreadPrefer, Maybe<HTMLDivElement>> = {
-        all: await asyncdom<"div">("[id^='tab-全部回复']"),
-        lzOnly: await asyncdom<"div">("#tab-只看楼主"),
+        all: await asyncdom<"div">("[id^='tab-全部回复']", VOID, AWAIT_TIMEOUT),
+        lzOnly: await asyncdom<"div">("#tab-只看楼主", VOID, AWAIT_TIMEOUT),
     };
     const target = preferMap[threadPrefer.get()];
     if (target && !target.classList.contains("active"))
@@ -156,7 +158,7 @@ function applyForumPrefer() {
 }
 
 async function applyImpl(map: Record<string, string>, selector: string, key: string) {
-    await asyncdom(selector, VOID, 4000);
+    await asyncdom(selector, VOID, AWAIT_TIMEOUT);
     const items = dom(selector, []);
     for (const item of items) {
         if (item.textContent?.includes(map[key])) {
