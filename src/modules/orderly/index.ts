@@ -35,7 +35,7 @@ export default {
     description:
         "在帖子和进吧页面上自动按你保存的习惯设置排序方式和浏览模式，免去每次手动切换。",
     scope: ["thread", "forum"],
-    runAt: "idle",
+    runAt: "DOMLoaded",
     compatibility: "current",
     init,
     settings: {
