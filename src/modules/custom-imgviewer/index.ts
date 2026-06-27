@@ -47,7 +47,7 @@ function init() {
 
             imagesViewer({
                 content: srcList,
-                defaultIndex: +(img.dataset.index ?? 0),
+                defaultIndex: +img.dataset.index,
             });
         },
         { capture: true },
@@ -62,8 +62,3 @@ function update() {
     fini();
     init();
 }
-
-// function getTid(): Maybe<number> {
-//     const newTid = location.pathname.match(/^\/p\/(\d+)/)?.[1];
-//     return newTid ? +newTid : VOID;
-// }
