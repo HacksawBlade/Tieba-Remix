@@ -1,5 +1,7 @@
 import { customRef } from "vue";
 
+export const IS_DEV = import.meta.env.DEV;
+
 /**
  * 创建延迟更新（防抖）的 `ref`
  * @param value 初始化数据
@@ -13,7 +15,7 @@ export function delayedRef<T>(value: T, delay = 500) {
             track();
             return value;
         },
-        set(newValue) {
+        set(newValue: T) {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
                 trigger();
@@ -21,4 +23,28 @@ export function delayedRef<T>(value: T, delay = 500) {
             }, delay);
         },
     }));
+}
+
+/**
+ * 包装 `document.addEventListener("DOMContentLoaded", ...)`，在调试模式下脚本注入时机可能会晚于这个时刻，需要直接执行
+ * @param callback 回调函数
+ */
+export function onDOMReady(callback: () => void) {
+    if (IS_DEV || document.readyState === "complete") {
+        requestIdleCallback(callback);
+    } else {
+        document.addEventListener("DOMContentLoaded", callback, { once: true });
+    }
+}
+
+/**
+ * 包装 `window.addEventListener("load", ...)`，在调试模式下脚本注入时机可能会晚于这个时刻，需要直接执行
+ * @param callback 回调函数
+ */
+export function onPageLoaded(callback: () => void) {
+    if (IS_DEV || document.readyState === "complete") {
+        requestIdleCallback(callback);
+    } else {
+        window.addEventListener("load", callback, { once: true });
+    }
 }

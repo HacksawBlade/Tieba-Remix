@@ -7,6 +7,7 @@ import {
     threadCommentsObserver,
     threadFloorsObserver,
 } from "@/lib/observers";
+import { Owner, OwnerProfile } from "@/lib/user-values";
 import _ from "lodash";
 import { markRaw } from "vue";
 import moduleShieldVue from "./module.shield.vue";
@@ -14,14 +15,15 @@ import type { ShieldRule } from "./shield";
 import { matchShield, shieldList } from "./shield";
 
 export default {
-    id: "shield",
-    name: "贴吧屏蔽",
-    author: "锯条",
+    namespace: "shield",
+    title: "贴吧屏蔽",
+    contributors: [{ name: Owner, url: OwnerProfile }],
     version: "1.2",
     brief: "眼不见为净",
     description: `用户自定义屏蔽规则，符合规则的贴子和楼层将不会显示在首页、看贴页面和进吧页面。支持正则匹配`,
-    scope: true,
+    scope: "all",
     runAt: "immediately",
+    compatibility: "legacy",
     settings: {
         "shield-controls": {
             title: "管理屏蔽规则",
@@ -34,8 +36,8 @@ export default {
             ],
         },
     },
-    entry: main,
-} as UserModuleEx;
+    init,
+} satisfies UserModuleEx;
 
 export * from "./shield";
 
@@ -73,7 +75,7 @@ function shieldBySelector(
     });
 }
 
-function main() {
+function init() {
     // 看贴页面
     shieldBySelector(
         threadFloorsObserver,

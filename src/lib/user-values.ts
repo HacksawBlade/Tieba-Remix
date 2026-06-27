@@ -285,6 +285,10 @@ export const THREAD_IMAGES_LZONLY: CurrentStorageEntry<ThreadPicture[]> = [
     "thread_images_lzonly",
     [],
 ];
+export const WEBAPP_VERSION: CurrentStorageEntry<Maybe<WebAppVersion>> = [
+    "webapp_version",
+    void 0,
+];
 
 export const currentStorage = {
     get<T extends CurrentStorageEntry>(entry: T): T[1] {

@@ -6,6 +6,7 @@ import type {
     SubSettingKey,
     UserSettings,
 } from "@/components/settings.vue";
+import type { UserModuleEx } from "@/ex";
 import { backupUserConfigs, restoreUserConfigs } from "@/lib/api/remixed";
 import type { PerfType, UpdateConfig } from "@/lib/user-values";
 import {
@@ -23,18 +24,18 @@ import {
     userFonts,
     wideScreen,
 } from "@/lib/user-values";
-import { AllModules } from "@/lib/utils";
 import _ from "lodash";
 import type { UserSelectItem } from "user-view";
 import { messageBox } from "user-view";
 import { markRaw } from "vue";
+import { loadUserModules } from "../packer";
 import AboutDetail from "./setting-widgets/about.detail.vue";
 import AboutUpdate from "./setting-widgets/about.update.vue";
 import LayoutCustomBack from "./setting-widgets/layout.custom-back.vue";
 import ThemeColor from "./setting-widgets/theme.color.vue";
 
 export const getUserSettings = _.once(
-    (): UserSettings => ({
+    async (): Promise<UserSettings> => ({
         visibility: {
             name: "显示",
             icon: "visibility",
@@ -356,66 +357,69 @@ export const getUserSettings = _.once(
             name: "模块",
             icon: "deployed_code",
             description: "用户模块管理及部署",
-            sub: AllModules().reduce((accu, curr, index) => {
-                function toSubSettingKey(module: UserModule): SubSettingKey {
-                    return {
-                        name: module.name,
-                        description: module.brief,
-                        content: {
-                            "module-info": {
-                                title: module.name,
-                                description: `${module.id} ${module.version}`,
-                                widgets: [
-                                    {
-                                        type: "toggle",
-                                        content: module.description,
-                                        init() {
-                                            return _.includes(
-                                                disabledModules.get(),
-                                                module.id,
-                                            )
-                                                ? false
-                                                : true;
-                                        },
-                                        event() {
-                                            if (
-                                                _.includes(
+            sub: _(await loadUserModules())
+                .values()
+                .map((m) => m.ctx)
+                .reduce((accu, curr, index) => {
+                    function toSubSettingKey(umodule: UserModule): SubSettingKey {
+                        return {
+                            name: umodule.title,
+                            description: umodule.brief,
+                            content: {
+                                "module-info": {
+                                    title: umodule.title,
+                                    description: `${umodule.namespace} ${umodule.version}`,
+                                    widgets: [
+                                        {
+                                            type: "toggle",
+                                            content: umodule.description,
+                                            init() {
+                                                return _.includes(
                                                     disabledModules.get(),
-                                                    module.id,
+                                                    umodule.namespace,
                                                 )
-                                            ) {
-                                                const newSet = new Set(
-                                                    disabledModules.get(),
-                                                );
-                                                newSet.delete(module.id);
-                                                disabledModules.set([...newSet]);
-                                                return true;
-                                            } else {
-                                                disabledModules.set([
-                                                    module.id,
-                                                    ...disabledModules.get(),
-                                                ]);
-                                                return false;
-                                            }
+                                                    ? false
+                                                    : true;
+                                            },
+                                            event() {
+                                                if (
+                                                    _.includes(
+                                                        disabledModules.get(),
+                                                        umodule.namespace,
+                                                    )
+                                                ) {
+                                                    const newSet = new Set(
+                                                        disabledModules.get(),
+                                                    );
+                                                    newSet.delete(umodule.namespace);
+                                                    disabledModules.set([...newSet]);
+                                                    return true;
+                                                } else {
+                                                    disabledModules.set([
+                                                        umodule.namespace,
+                                                        ...disabledModules.get(),
+                                                    ]);
+                                                    return false;
+                                                }
+                                            },
                                         },
-                                    },
-                                ],
+                                    ],
+                                },
+
+                                ...(umodule as UserModuleEx).settings,
                             },
+                        };
+                    }
 
-                            ...module.settings,
-                        },
-                    };
-                }
+                    if (index === 1) {
+                        const accuObject = toSubSettingKey(accu);
+                        accu = {} as unknown as UserModule;
+                        accu[accuObject.name] = accuObject;
+                    }
 
-                if (index === 1) {
-                    const accuObject = toSubSettingKey(accu);
-                    accu = {} as unknown as UserModule;
-                    accu[accuObject.name] = accuObject;
-                }
-
-                accu[curr.name] = toSubSettingKey(curr);
-                return accu;
-            }) as MainSettingKey["sub"],
+                    accu[curr.title] = toSubSettingKey(curr);
+                    return accu;
+                }) as MainSettingKey["sub"],
         },
 
         performance: {

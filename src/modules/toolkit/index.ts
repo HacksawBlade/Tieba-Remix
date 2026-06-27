@@ -3,18 +3,19 @@ import type { UserModuleEx } from "@/ex";
 import { tiebaAPI } from "@/lib/api/tieba";
 import { dom, findParent } from "@/lib/elemental";
 import { threadCommentsObserver, threadFloorsObserver } from "@/lib/observers";
-import { UserKey } from "@/lib/user-values";
+import { Owner, OwnerProfile, UserKey } from "@/lib/user-values";
 import _ from "lodash";
 
 export default {
-    id: "toolkit",
-    name: "实用工具库",
-    author: "锯条",
+    namespace: "toolkit",
+    title: "实用工具库",
+    contributors: [{ name: Owner, url: OwnerProfile }],
     version: "1.1",
     brief: "优化原版贴吧体验的一组功能",
     description: "这是一个轻量级的工具库，包含了诸如自动展开长图等实用功能。",
-    scope: true,
+    scope: "all",
     runAt: "immediately",
+    compatibility: "legacy",
     settings: {
         autoExpand: {
             title: "自动展开长图",
@@ -48,7 +49,7 @@ export default {
             ],
         },
     } as Record<keyof typeof toolkitFeatures, SettingContent>,
-    entry: function () {
+    init() {
         for (const key in toolkitFeatures) {
             const k = key as keyof typeof toolkitFeatures;
             if (toolkitToggles.get()[k]) {
@@ -56,7 +57,7 @@ export default {
             }
         }
     },
-} as UserModuleEx;
+} satisfies UserModuleEx;
 
 const toolkitFeatures = {
     /** 自动展开长图 */

@@ -2,24 +2,26 @@ import { dom, fadeInElems, fadeInLoad } from "@/lib/elemental";
 import { injectCSSRule, overwriteCSS } from "@/lib/elemental/styles";
 import { threadFloorsObserver } from "@/lib/observers";
 import { setCustomBackground } from "@/lib/theme";
+import { Owner, OwnerProfile } from "@/lib/user-values";
 import "@/stylesheets/components/user-button.scss";
 import _ from "lodash";
 import floatBarStyle from "./tieba-components/float-bar.scss?inline";
 import _navBar from "./tieba-components/nav-bar";
 
 export default {
-    id: "remixed-theme",
-    name: "Tieba Remix 主题",
-    author: "锯条",
+    namespace: "remixed-theme",
+    title: "Tieba Remix 主题",
+    contributors: [{ name: Owner, url: OwnerProfile }],
     version: "0.3",
     brief: "更现代的主题样式",
     description: `包含新的样式、昼夜主题及其自动切换等功能`,
-    scope: true,
+    scope: "all",
     runAt: "immediately",
-    entry: main,
-} as UserModule;
+    compatibility: "legacy",
+    init,
+} satisfies UserModule;
 
-function main(): void {
+function init(): void {
     _navBar();
     overwriteCSS(floatBarStyle);
 

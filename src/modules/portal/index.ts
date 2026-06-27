@@ -1,20 +1,22 @@
 import { dom } from "@/lib/elemental";
 import { threadCommentsObserver } from "@/lib/observers";
+import { Owner, OwnerProfile } from "@/lib/user-values";
 import _ from "lodash";
 
 export default {
-    id: "portal",
-    name: "传送门",
-    author: "锯条",
+    namespace: "portal",
+    title: "传送门",
+    contributors: [{ name: Owner, url: OwnerProfile }],
     version: "1.1.1",
     brief: "为贴子中的b站番号添加跳转链接",
     description: `该模块可以识别贴子中的 av/BV 号并将其转换为超链接`,
     scope: ["thread"],
     runAt: "immediately",
-    entry: main,
-} as UserModule;
+    compatibility: "legacy",
+    init,
+} satisfies UserModule;
 
-function main(): void {
+function init(): void {
     const LINKED_CLASS = "linked";
     const avRegExp = /(?<!:\/\/www.bilibili.com\/video\/)av[1-9]\d*/gi;
     const BVRegExp = /(?<!:\/\/www.bilibili.com\/video\/)BV[A-Za-z0-9]{10}/g;

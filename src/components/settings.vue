@@ -156,7 +156,7 @@ import { getUserSettings } from "@/lib/common/settings";
 import _ from "lodash";
 import type { UserDialogOpts, UserSelectItem } from "user-view";
 import { UserButton, UserCheck, UserDialog, UserSelect, UserTextbox } from "user-view";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 export interface UserSettings {
     [props: string]: MainSettingKey;
@@ -205,7 +205,11 @@ export interface SettingContent {
     }[];
 }
 
-const userSettings = getUserSettings();
+const userSettings = ref<UserSettings>({});
+
+onMounted(async () => {
+    userSettings.value = await getUserSettings();
+});
 
 const dialogOpts: UserDialogOpts = {
     uniqueName: "settings",
@@ -239,8 +243,8 @@ function selectSubKey(key: SubSettingKey) {
 }
 
 function changeView(key: string, sub: string) {
-    selectedKey.value = userSettings[key];
-    selectedSubKey.value = userSettings[key].sub[sub];
+    selectedKey.value = userSettings.value[key];
+    selectedSubKey.value = userSettings.value[key].sub[sub];
 }
 
 function clearSelections() {
@@ -255,7 +259,7 @@ function searchKey() {
     }
 
     if (
-        !_.find(userSettings, (mainKey) => {
+        !_.find(userSettings.value, (mainKey) => {
             if (
                 _.find(mainKey.sub, (subKey) => {
                     if (

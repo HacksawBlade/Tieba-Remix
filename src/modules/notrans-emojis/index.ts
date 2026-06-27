@@ -4,22 +4,24 @@ import {
     legacyIndexFeedsObserver,
     threadCommentsObserver,
 } from "@/lib/observers";
+import { Owner, OwnerProfile } from "@/lib/user-values";
 import _ from "lodash";
 
 export default {
-    id: "notrans-emojis",
-    name: "别动我的 emoji😠",
-    author: "锯条",
+    namespace: "notrans-emojis",
+    title: "别动我的 emoji😠",
+    contributors: [{ name: Owner, url: OwnerProfile }],
     version: "1.0",
     brief: "拒绝替换我的 emoji",
     description:
         "原版贴吧会将部分emoji表情替换为旧版，该模块会让这些emoji重新跟随系统样式",
-    scope: true,
+    scope: "all",
     runAt: "afterHead",
-    entry: main,
-} as UserModule;
+    compatibility: "legacy",
+    init,
+} satisfies UserModule;
 
-function main() {
+function init() {
     // 隐藏旧的 emoji
     // injectCSSRule(".nicknameEmoji", {
     //     display: "none"

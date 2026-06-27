@@ -1,21 +1,23 @@
 import { dom, domrd, findParent } from "@/lib/elemental";
 import { threadCommentsObserver } from "@/lib/observers";
+import { Owner, OwnerProfile } from "@/lib/user-values";
 import _ from "lodash";
 import "./stylesheet.css";
 
 export default {
-    id: "tieba-tags",
-    name: "楼中楼标签",
-    author: "锯条",
+    namespace: "tieba-tags",
+    title: "楼中楼标签",
+    contributors: [{ name: Owner, url: OwnerProfile }],
     version: "2.0.1",
     brief: "优化楼中楼浏览体验",
     description: `为楼中楼的楼主、层主等用户添加特殊标签`,
     scope: ["thread"],
-    runAt: "loaded",
-    entry: main,
-} as UserModule;
+    runAt: "idle",
+    compatibility: "legacy",
+    init,
+} satisfies UserModule;
 
-function main(): void {
+function init(): void {
     const TAGGED = "is-tagged";
     const TB_TAG = "tag-elem";
     const MY_TAG = "tieba-tags-me";

@@ -11,7 +11,7 @@ import {
     restoreUserConfigs,
     setTheme,
 } from "./lib/api/remixed";
-import { parseUserModules } from "./lib/common/packer";
+import { loadUserModules } from "./lib/common/packer";
 import {
     forumThreadsObserver,
     legacyIndexFeedsObserver,
@@ -24,14 +24,16 @@ import { darkPrefers, loadDynamicCSS, loadEssentialCSS, loadMainCSS } from "./li
 import index from "./lib/theme/page-extension/index";
 import thread from "./lib/theme/page-extension/thread";
 import {
+    currentStorage,
     neverFallbackToLegacy,
     pageExtension,
     REMIXED,
     themeType,
     usingLegacyTieba,
+    WEBAPP_VERSION,
     wideScreen,
 } from "./lib/user-values";
-import { AllModules, waitUntil } from "./lib/utils";
+import { waitUntil } from "./lib/utils";
 
 // 尽早完成主题设置，降低闪屏概率
 setTheme(themeType.get());
@@ -39,10 +41,12 @@ darkPrefers.addEventListener("change", () => {
     setTheme(themeType.get());
 });
 
+currentStorage.set(WEBAPP_VERSION, usingLegacyTieba.get() ? "legacy" : "current");
+
 // 根据贴吧版本决定行为
 // 为确保运行速度，会缓存用户上一次的选择，直到页面完全加载后才进行检测和更新
 if (usingLegacyTieba.get()) {
-    legacyTiebaLauncher();
+    legacyLauncher();
 }
 
 window.addEventListener(
@@ -50,7 +54,7 @@ window.addEventListener(
     () => {
         const newBody = document.getElementsByClassName("cos-tieba");
         if (newBody.length) {
-            cosTiebaLauncher();
+            currentLauncher();
         }
         usingLegacyTieba.set(!newBody.length);
     },
@@ -66,17 +70,11 @@ window.addEventListener(
     { once: true },
 );
 
-function legacyTiebaLauncher() {
+loadUserModules();
+
+function legacyLauncher() {
     loadEssentialCSS();
-    Promise.all([
-        loadMainCSS(),
-        loadDynamicCSS(),
-        index(),
-        thread(),
-        parseUserModules(import.meta.glob("./modules/**/index.ts"), (module) => {
-            AllModules().push(module);
-        }),
-    ]);
+    Promise.all([loadMainCSS(), loadDynamicCSS(), index(), thread()]);
 
     document.addEventListener("DOMContentLoaded", () => {
         if (currentPageType() === "thread") {
@@ -128,7 +126,7 @@ function legacyTiebaLauncher() {
     });
 }
 
-function cosTiebaLauncher() {
+function currentLauncher() {
     loadEssentialCSS();
     Promise.all([loadDynamicCSS()]);
     if (!neverFallbackToLegacy.get()) {
