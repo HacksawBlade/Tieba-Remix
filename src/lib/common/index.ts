@@ -1,6 +1,8 @@
+import { waitUntil } from "libelemental";
 import { customRef } from "vue";
 
 export const IS_DEV = import.meta.env.DEV;
+export const BUSY_CLASS = "nprogress-busy";
 
 /**
  * 创建延迟更新（防抖）的 `ref`
@@ -26,12 +28,26 @@ export function delayedRef<T>(value: T, delay = 500) {
 }
 
 /**
+ * 页面变化后，等待变化完毕，文档不再忙碌
+ * @param timeout 超时时限。默认会有一个合适的时间
+ */
+export async function waitForPageIdle(timeout?: number) {
+    await waitUntil(
+        () => !document.documentElement.classList.contains(BUSY_CLASS),
+        timeout ?? 4000,
+    );
+}
+
+/**
  * 包装 `document.addEventListener("DOMContentLoaded", ...)`，在调试模式下脚本注入时机可能会晚于这个时刻，需要直接执行
  * @param callback 回调函数
  */
 export function onDOMReady(callback: () => void) {
     if (IS_DEV || document.readyState === "complete") {
-        requestIdleCallback(callback);
+        requestIdleCallback(async () => {
+            await waitForPageIdle();
+            callback();
+        });
     } else {
         document.addEventListener("DOMContentLoaded", callback, { once: true });
     }
@@ -43,7 +59,10 @@ export function onDOMReady(callback: () => void) {
  */
 export function onPageLoaded(callback: () => void) {
     if (IS_DEV || document.readyState === "complete") {
-        requestIdleCallback(callback);
+        requestIdleCallback(async () => {
+            await waitForPageIdle();
+            callback();
+        });
     } else {
         window.addEventListener("load", callback, { once: true });
     }
