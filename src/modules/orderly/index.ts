@@ -10,7 +10,7 @@ type ThreadOrder = "popular" | "ascend" | "descend";
 /** 帖子过滤偏好：全部；只看楼主； */
 type ThreadPrefer = "all" | "lzOnly";
 /** 吧内排序行为 */
-type ForumOrder = "featured" | "popular" | "latest" | "QA";
+type ForumOrder = "featured" | "popular" | "latest";
 /** 吧内二层排序偏好：回复时间；发布时间； */
 type ForumPrefer = "reply" | "publish";
 const threadOrder = new UserKey<ThreadOrder>("threadOrder", "ascend", {
@@ -76,7 +76,6 @@ export default {
                         { text: "精华", value: "featured" },
                         { text: "热门", value: "popular" },
                         { text: "最新", value: "latest" },
-                        { text: "互助", value: "QA" },
                     ] satisfies UserSelectItem<ForumOrder>[],
                     init: () => forumOrder.get(),
                     event: (e: ForumOrder) => {
@@ -123,10 +122,10 @@ function applyThreadOrder() {
     );
 }
 
-function applyThreadPrefer() {
+async function applyThreadPrefer() {
     const preferMap: Record<ThreadPrefer, Maybe<HTMLDivElement>> = {
-        all: dom<"div">("[id^='tab-全部回复']"),
-        lzOnly: dom<"div">("#tab-只看楼主"),
+        all: await asyncdom<"div">("[id^='tab-全部回复']"),
+        lzOnly: await asyncdom<"div">("#tab-只看楼主"),
     };
     const target = preferMap[threadPrefer.get()];
     if (target && !target.classList.contains("active"))
@@ -139,7 +138,6 @@ function applyForumOrder() {
             featured: "精华",
             popular: "热门",
             latest: "最新",
-            QA: "互助",
         } satisfies Record<ForumOrder, string>,
         ".tab-item",
         forumOrder.get(),
@@ -158,7 +156,7 @@ function applyForumPrefer() {
 }
 
 async function applyImpl(map: Record<string, string>, selector: string, key: string) {
-    await asyncdom(selector, void 0, 1000);
+    await asyncdom(selector, VOID, 4000);
     const items = dom(selector, []);
     for (const item of items) {
         if (item.textContent?.includes(map[key])) {
