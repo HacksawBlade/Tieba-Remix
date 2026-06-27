@@ -19,13 +19,12 @@ import {
     threadFloorsObserver,
 } from "./lib/observers";
 import { loadPerf } from "./lib/perf";
-import { fallbackDialog, renderDialog } from "./lib/render";
+import { renderDialog } from "./lib/render";
 import { darkPrefers, loadDynamicCSS, loadEssentialCSS, loadMainCSS } from "./lib/theme";
 import index from "./lib/theme/page-extension/index";
 import thread from "./lib/theme/page-extension/thread";
 import {
     currentStorage,
-    neverFallbackToLegacy,
     pageExtension,
     REMIXED,
     themeType,
@@ -129,9 +128,6 @@ GM_registerMenuCommand("恢复用户配置", () => {
 function currentLauncher() {
     loadEssentialCSS();
     Promise.all([loadDynamicCSS()]);
-    if (!neverFallbackToLegacy.get()) {
-        fallbackDialog();
-    }
 }
 
 console.info(REMIXED);
