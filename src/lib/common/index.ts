@@ -43,9 +43,8 @@ export async function waitForPageIdle(timeout?: number) {
  * @param callback 回调函数
  */
 export function onDOMReady(callback: () => void) {
-    if (IS_DEV || document.readyState === "complete") {
+    if (IS_DEV || document.readyState !== "loading") {
         requestIdleCallback(async () => {
-            await waitForPageIdle();
             callback();
         });
     } else {
@@ -64,6 +63,13 @@ export function onPageLoaded(callback: () => void) {
             callback();
         });
     } else {
-        window.addEventListener("load", callback, { once: true });
+        window.addEventListener(
+            "load",
+            async () => {
+                await waitForPageIdle();
+                callback();
+            },
+            { once: true },
+        );
     }
 }
