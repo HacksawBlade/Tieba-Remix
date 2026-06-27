@@ -47,7 +47,7 @@ const scriptOptions: MonkeyOption = {
 
 const commonConfig = defineConfig({
     define: {
-        VOID: "void 0",
+        VOID: "undefined",
     },
     build: {
         lib: {
