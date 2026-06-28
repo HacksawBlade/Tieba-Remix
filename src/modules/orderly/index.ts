@@ -38,6 +38,7 @@ export default {
     runAt: "DOMLoaded",
     compatibility: "current",
     init,
+    update: init,
     settings: {
         sortThread: {
             title: "帖子",
@@ -102,14 +103,12 @@ const AWAIT_TIMEOUT = 4000;
 
 function init() {
     const ctx: Partial<Record<PageType, [() => void, () => void]>> = {
-        "thread": [applyThreadOrder, applyThreadPrefer],
-        "forum": [applyForumOrder, applyForumPrefer],
+        thread: [applyThreadOrder, applyThreadPrefer],
+        forum: [applyForumOrder, applyForumPrefer],
     };
-    const hook = ctx[currentPageType()];
-    if (hook) {
-        hook[0]();
-        hook[1]();
-    }
+    const [applyOrder, applyPrefer] = ctx[currentPageType()] ?? [];
+    applyOrder?.();
+    applyPrefer?.();
 }
 
 function applyThreadOrder() {
