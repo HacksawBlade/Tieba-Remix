@@ -40,7 +40,7 @@ const scriptOptions: MonkeyOption = {
             "marked": cdn.jsdelivrFastly("marked", "lib/marked.umd.min.js"),
             "lodash": cdn.jsdelivrFastly("_", "lodash.min.js"),
             "libelemental": cdn.jsdelivrFastly("libelemental", "build/index.min.js"),
-            "user-view": cdn.jsdelivrFastly("user-view", "build/index.min.js"),
+            "user-view": cdn.jsdelivrFastly("UserView", "build/index.min.js"),
         },
     },
 };
@@ -52,9 +52,7 @@ const commonConfig = defineConfig({
     build: {
         lib: {
             entry: "src/main.tsx",
-            name: "TiebaRemix",
-            formats: ["iife"],
-            fileName: () => `tieba-remix.user.js`,
+            formats: ["es"],
         },
         outDir: "build",
         reportCompressedSize: false,

@@ -1,5 +1,5 @@
 import { GM_addStyle } from "$";
-import "@/stylesheets/main/animations.scss";
+import animationStyle from "@/stylesheets/main/animations.scss?inline";
 import baseStyle from "@/stylesheets/main/base.scss?inline";
 import "@/stylesheets/main/material-symbols.css";
 import paletteStyle from "@/stylesheets/main/palette.scss?inline";
@@ -108,7 +108,7 @@ export async function loadDynamicCSS() {
 }
 
 export function loadEssentialCSS() {
-    overwriteCSS(paletteStyle, universalStyle);
+    overwriteCSS(paletteStyle, universalStyle, animationStyle);
 }
 
 export async function loadMainCSS() {
