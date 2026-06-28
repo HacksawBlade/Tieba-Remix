@@ -30,6 +30,7 @@ const scriptOptions: MonkeyOption = {
             "*://jump.bdimg.com/safecheck/*",
             "*://jump2.bdimg.com/safecheck/*",
         ],
+        grant: ["window.onurlchange"],
         "run-at": "document-start",
     },
     build: {
