@@ -11,7 +11,7 @@ import {
     restoreUserConfigs,
     setTheme,
 } from "./lib/api/remixed";
-import { loadUserModules } from "./lib/common/packer";
+import { loadUserModules } from "./lib/common/scheduler.js";
 import {
     forumThreadsObserver,
     legacyIndexFeedsObserver,

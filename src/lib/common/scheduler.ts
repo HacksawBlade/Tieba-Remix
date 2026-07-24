@@ -66,8 +66,6 @@ async function loadUserModulesImpl(): Promise<LoadedUserModules> {
     }
 
     function schedule(url: string) {
-        console.log("[Active modules]", ...activeInsts);
-
         for (const ns of activeInsts) {
             const umodule = _.find(moduleDefs, (m) => m.namespace === ns);
             if (!umodule) continue;
