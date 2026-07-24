@@ -24,11 +24,12 @@ import {
     userFonts,
     wideScreen,
 } from "@/lib/user-values";
+import { parseCSSRule } from "libelemental";
 import _ from "lodash";
 import type { UserSelectItem } from "user-view";
 import { messageBox } from "user-view";
 import { markRaw } from "vue";
-import { loadUserModules } from "../packer";
+import { loadUserModules } from "../scheduler";
 import AboutDetail from "./setting-widgets/about.detail.vue";
 import AboutUpdate from "./setting-widgets/about.update.vue";
 import LayoutCustomBack from "./setting-widgets/layout.custom-back.vue";
@@ -367,9 +368,39 @@ export const getUserSettings = _.once(
                         disabled: !entry.isCompatible(),
                         content: {
                             "module-info": {
-                                title: umodule.title,
-                                description: `${umodule.namespace} ${umodule.version}`,
                                 widgets: [
+                                    {
+                                        type: "component",
+                                        component: (
+                                            <div
+                                                style={parseCSSRule({
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    gap: "8px",
+                                                })}>
+                                                <h3
+                                                    style={parseCSSRule({
+                                                        textDecoration:
+                                                            entry.isCompatible()
+                                                                ? ""
+                                                                : "line-through 4px var(--warning-color)",
+                                                        color: entry.isCompatible()
+                                                            ? ""
+                                                            : "var(--light-fore)",
+                                                    })}>
+                                                    {umodule.title}
+                                                </h3>
+                                                <p
+                                                    style={parseCSSRule({
+                                                        fontFamily:
+                                                            "var(--code-monospace)",
+                                                        color: "var(--light-fore)",
+                                                    })}>
+                                                    {umodule.namespace} {umodule.version}
+                                                </p>
+                                            </div>
+                                        ),
+                                    },
                                     {
                                         type: "toggle",
                                         content: umodule.description,
