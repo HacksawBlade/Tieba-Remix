@@ -27,7 +27,6 @@ type PageType = "index" | "thread" | "forum" | "user" | "unhandled";
 
 /** 用户模块 */
 interface UserModule {
-    [prop: string]: unknown;
     /** 唯一标识符 */
     namespace: string;
     /** 显示给用户的模块名称 */
