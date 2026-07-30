@@ -1,6 +1,6 @@
 import { onDOMReady } from "@/lib/common";
 import { Owner, OwnerProfile } from "@/lib/user-values";
-import { findParent } from "libelemental";
+import { EventProxy, findParent } from "libelemental";
 
 export default {
     namespace: "no-autoplay",
@@ -16,9 +16,10 @@ export default {
     fini,
 } satisfies UserModule;
 
-const nativePlay = HTMLMediaElement.prototype.play;
-let observer: Maybe<MutationObserver> = VOID;
 const PROCESSED_CLASS = "blocked-video" as const;
+const nativePlay = HTMLMediaElement.prototype.play;
+const evproxy = new EventProxy();
+let observer: Maybe<MutationObserver> = VOID;
 
 function disableVideo(video: HTMLVideoElement) {
     if (!video.classList.contains(PROCESSED_CLASS)) {
@@ -27,7 +28,7 @@ function disableVideo(video: HTMLVideoElement) {
         video.removeAttribute("autoplay");
         video.removeAttribute("playsinline");
         const playerUI = findParent(video, "art-video-player");
-        playerUI?.addEventListener("click", (e) => {
+        evproxy.on(playerUI, "click", (e) => {
             const threadAnchor = findParent(
                 e.target as HTMLVideoElement,
                 "thread-content-link",
@@ -59,7 +60,7 @@ function init() {
                 }
             }
         });
-        observer.observe(document.body, { childList: true, subtree: true });
+        observer.observe(document.body, { childList: true });
     };
 
     onDOMReady(setup);
@@ -69,4 +70,5 @@ function fini() {
     HTMLMediaElement.prototype.play = nativePlay;
     observer?.disconnect();
     observer = VOID;
+    evproxy.release();
 }
