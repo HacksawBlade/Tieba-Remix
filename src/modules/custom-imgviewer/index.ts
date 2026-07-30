@@ -10,7 +10,7 @@ export default {
     contributors: [{ name: Owner, url: OwnerProfile }],
     brief: "替换为脚本内置的图片查看器",
     description: "将贴吧默认的图片查看器替换为脚本内置的版本",
-    scope: ["index", "thread"],
+    scope: ["index", "thread", "forum"],
     runAt: "DOMLoaded",
     compatibility: "current",
     init,
