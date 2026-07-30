@@ -11,6 +11,7 @@ import {
     restoreUserConfigs,
     setTheme,
 } from "./lib/api/remixed";
+import { exportToDevSpace, initDevSpace } from "./lib/common/dev-space";
 import { loadUserModules } from "./lib/common/scheduler.js";
 import {
     forumThreadsObserver,
@@ -39,6 +40,8 @@ setTheme(themeType.get());
 darkPrefers.addEventListener("change", () => {
     setTheme(themeType.get());
 });
+
+initDevSpace();
 
 currentStorage.set(WEBAPP_VERSION, usingLegacyTieba.get() ? "legacy" : "current");
 
@@ -123,6 +126,10 @@ GM_registerMenuCommand("恢复用户配置", () => {
             "若未弹出文件对话框，请先点击网页任意位置再使用该功能，或是直接从设置中恢复",
     });
     restoreUserConfigs();
+});
+
+exportToDevSpace({
+    currentPageType,
 });
 
 function currentLauncher() {

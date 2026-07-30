@@ -4,6 +4,7 @@ import _ from "lodash";
 import { onDOMReady, onPageLoaded } from ".";
 import { currentPageType } from "../api/remixed";
 import { currentStorage, disabledModules, WEBAPP_VERSION } from "../user-values";
+import { exportToDevSpace } from "./dev-space";
 
 /** 用户模块导出时的通用结构 */
 interface UserModuleExport {
@@ -27,6 +28,7 @@ type LoadedUserModules = Record<
  * @returns 所有解析后的模块
  */
 export const loadUserModules = _.once(loadUserModulesImpl);
+const moduleInsts = new Set<string>();
 
 async function loadUserModulesImpl(): Promise<LoadedUserModules> {
     const glob = import.meta.glob("/src/modules/**/index.{ts,tsx}");
@@ -40,12 +42,11 @@ async function loadUserModulesImpl(): Promise<LoadedUserModules> {
         moduleDefs.push(moduleExport);
     }
 
-    const activeInsts = new Set<string>();
     const loadedModules: LoadedUserModules = {};
     for (const mdef of moduleDefs) {
         loadedModules[mdef.namespace] = {
             ctx: mdef,
-            isMounted: () => activeInsts.has(mdef.namespace),
+            isMounted: () => moduleInsts.has(mdef.namespace),
             isCompatible: () => isCompatible(mdef),
         };
     }
@@ -66,12 +67,12 @@ async function loadUserModulesImpl(): Promise<LoadedUserModules> {
     }
 
     function schedule(url: string) {
-        for (const ns of activeInsts) {
+        for (const ns of moduleInsts) {
             const umodule = _.find(moduleDefs, (m) => m.namespace === ns);
             if (!umodule) continue;
             if (!shouldRun(umodule, url)) {
                 umodule.fini?.();
-                activeInsts.delete(ns);
+                moduleInsts.delete(ns);
             } else {
                 umodule.update?.();
             }
@@ -79,13 +80,13 @@ async function loadUserModulesImpl(): Promise<LoadedUserModules> {
 
         for (const umodule of moduleDefs) {
             if (!shouldRun(umodule, url)) continue;
-            if (activeInsts.has(umodule.namespace)) continue;
+            if (moduleInsts.has(umodule.namespace)) continue;
             if (!isCompatible(umodule)) continue;
 
             const doInit = () => {
-                if (activeInsts.has(umodule.namespace)) return;
+                if (moduleInsts.has(umodule.namespace)) return;
                 umodule.init();
-                activeInsts.add(umodule.namespace);
+                moduleInsts.add(umodule.namespace);
             };
 
             const launcher: Record<UserModule["runAt"], () => void> = {
@@ -112,3 +113,5 @@ async function loadUserModulesImpl(): Promise<LoadedUserModules> {
 
     return loadedModules;
 }
+
+exportToDevSpace({ moduleInsts: () => moduleInsts });

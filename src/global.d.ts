@@ -149,3 +149,7 @@ interface ThreadPicture {
     pictureId?: string;
     postId?: number;
 }
+
+interface Window {
+    __TiebaRemixDev__?: Record<string, unknown>;
+}
