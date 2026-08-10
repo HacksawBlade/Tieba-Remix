@@ -29,6 +29,7 @@ const scriptOptions: MonkeyOption = {
             "*://tieba.baidu.com/f?*",
             "*://jump.bdimg.com/safecheck/*",
             "*://jump2.bdimg.com/safecheck/*",
+            "*://tieba.baidu.com/mo/q/checkurl?url=*",
         ],
         grant: ["window.onurlchange"],
         "run-at": "document-start",
