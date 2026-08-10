@@ -45,7 +45,7 @@ interface UserModule {
     /** 模块的详细说明 */
     description: string;
     /** 模块作用域：指定 `PageType[]` 则匹配对应页面类型；指定正则表达式则测试当前 URL；指定 "all" 始终运行； */
-    scope: PageType[] | RegExp | "all";
+    scope: PageType[] | RegExp[] | "all";
     /** 运行时机：尽快运行；`head` 标签可用后运行；文档基本加载完毕后运行；页面完全加载后运行； */
     runAt: "immediately" | "afterHead" | "DOMLoaded" | "idle";
     /** 网页兼容性：仅旧版；仅新版；二者都兼容； */

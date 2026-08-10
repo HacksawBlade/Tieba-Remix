@@ -55,9 +55,13 @@ async function loadUserModulesImpl(): Promise<LoadedUserModules> {
         const disabledSet = new Set(disabledModules.get());
         if (disabledSet.has(umodule.namespace)) return false;
         if (umodule.scope === "all") return true;
-        if (_.isArray(umodule.scope))
-            return _.some(umodule.scope, (pt) => pt === currentPageType());
-        if (umodule.scope instanceof RegExp) return umodule.scope.test(url);
+        if (_.isArray(umodule.scope)) {
+            if (umodule.scope[0] instanceof RegExp) {
+                return _.some(umodule.scope, (regex: RegExp) => regex.test(url));
+            } else {
+                return _.some(umodule.scope, (pt: PageType) => pt === currentPageType());
+            }
+        }
         return false;
     }
 
