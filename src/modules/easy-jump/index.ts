@@ -14,6 +14,12 @@ export default {
     scope: [LEGACY_SAFE_REGEX, CURRENT_SAFE_REGEX],
     runAt: "immediately",
     compatibility: "all",
+    antifeatures: {
+        type: {
+            unsafe: true,
+        },
+        reason: "开启该功能后，用户可能无法在跳转前自行确认链接的安全性。",
+    },
     async init() {
         location.href = ((await asyncdom(".link")) as HTMLElement).innerText;
     },

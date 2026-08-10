@@ -3,7 +3,12 @@ import { afterHead } from "libelemental";
 import _ from "lodash";
 import { onDOMReady, onPageLoaded } from ".";
 import { currentPageType } from "../api/remixed";
-import { currentStorage, disabledModules, WEBAPP_VERSION } from "../user-values";
+import {
+    currentStorage,
+    disabledModules,
+    forceEnabledModules,
+    WEBAPP_VERSION,
+} from "../user-values";
 import { exportToDevSpace } from "./dev-space";
 
 /** 用户模块导出时的通用结构 */
@@ -29,6 +34,8 @@ type LoadedUserModules = Record<
  */
 export const loadUserModules = _.once(loadUserModulesImpl);
 const moduleInsts = new Set<string>();
+const disabledSet = new Set(disabledModules.get());
+const forceEnabledSet = new Set(forceEnabledModules.get());
 
 async function loadUserModulesImpl(): Promise<LoadedUserModules> {
     const glob = import.meta.glob("/src/modules/**/index.{ts,tsx}");
@@ -52,8 +59,8 @@ async function loadUserModulesImpl(): Promise<LoadedUserModules> {
     }
 
     function shouldRun(umodule: UserModule, url: string): boolean {
-        const disabledSet = new Set(disabledModules.get());
         if (disabledSet.has(umodule.namespace)) return false;
+        if (umodule.antifeatures && !forceEnabledSet.has(umodule.namespace)) return false;
         if (umodule.scope === "all") return true;
         if (_.isArray(umodule.scope)) {
             if (umodule.scope[0] instanceof RegExp) {

@@ -270,6 +270,8 @@ export const highQualityImage = new UserKey("highQualityImage", true);
 export const usingLegacyTieba = new UserKey("usingLegacyTieba", false);
 /** 永不回退到旧版贴吧 */
 export const neverFallbackToLegacy = new UserKey("neverFallbackToLegacy", false);
+/** 默认应保持关闭，却被用户手动开启的模块 */
+export const forceEnabledModules = new UserKey<string[]>("forceEnabledModules", []);
 
 export const SymbolFont = "Material Symbols";
 

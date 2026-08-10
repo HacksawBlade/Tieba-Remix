@@ -50,6 +50,20 @@ interface UserModule {
     runAt: "immediately" | "afterHead" | "DOMLoaded" | "idle";
     /** 网页兼容性：仅旧版；仅新版；二者都兼容； */
     compatibility?: WebAppVersion | "all";
+    /**
+     * 模块是否具有一些负面特性，设置后模块会默认关闭。一般分为以下几类：
+     * 1. 会降低安全性
+     * 2. 性能影响大
+     * 3. 功能受众太窄，通常不会开启
+     */
+    antifeatures?: {
+        type: {
+            unsafe?: boolean;
+            perf?: boolean;
+            unusual?: boolean;
+        };
+        reason: string;
+    };
 
     /**
      * 模块挂载操作。旧版只在页面首次加载时检查一次运行要求并决定是否挂载，新版则会根据页面 URL 变化进行多次挂载尝试，具体为：
