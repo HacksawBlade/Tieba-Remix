@@ -1,8 +1,17 @@
 <div align="center">
 
-<img src="assets/images/main/icon.png" width="64" height="64">
-
-# *Tieba Remix*
+```plaintext
+▄▄▄▄            ▄▄              ▄▄▄▄                           
+▀██▀            ██              ██▀██                          
+ ▓▓   ▓▓        ▓▓              ▓▓ ▓▓                ▓▓        
+ ▓▓   ▀▀        ▓▓              ▓▓ ▓▓                ▀▀        
+ ▒▒  ▄▄▄▄  ▄▄▄▄ ▒▒▄▄   ▄▄▄▄     ▒▒ ▒▒  ▄▄▄▄ ▄▄▄▄▄▄  ▄▄▄▄ ▄▄ ▄▄ 
+ ▒▒   ▒▒  ▒▒ ▒▒ ▒▒ ▒▒ ▒▒ ▒▒     ▒▒▒▒  ▒▒ ▒▒ ▒▒ ▒ ▒▒  ▒▒  ▒▒ ▒▒ 
+ ░░   ░░  ░░▄░░ ░░ ░░ ░░ ░░     ░░ ░░ ░░▄░░ ░░ ░ ░░  ░░  ░░ ░░ 
+ ░░   ░░  ░░ ▄▄ ░░ ░░ ░░ ░░     ░░ ░░ ░░ ▄▄ ░░ ░ ░░  ░░   ░▀░  
+ ██   ██  ██ ██ ██ ██ ██ ██     ██ ██ ██ ██ ██   ██  ██  ██ ██ 
+ ▀▀  ▀▀▀▀  ▀▀▀▀ ▀▀▀▀   ▀▀▀▀     ▀▀ ▀▀  ▀▀▀▀ ▀▀   ▀▀ ▀▀▀▀ ▀▀ ▀▀ 
+```
 
 <!-- ![Release](https://img.shields.io/github/v/release/0x0b1ade/Tieba-Remix?style=flat) -->
 ![Downloads](https://img.shields.io/github/downloads/0x0b1ade/Tieba-Remix/total)
