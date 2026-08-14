@@ -11,11 +11,11 @@
  ▀▀  ▀▀▀▀  ▀▀▀▀ ▀▀▀▀   ▀▀▀▀     ▀▀ ▀▀  ▀▀▀▀ ▀▀   ▀▀ ▀▀▀▀ ▀▀ ▀▀ 
 ```
 
-![Release](https://img.shields.io/github/v/release/0xb1aded/Tieba-Remix?style=flat&include_prereleases)
-![Downloads](https://img.shields.io/github/downloads/0xb1aded/Tieba-Remix/total?style=flat)
-![Forks](https://img.shields.io/github/forks/0xb1aded/Tieba-Remix?style=flat)
-![License](https://img.shields.io/github/license/0xb1aded/Tieba-Remix?style=flat)
-<!-- ![License](https://img.shields.io/github/last-commit/0xb1aded/Tieba-Remix/dev?style=flat) -->
+[![Release](https://img.shields.io/github/v/release/0xb1aded/Tieba-Remix?style=flat&include_prereleases)](https://github.com/0xb1aded/Tieba-Remix/releases)
+[![Downloads](https://img.shields.io/github/downloads/0xb1aded/Tieba-Remix/total?style=flat)](https://gitee.com/HacksawBlade/Tieba-Remix/raw/beta/build/tieba-remix.user.js)
+[![Forks](https://img.shields.io/github/forks/0xb1aded/Tieba-Remix?style=flat)](https://github.com/0xb1aded/Tieba-Remix/fork)
+[![License](https://img.shields.io/github/license/0xb1aded/Tieba-Remix?style=flat)](https://github.com/0xb1aded/Tieba-Remix?tab=MIT-1-ov-file)
+<!-- ![Commit](https://img.shields.io/github/last-commit/0xb1aded/Tieba-Remix/dev?style=flat) -->
 
 <div align="right">
 
